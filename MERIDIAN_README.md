@@ -2,6 +2,8 @@
 
 ![TSF Logo](/docs/static/img/TSF.svg)
 
+To access the entire documentation, [Click Here](https://miguelclaret.github.io/TheSimpleFund/)
+
 ## 📋 Table of Contents
 - [Overview](#overview)
 - [Problem & Solution](#problem--solution)
