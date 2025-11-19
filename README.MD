@@ -78,8 +78,62 @@ The Simple Fund is a **B2B SaaS platform** that turns receivables funds into **t
     - Investors keep custody of their own shares in Stellar wallets; future integrations with wallets and fiat/BRL/USDC ramps.
   - **Ecosystem DeFi protocols (planned for this hackathon)**  
     - **SoroSwap**: use its AMM + aggregation layer to provide deeper liquidity and better price discovery for fund tokens.  
-    - **Blend**: use Blend to allocate part of the fund’s on-chain capital into yield strategies, so the fund can **earn yield on-chain** in addition to receivables cash flows.  
+    - **Blend**: use Blend to allocate part of the fund’s on-chain capital into yield strategies, so the fund can **earn yield on-chain** in addition to receivables cash flows. 
 
+#### 3.3 Privacy-Preserving Investor Tiers (ZK Proofs)
+
+&emsp; To enhance investor experience, privacy, and product scalability, The Simple Fund introduces **Zero-Knowledge Investor Tiers** — a mechanism that allows users to prove they meet specific investment thresholds **without revealing their exact balance or wallet identity**.
+
+- What problem does this solve?
+
+&emsp; Traditional investor segmentation (Bronze/Silver/Gold tiers, pro dashboards, governance rights, preferential fees) requires exposing sensitive balance data or linking wallets to identifiable information. This limits privacy and creates user friction.
+
+With ZK proofs, investors can instead prove:
+
+> **“I have at least X tokens invested in this fund”**
+
+— without revealing the exact amount,  
+— without exposing their financial footprint,  
+— without requiring off-chain identity correlation.
+
+- How it works (high-level)
+
+&emsp; The system is intentionally simple and fully compatible with Soroban smart contracts:
+
+1. **Off-chain prover**  
+   - The backend reads the user’s fund share balance from the TSF share contract.  
+   - It generates a zero-knowledge proof that the user’s balance is greater than or equal to a chosen threshold (e.g., 100, 1,000, or 10,000 units).  
+
+2. **On-chain verifier (Soroban)**  
+   - A lightweight Soroban contract verifies the submitted proof.  
+   - Upon successful verification, it either:  
+     - **mints a non-transferable Tier NFT** (e.g., Bronze / Silver / Gold), or  
+     - **stores the verified tier level on-chain** in a privacy-friendly registry.
+
+3. **Front-end tier unlocking**  
+   Once verified, users gain access to tier-specific benefits such as:  
+   - Advanced analytics dashboards  
+   - Priority access to new strategies or new fund launches  
+   - Reduced fees or boosted yield  
+   - Access to expert-level governance or voting rights  
+
+- Why this matters
+
+**High perceived value for investors**  
+&emsp; Users gain meaningful benefits (“Gold tier”, “Pro investor experience”) while maintaining financial privacy.
+
+**Minimal architectural impact**  
+&emsp; The core TSF contracts remain unchanged.  
+Only a small verifier contract is added to the system.
+
+**Ecosystem scalability**  
+&emsp; Once the ZK tier standard is deployed, other Stellar projects can read TSF investor tiers and use them as:  
+- a private “wealth credential”,  
+- an access-control mechanism,  
+- yield-boosting criteria,  
+- or a gate for professional-only investment products.
+
+&emsp; This turns The Simple Fund into a **provider of private, reusable, on-chain investor credentials**, strengthening its leadership role in the Stellar ecosystem.
 
 ### 4. Core Features (Planned for the Hackathon)
 
@@ -110,10 +164,6 @@ By the end of **Stellar Hack+**, we aim to have:
     - Allocate part of the fund’s capital (e.g. idle stablecoin balances) into a Blend strategy via our integration.  
   - Working if:
     - We can demonstrate a “fund allocation” transaction from the fund into Blend and show updated balance and yield exposure in our dashboard.
-
-For each feature we will track:
-- A **demo script** that clearly shows the user action and resulting on-chain state.
-- At least one **explorer link** per flow to verify correctness and transparency.
 
 
 ### 5. MVP Architecture (Initial Idea)
@@ -163,9 +213,6 @@ We propose a **simple, modular architecture**:
                 │
                 ├──► [ SoroSwap (liquidity & swaps) ]
                 ├──► [ Blend (on-chain yield) ]
-                │
-                └──► [ Database (off-chain data) ]
-
 ```
 
 ### 6. Success Criteria for the Hackathon
