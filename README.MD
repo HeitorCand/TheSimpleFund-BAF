@@ -3,11 +3,11 @@
 ![TSF Logo](/docs/static/img/TSF.svg)
 
 ## 📋 Table of Contents
-- [Documentation Day 01](#documentation-day-01)
+- [Day 01 - Documentation](#day-01---documentation)
 - [Team](#team)
 
 
-## Documentation Day 01
+## Day 01 - Documentation
 
 ### 1. Problem Statement
 
@@ -71,33 +71,6 @@ By the end of Stellar Hack+, we will consider our MVP successful if:
 - [ ] We can measure or show __________________
 
 Be as concrete as possible (even if ambitious).
-
-
-
-## Team
-
-**Team Balaiê** consists of five technology students from Inteli – Institute of Technology and Leadership in Brazil:
-
-- **Mariana de Paula** — Lead / PM + Blockchain Developer
-    - Linkedin: 
-    - Github:
-- **Miguel Claret** — Frontend Developer
-    - Linkedin: 
-    - Github:
-- **Cecília Galvão** — Blockchain Developer
-    - Linkedin: 
-    - Github:
-- **Heitor Candido** — Backend Developer
-    - Linkedin: 
-    - Github:
-- **Pablo Azevedo** — Frontend Developer + Videomaker
-    - Linkedin: 
-    - Github:
-
-Aqui está a **versão completa exatamente seguindo o formato** do exemplo que você enviou.
-Já preenchi os LinkedIns, GitHubs e ajustei a escrita para ficar uniforme, profissional e alinhada com o padrão do documento.
-
----
 
 ## Team
 
