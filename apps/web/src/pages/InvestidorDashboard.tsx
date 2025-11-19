@@ -286,7 +286,7 @@ const InvestidorDashboard: React.FC = () => {
                     Set Up Stellar Wallet
                   </h4>
                   <p className="tsf-text-sm tsf-text-secondary tsf-mb-sm">
-                    You need to generate your Stellar keys to make investments via blockchain.
+                    You need to generate your Stellar keys to make investments in blockchain.
 This is a necessary step to ensure the security of your transactions.
                   </p>
                   <Button
@@ -838,7 +838,7 @@ Explore the marketplace to start investing.
                 <div className="tsf-status-icon tsf-status-icon--info tsf-p-sm">ℹ️</div>
                 <div className="tsf-text-sm">
                   <p className="tsf-mb-sm">
-                    <strong className="tsf-text-base">Investing via Blockchain:</strong>
+                    <strong className="tsf-text-base">Investing in Blockchain:</strong>
                   </p>
                   <p> 
                     Your transaction will be processed on the Stellar network, ensuring complete transparency and security.
