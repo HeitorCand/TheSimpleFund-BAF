@@ -11,66 +11,175 @@
 
 ### 1. Problem Statement
 
-- What real-world problem are you solving?
-- For whom is this a problem (which users, organizations, or communities)?
-- Why is this problem urgent or important now?
+- **What real-world problem are you solving?**  
+  The Simple Fund tackles the operational chaos and illiquidity of **receivables funds** (e.g. in agribusiness and other credit-intensive sectors). Today, funds spend a lot of money and time on manual KYC, fragmented data, reconciliation, and slow settlement. This leads to **high costs per invoice, weeks-long settlement times, and almost no liquidity for investors**, even though receivables is a trillion-dollar market.
+
+- **For whom is this a problem (which users, organizations, or communities)?**  
+  - **Fund managers / asset managers** that operate receivables funds and need efficient, compliant infrastructure.  
+  - **Consultants / structuring partners** who do onboarding, KYC/KYB and documentation.  
+  - **Investors** who want exposure to receivables but are stuck in illiquid, opaque structures.  
+  - **Real-economy companies** (e.g. agribusiness suppliers) that depend on these funds to turn invoices into working capital.
+
+- **Why is this problem urgent or important now?**  
+  - Receivables financing is growing fast, but the underlying infrastructure is still **manual and opaque**.  
+  - Investors increasingly demand **transparency, real-time information, and liquidity** instead of blind trust in PDFs and quarterly reports.  
+  - Blockchain and tokenization (especially on Stellar) are finally mature enough to **make small, frequent, low-cost operations viable**, turning receivables funds into programmable, transparent, and globally accessible products.
+
 
 ### 2. Target User and User Need
 
-- Who is your **primary user**?
-- What is their **core need or pain point**?
-- How do they currently solve this (workarounds, existing tools, manual processes)?
+- **Who is your primary user?**  
+  The **primary user** is the **receivables fund manager / asset manager** who needs to issue, manage, and distribute shares of a receivables fund in a compliant, efficient, and transparent way.
+
+  Secondary users:
+  - **Consultants** who structure deals, onboard assignors/debtors, and validate documentation.
+  - **Investors** (qualified/professional) who buy fund shares and expect returns + liquidity.
+
+- **What is their core need or pain point?**  
+  - Replace **spreadsheets, emails, and manual reconciliation** with a single, auditable system of record.  
+  - Have **automated, error-free distributions** of returns to investors.  
+  - Provide **real-time visibility** to stakeholders and unlock **secondary liquidity** for fund shares.  
+
+- **How do they currently solve this?**  
+  - Multiple disconnected tools: spreadsheets, legacy ERPs, email, WhatsApp, and banking interfaces.  
+  - Manual document control and approval flows for KYC/KYB and contracts.  
+  - Custom, one-off systems (or no system at all) to track who owns what and how much should be paid to each investor.  
+  - Very limited or no secondary market — redemptions are negotiated case by case and take weeks to process.
+
 
 ### 3. Solution Overview
 
 #### 3.1 Main Idea
 
-- One paragraph describing your solution in plain language.
-- What is the **core user journey** or main use case?
+The Simple Fund is a **B2B SaaS platform** that turns receivables funds into **tokenized, programmable funds on Stellar**. Fund managers issue their fund shares as **fungible tokens**, consultants manage onboarding and receivable registration through a web dashboard, and investors hold and trade their shares in their own Stellar wallets. Smart contracts handle **on-chain registration of receivables and automated, pro-rata distribution** of cash flows to investors. 
+
+**Core user journey (main use case):**
+
+1. **Manager / Consultant** creates a fund in the web app and defines its parameters.  
+2. The platform **deploys Soroban smart contracts** specific to that fund.  
+3. **Consultant** onboards assignors and debtors, registers receivables, and approves operations.  
+4. **Investors** subscribe to the fund and receive **tokenized shares** directly in their Stellar wallets.  
+5. When the **debtor pays** the receivable, the cash flow is sent on-chain to the fund.  
+6. The **smart contracts automatically distribute** returns to investors according to their share of the fund.  
+7. Investors can **trade fund tokens** on Stellar DEX / AMMs to exit early, enabling real secondary liquidity.
 
 #### 3.2 Why Stellar?
 
-- How does the **Stellar ecosystem** help you solve this better?
-- Which elements are you planning to use? For example:
-  - Stellar network (payments, FX, remittances, anchors, stablecoins)
-  - Soroban smart contracts
-  - Wallets or on/off-ramps
-  - Other Stellar-based tooling or services
+- **How does the Stellar ecosystem help you solve this better?**  
+  Stellar is built for **fast, low-cost financial transactions**, making it ideal for receivables, which often require **many small, frequent operations** (payments, distributions, KYC updates). Soroban smart contracts enable us to encode fund rules, roles, and distribution logic directly on-chain, ensuring transparency and auditability.
+
+- **Which elements are you planning to use?**
+  - **Stellar network & Horizon**  
+    - Low fees and fast finality make micro-operations (e.g. invoice-level distributions) economically viable.  
+    - Global asset issuance and built-in DEX for listing fund tokens.
+  - **Soroban smart contracts**  
+    - Contracts for tokenizing fund shares, registering receivables and automating pro-rata distributions.  
+  - **Stellar wallets & on/off-ramps**  
+    - Investors keep custody of their own shares in Stellar wallets; future integrations with wallets and fiat/BRL/USDC ramps.
+  - **Ecosystem DeFi protocols (planned for this hackathon)**  
+    - **SoroSwap**: use its AMM + aggregation layer to provide deeper liquidity and better price discovery for fund tokens.  
+    - **Blend**: use Blend to allocate part of the fund’s on-chain capital into yield strategies, so the fund can **earn yield on-chain** in addition to receivables cash flows.  
+
 
 ### 4. Core Features (Planned for the Hackathon)
 
-List 3–5 features you aim to have by the end of Stellar Hack+.
+By the end of **Stellar Hack+**, we aim to have:
 
-- Feature 1:
-- Feature 2:
-- Feature 3:
-- (Optional) Stretch Goal:
+- **Feature 1: End-to-end tokenized fund flow on Stellar testnet**  
+  - Users can:
+    - Create a fund, issue tokenized shares, onboard investors, and register receivables through the web app.  
+    - Simulate debtor payments and see automatic, on-chain distributions to investors.  
+  - Working if:
+    - We can run a full demo where a receivable is registered → paid → distributions hit multiple investor wallets in one transaction, visible on-chain via Stellar explorers.
 
-For each feature, think about:
-- What the user can actually **do**.
-- How you will know if the feature is **working**.
+- **Feature 2: Secondary liquidity for fund shares via DEX / SoroSwap integration**  
+  - Users can:
+    - View liquidity for fund tokens and swap in/out using an AMM interface (or a simplified flow integrated into our UI).  
+  - Working if:
+    - A test pool with fund token + stablecoin/XLM is live on testnet and we can show a user swapping fund tokens with a predictable on-chain price path.
+
+- **Feature 3: Manager & Consultant dashboards with on-chain audit trail**  
+  - Users can:
+    - See a real-time view of fund status, receivables pipeline, investor allocations, and distribution history.  
+    - Track which actions have corresponding on-chain events (e.g. receivable registration, share issuance, distribution execution).  
+  - Working if:
+    - Each key action is reflected both in the UI and as an on-chain event that can be cross-checked in a block explorer.
+
+- **Stretch Goal: Blend yield integration for fund capital**  
+  - Users can:
+    - Allocate part of the fund’s capital (e.g. idle stablecoin balances) into a Blend strategy via our integration.  
+  - Working if:
+    - We can demonstrate a “fund allocation” transaction from the fund into Blend and show updated balance and yield exposure in our dashboard.
+
+For each feature we will track:
+- A **demo script** that clearly shows the user action and resulting on-chain state.
+- At least one **explorer link** per flow to verify correctness and transparency.
+
 
 ### 5. MVP Architecture (Initial Idea)
 
-> This is a **first draft**; it will evolve over the hackathon.
+> This is a first draft; it will evolve over the hackathon.
 
-- Frontend: (e.g., React, mobile app, CLI, etc.)
-- Backend / Services: (e.g., Node, Rust service, Python API, etc.)
-- Smart Contracts: (e.g., Soroban contracts, which modules or responsibilities)
-- Data / Storage: (e.g., Postgres, in-memory, files, indexers, etc.)
+We propose a **simple, modular architecture**:
 
-If possible, add a simple diagram (can be a screenshot or link) showing:
-- User → Frontend → Backend/API → Soroban/Stellar → Any external services.
+- **Frontend:**  
+  - Web application (e.g. React) for **Manager**, **Consultant** and **Investor** dashboards.  
+  - Interacts with our backend API and Stellar / Soroban through standard SDKs or wallet connectors.   
+
+- **Backend / Services:**  
+  - A single backend service (e.g. Node.js API).  
+  - Responsibilities:
+    - Authentication and user/role management.  
+    - Basic CRUD for funds, receivables, and investors.  
+    - Coordination of interactions with Soroban contracts, Stellar network, SoroSwap and Blend.  
+
+- **Smart Contracts (Soroban):**  
+  - A small set of Soroban contracts responsible for:
+    - Tokenizing fund shares.  
+    - Registering receivables and handling their life cycle.  
+    - Automating the distribution of payments to investors.  
+    - Integrating with SoroSwap (for liquidity/swaps) and Blend (for yield on fund capital).  
+
+- **Data / Storage:**  
+  - A relational database (e.g. SQLite in MVP) for:
+    - Users, roles, funds, receivables and other off-chain metadata.  
+  - On-chain state on Stellar for:
+    - Ownership, fund share balances, receivable references and distribution events.
+
+**High-level architecture diagram (text version):**
+
+```text
+[ Investor / Consultant / Manager ]
+                │
+                ▼
+        [ Web Frontend ]
+                │  (HTTP / APIs)
+                ▼
+         [ Backend API ]
+                │
+                ├──► [ Soroban Smart Contracts ]
+                │          │
+                │          └──► [ Stellar Network ]
+                │
+                ├──► [ SoroSwap (liquidity & swaps) ]
+                ├──► [ Blend (on-chain yield) ]
+                │
+                └──► [ Database (off-chain data) ]
+
+```
 
 ### 6. Success Criteria for the Hackathon
 
 By the end of Stellar Hack+, we will consider our MVP successful if:
 
-- [ ] A user can ______________________________
-- [ ] We can demonstrate ______________________
-- [ ] We can measure or show __________________
+- A user can create a receivables fund, onboard investors, register a receivable, and receive automated on-chain distributions into multiple Stellar wallets on testnet, all via the platform UI.
 
-Be as concrete as possible (even if ambitious).
+- We can demonstrate secondary trading of fund shares using Stellar’s DeFi stack (DEX / SoroSwap), with at least one live liquidity pool and a full swap flow in the demo.
+
+- We can measure or show a complete, auditable trail for a full operation (from onboarding → receivable registration → payment → distribution), including:
+    - UI state,
+    - on-chain events/transactions, and
+    - a clear mapping between them that could be used for compliance or external audits.
 
 ## Team
 
