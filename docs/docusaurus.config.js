@@ -15,13 +15,13 @@ const config = {
   favicon: "img/TSF.svg",
 
   // Set the production url of your site here
-  url: "https://miguelclaret.github.io",
-  baseUrl: '/TheSimpleFund/',
+  url: "https://heitorcand.github.io",
+  baseUrl: '/TheSimpleFund-BAF/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "miguelclaret", // Usually your GitHub org/user name.
-  projectName: "TheSimpleFund", // Usually your repo name.
+  organizationName: "heitorcand", // Usually your GitHub org/user name.
+  projectName: "TheSimpleFund-BAF", // Usually your repo name.
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
@@ -70,7 +70,7 @@ const config = {
         },
         items: [
           {
-            href: "https://github.com/MiguelClaret/Teambalaie",
+            href: "https://github.com/heitorcand/TheSimpleFund-BAF",
             label: "GitHub",
             position: "right",
           },
@@ -84,7 +84,7 @@ const config = {
             items: [
               {
                 label: "GitHub",
-                href: "https://github.com/MiguelClaret/Teambalaie",
+                href: "https://github.com/heitorcand/TheSimpleFund-BAF",
               },
             ],
           },
