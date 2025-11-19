@@ -225,7 +225,7 @@ const InvestidorDashboard: React.FC = () => {
             )}
             
             <p className="tsf-text-xs tsf-text-tertiary tsf-mt-md">
-              📧 For questions, contact: suporte@vero.com.br
+              📧 For questions, contact: suporte@TheSimpleFund.com.br
             </p>
           </div>
           
@@ -267,7 +267,7 @@ const InvestidorDashboard: React.FC = () => {
                 Olá, {user?.email ? user.email.split('@')[0] : 'Investidor'} 👋
               </h2>
               <p className="tsf-text-secondary tsf-text-base">
-                Bem-vindo ao seu painel de investimentos. Aqui você pode gerenciar seus ativos e explorar novas oportunidades.
+                Welcome to your investment dashboard. Here you can manage your assets and explore new opportunities.
               </p>
             </div>
           </div>
@@ -283,11 +283,11 @@ const InvestidorDashboard: React.FC = () => {
                 </div>
                 <div className="tsf-flex-1">
                   <h4 className="tsf-text-base tsf-font-medium tsf-mb-xs">
-                    Configurar Carteira Stellar
+                    Set Up Stellar Wallet
                   </h4>
                   <p className="tsf-text-sm tsf-text-secondary tsf-mb-sm">
-                    Você precisa gerar suas chaves Stellar para realizar investimentos via blockchain.
-                    Esta é uma etapa necessária para garantir a segurança das suas transações.
+                    You need to generate your Stellar keys to make investments via blockchain.
+This is a necessary step to ensure the security of your transactions.
                   </p>
                   <Button
                     variant="primary"
@@ -297,7 +297,7 @@ const InvestidorDashboard: React.FC = () => {
                     <svg width="16" height="16" fill="none" className="tsf-mr-xs" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
                     </svg>
-                    Gerar Chaves
+                    Generate Keys
                   </Button>
                 </div>
               </div>
@@ -320,13 +320,13 @@ const InvestidorDashboard: React.FC = () => {
                       <svg width="16" height="16" className="tsf-mr-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M20 6L9 17l-5-5"></path>
                       </svg>
-                      Carteira Stellar
+                     Stellar Wallet
                     </h4>
                     <span className="tsf-wallet-badge">Ativo</span>
                   </div>
                   
                   <div className="tsf-wallet-address">
-                    <div className="tsf-wallet-address-label">Chave Pública</div>
+                    <div className="tsf-wallet-address-label">Public Key</div>
                     <div className="tsf-wallet-address-value">
                       <code>{stellarKeys.publicKey}</code>
                       <button 
@@ -353,7 +353,7 @@ const InvestidorDashboard: React.FC = () => {
                       <svg width="16" height="16" className="tsf-mr-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M12 1v22M1 12h22"></path>
                       </svg>
-                      Financiar (Testnet)
+                      Finance (Testnet)
                     </Button>
                   </div>
                 </div>
@@ -376,7 +376,7 @@ const InvestidorDashboard: React.FC = () => {
                     currency: 'BRL'
                   })}
                 </h3>
-                <p className="tsf-stat-label">Total Investido</p>
+                <p className="tsf-stat-label">Total Invested</p>
               </div>
             </Card>
 
@@ -388,7 +388,7 @@ const InvestidorDashboard: React.FC = () => {
               </div>
               <div className="tsf-stat-content">
                 <h3 className="tsf-stat-value">{orders.length}</h3>
-                <p className="tsf-stat-label">Investimentos Ativos</p>
+                <p className="tsf-stat-label">Active Investments</p>
               </div>
             </Card>
 
@@ -401,7 +401,7 @@ const InvestidorDashboard: React.FC = () => {
               </div>
               <div className="tsf-stat-content">
                 <h3 className="tsf-stat-value">{funds.length}</h3>
-                <p className="tsf-stat-label">Fundos Disponíveis</p>
+                <p className="tsf-stat-label">Available Funds</p>
               </div>
             </Card>
 
@@ -415,7 +415,7 @@ const InvestidorDashboard: React.FC = () => {
                 <h3 className="tsf-stat-value">
                   {orders.filter(order => order.status === 'pending').length}
                 </h3>
-                <p className="tsf-stat-label">Pendentes de Aprovação</p>
+                <p className="tsf-stat-label">Pending Approval</p>
               </div>
             </Card>
           </div>
@@ -445,7 +445,7 @@ const InvestidorDashboard: React.FC = () => {
                 <polyline points="3.29 7 12 12 20.71 7"></polyline>
                 <line x1="12" y1="22" x2="12" y2="12"></line>
               </svg>
-              <span className="tsf-text-base tsf-mx-sm">Meu Portfólio</span>
+              <span className="tsf-text-base tsf-mx-sm">My Portfolio</span>
               {orders.length > 0 && <span className="tsf-tab-modern__badge">{orders.length}</span>}
             </button>
             
@@ -463,21 +463,21 @@ const InvestidorDashboard: React.FC = () => {
             <div className="tsf-marketplace tsf-p-md">
               <div className="tsf-section-header tsf-mb-lg tsf-p-md tsf-bg-secondary tsf-rounded">
                 <div>
-                  <h3 className="tsf-section-title tsf-text-xl tsf-mb-sm">Fundos Disponíveis</h3>
-                  <p className="tsf-section-subtitle tsf-text-base">Explore e invista nos fundos disponíveis na plataforma</p>
+                  <h3 className="tsf-section-title tsf-text-xl tsf-mb-sm">Available Funds</h3>
+                  <p className="tsf-section-subtitle tsf-text-base">Explore and invest in the funds available on the platform</p>
                 </div>
                 <div className="tsf-section-actions tsf-flex tsf-gap-md">
                   <button className="tsf-filter-button tsf-p-sm">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                     </svg>
-                    <span className="tsf-ml-xs">Filtrar</span>
+                    <span className="tsf-ml-xs">Filter</span>
                   </button>
                                     <button className="tsf-sort-button tsf-p-sm">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M11 5h10M11 9h7M11 13h4M3 17h18M3 13V3l4 4M7 3L3 7"></path>
                     </svg>
-                    <span className="tsf-ml-xs">Ordenar</span>
+                    <span className="tsf-ml-xs">Sort</span>
                   </button>
                 </div>
               </div>
@@ -487,7 +487,7 @@ const InvestidorDashboard: React.FC = () => {
                   <div className="tsf-loading-spinner">
                     <div className="tsf-spinner"></div>
                   </div>
-                  <p className="tsf-loading-text">Carregando fundos disponíveis...</p>
+                  <p className="tsf-loading-text">Loading available funds...</p>
                 </div>
               ) : (
                 <div className="tsf-funds-grid tsf-gap-lg tsf-p-md">
@@ -499,7 +499,7 @@ const InvestidorDashboard: React.FC = () => {
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M20 6L9 17l-5-5"></path>
                           </svg>
-                          Aprovado
+                          Approved
                         </div>
                       </div>
                       
@@ -515,21 +515,21 @@ const InvestidorDashboard: React.FC = () => {
                       
                       <div className="tsf-fund-card-stats">
                         <div className="tsf-fund-card-stat">
-                          <div className="tsf-fund-card-stat-label">Preço</div>
+                          <div className="tsf-fund-card-stat-label">Price</div>
                           <div className="tsf-fund-card-stat-value tsf-highlight">
                             R$ {fund.price.toLocaleString('pt-BR')}
                           </div>
                         </div>
                         
                         <div className="tsf-fund-card-stat">
-                          <div className="tsf-fund-card-stat-label">Cotas Disponíveis</div>
+                          <div className="tsf-fund-card-stat-label">Available Quotas</div>
                           <div className="tsf-fund-card-stat-value">
                             {(fund.maxSupply - fund.totalIssued).toLocaleString('pt-BR')}
                           </div>
                         </div>
                         
                         <div className="tsf-fund-card-stat">
-                          <div className="tsf-fund-card-stat-label">Capitalização</div>
+                          <div className="tsf-fund-card-stat-label">Capitalization</div>
                           <div className="tsf-fund-card-stat-value">
                             {(fund.totalIssued * fund.price).toLocaleString('pt-BR', {
                               style: 'currency', 
@@ -541,7 +541,7 @@ const InvestidorDashboard: React.FC = () => {
                       
                       <div className="tsf-fund-card-progress">
                         <div className="tsf-fund-card-progress-label">
-                          <span>Captação</span>
+                          <span>Fundraising</span>
                           <span>{Math.round((fund.totalIssued / fund.maxSupply) * 100)}%</span>
                         </div>
                         <div className="tsf-fund-card-progress-bar">
@@ -566,14 +566,14 @@ const InvestidorDashboard: React.FC = () => {
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="8" y1="12" x2="16" y2="12"></line>
                               </svg>
-                              <span>Esgotado</span>
+                              <span>Sold out</span>
                             </>
                           ) : (
                             <>
                               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
                               </svg>
-                              <span>Investir Agora</span>
+                              <span>Invest Now</span>
                             </>
                           )}
                         </Button>
@@ -591,17 +591,17 @@ const InvestidorDashboard: React.FC = () => {
                         <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                       </svg>
                     </div>
-                    <h3 className="tsf-empty-title">Nenhum fundo disponível</h3>
+                    <h3 className="tsf-empty-title">No funds available</h3>
                     <p className="tsf-empty-description">
-                      Não há fundos aprovados para investimento no momento.
-                      Novos fundos estarão disponíveis após aprovação do gestor.
+                      There are no approved funds for investment at this time.
+New funds will be available after approval by the manager.
                     </p>
                     <Button variant="secondary" size="sm">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
-                      <span>Monitorar Novos Fundos</span>
+                      <span>Monitor New Funds</span>
                     </Button>
                   </div>
                 </Card>
@@ -611,8 +611,8 @@ const InvestidorDashboard: React.FC = () => {
             <div className="tsf-portfolio">
               <div className="tsf-section-header tsf-mb-md">
                 <div>
-                  <h3 className="tsf-section-title">Meu Portfólio</h3>
-                  <p className="tsf-section-subtitle">Acompanhe seus investimentos e desempenho</p>
+                  <h3 className="tsf-section-title">My Portfolio</h3>
+                  <p className="tsf-section-subtitle">Track your investments and performance</p>
                 </div>
                 <div className="tsf-section-actions">
                   <button className="tsf-view-toggle-button">
@@ -622,7 +622,7 @@ const InvestidorDashboard: React.FC = () => {
                       <rect x="14" y="14" width="7" height="7"></rect>
                       <rect x="3" y="14" width="7" height="7"></rect>
                     </svg>
-                    <span>Visualização</span>
+                    <span>Preview</span>
                   </button>
                   <button className="tsf-export-button">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -630,7 +630,7 @@ const InvestidorDashboard: React.FC = () => {
                       <polyline points="7 10 12 15 17 10"></polyline>
                       <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>
-                    <span>Exportar</span>
+                    <span>Export</span>
                   </button>
                 </div>
               </div>
@@ -640,14 +640,14 @@ const InvestidorDashboard: React.FC = () => {
                   <div className="tsf-loading-spinner">
                     <div className="tsf-spinner"></div>
                   </div>
-                  <p className="tsf-loading-text">Carregando seu portfólio...</p>
+                  <p className="tsf-loading-text">Loading your portfolio...</p>
                 </div>
               ) : (
                 <Card className="tsf-portfolio-table-card">
                   <div className="tsf-portfolio-overview">
                     <div className="tsf-portfolio-summary">
                       <div className="tsf-portfolio-summary-item">
-                        <div className="tsf-portfolio-summary-label">Total Investido</div>
+                        <div className="tsf-portfolio-summary-label">Total Invested</div>
                         <div className="tsf-portfolio-summary-value">
                           {orders.reduce((sum, order) => sum + order.total, 0).toLocaleString('pt-BR', {
                             style: 'currency',
@@ -656,13 +656,13 @@ const InvestidorDashboard: React.FC = () => {
                         </div>
                       </div>
                       <div className="tsf-portfolio-summary-item">
-                        <div className="tsf-portfolio-summary-label">Total de Tokens</div>
+                        <div className="tsf-portfolio-summary-label">Total Tokens</div>
                         <div className="tsf-portfolio-summary-value">
                           {orders.reduce((sum, order) => sum + order.quantity, 0).toLocaleString('pt-BR')}
                         </div>
                       </div>
                       <div className="tsf-portfolio-summary-item">
-                        <div className="tsf-portfolio-summary-label">Operações</div>
+                        <div className="tsf-portfolio-summary-label">Operations</div>
                         <div className="tsf-portfolio-summary-value">
                           {orders.length}
                         </div>
@@ -674,11 +674,11 @@ const InvestidorDashboard: React.FC = () => {
                     <table className="tsf-table-modern">
                       <thead>
                         <tr>
-                          <th>Fundo</th>
-                          <th>Quantidade</th>
-                          <th>Valor Total</th>
+                          <th>Fund</th>
+                          <th>Quantity</th>
+                          <th>Total Amount</th>
                           <th>Status</th>
-                          <th>Data</th>
+                          <th>Date</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -751,10 +751,10 @@ const InvestidorDashboard: React.FC = () => {
                             <line x1="12" y1="17" x2="12" y2="21"></line>
                           </svg>
                         </div>
-                        <h3 className="tsf-empty-title">Nenhum investimento realizado</h3>
+                        <h3 className="tsf-empty-title">No investment made</h3>
                         <p className="tsf-empty-description">
-                          Seus investimentos aparecerão aqui após a primeira compra.
-                          Explore o marketplace para começar a investir.
+                          Your investments will appear here after your first purchase.
+Explore the marketplace to start investing.
                         </p>
                         <Button 
                           variant="primary" 
@@ -766,7 +766,7 @@ const InvestidorDashboard: React.FC = () => {
                             <circle cx="20" cy="21" r="1"></circle>
                             <path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path>
                           </svg>
-                          <span>Explorar Marketplace</span>
+                          <span>Explore Marketplace</span>
                         </Button>
                       </div>
                     )}
@@ -785,25 +785,25 @@ const InvestidorDashboard: React.FC = () => {
           setSelectedFund(null);
           setInvestmentAmount('');
         }}
-        title={`Investir em ${selectedFund?.name}`}
+        title={`Invest in ${selectedFund?.name}`}
         size="lg"
         className="tsf-investment-modal"
       >
         {selectedFund && (
           <div className="tsf-p-md">
             <Card className="tsf-mb-xl tsf-p-md tsf-border-l-info">
-              <h4 className="tsf-font-medium tsf-mb-md tsf-text-lg">Informações do Fundo</h4>
+              <h4 className="tsf-font-medium tsf-mb-md tsf-text-lg">Fund Information</h4>
               <div className="tsf-text-sm tsf-space-y-md">
                 <div className="tsf-fund-detail tsf-py-xs">
-                  <span className="tsf-detail-label tsf-font-medium">Símbolo:</span>
+                  <span className="tsf-detail-label tsf-font-medium">Symbol:</span>
                   <span className="tsf-detail-value">{selectedFund.symbol}</span>
                 </div>
                 <div className="tsf-fund-detail tsf-py-xs">
-                  <span className="tsf-detail-label tsf-font-medium">Preço por Cota:</span>
+                  <span className="tsf-detail-label tsf-font-medium">Price per share:</span>
                   <span className="tsf-detail-value">R$ {selectedFund.price.toLocaleString('pt-BR')}</span>
                 </div>
                 <div className="tsf-fund-detail tsf-py-xs">
-                  <span className="tsf-detail-label tsf-font-medium">Cotas Disponíveis:</span>
+                  <span className="tsf-detail-label tsf-font-medium">Available Quotas:</span>
                   <span className="tsf-detail-value">
                     {(selectedFund.maxSupply - selectedFund.totalIssued).toLocaleString('pt-BR')}
                   </span>
@@ -815,7 +815,7 @@ const InvestidorDashboard: React.FC = () => {
             </Card>
             
             <div className="tsf-mb-xl tsf-p-md tsf-bg-secondary tsf-rounded">
-              <label className="tsf-font-medium tsf-mb-sm tsf-block tsf-text-base">Valor do Investimento (R$)</label>
+              <label className="tsf-font-medium tsf-mb-sm tsf-block tsf-text-base">Investment Amount (R$)</label>
               <Input
                 type="number"
                 value={investmentAmount}
@@ -825,7 +825,7 @@ const InvestidorDashboard: React.FC = () => {
               />
               {investmentAmount && (
                 <div className="tsf-mt-md tsf-p-sm tsf-bg-primary tsf-rounded tsf-flex tsf-items-center tsf-justify-between">
-                  <span className="tsf-text-sm tsf-text-white">Tokens a receber:</span>
+                  <span className="tsf-text-sm tsf-text-white">Tokens receivable:</span>
                   <span className="tsf-text-lg tsf-font-bold tsf-text-white">
                     {Math.floor(parseFloat(investmentAmount) / selectedFund.price)} {selectedFund.symbol}
                   </span>
@@ -838,11 +838,11 @@ const InvestidorDashboard: React.FC = () => {
                 <div className="tsf-status-icon tsf-status-icon--info tsf-p-sm">ℹ️</div>
                 <div className="tsf-text-sm">
                   <p className="tsf-mb-sm">
-                    <strong className="tsf-text-base">Investimento via Blockchain:</strong>
+                    <strong className="tsf-text-base">Investing via Blockchain:</strong>
                   </p>
                   <p> 
-                    Sua transação será processada na rede Stellar, garantindo transparência e segurança total.
-                    Os tokens ficarão disponíveis na sua carteira após confirmação.
+                    Your transaction will be processed on the Stellar network, ensuring complete transparency and security.
+The tokens will be available in your wallet after confirmation.
                   </p>
                 </div>
               </div>
@@ -868,7 +868,7 @@ const InvestidorDashboard: React.FC = () => {
                 className="tsf-flex-1 tsf-py-md tsf-font-medium"
                 loading={loading}
               >
-                {loading ? 'Processando...' : 'Confirmar Investimento'}
+                {loading ? 'Processing...' : 'Confirm Investment'}
               </Button>
             </div>
           </div>
