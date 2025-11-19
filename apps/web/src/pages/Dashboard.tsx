@@ -16,7 +16,7 @@ const Dashboard: React.FC = () => {
             <div className="tsf-loading-spinner">
               <div className="tsf-spinner-large"></div>
             </div>
-            <p className="tsf-text-secondary">Carregando painel...</p>
+            <p className="tsf-text-secondary">Loading panel...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -35,8 +35,8 @@ const Dashboard: React.FC = () => {
         <DashboardLayout title="Acesso Negado">
           <div className="tsf-loading-screen">
             <div className="tsf-loading-content">
-              <h2 className="tsf-text-xl tsf-text-error">Acesso não autorizado</h2>
-              <p className="tsf-text-secondary">Tipo de usuário não reconhecido.</p>
+              <h2 className="tsf-text-xl tsf-text-error">Unauthorized access</h2>
+              <p className="tsf-text-secondary">User type not recognized.</p>
             </div>
           </div>
         </DashboardLayout>
