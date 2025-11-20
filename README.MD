@@ -397,7 +397,6 @@ flowchart LR
 #### Diagram 4 - Visual User Flow
 
 <div align="center">
-<sub>Visual User Flow</sub><br>
 <img src="./docs/static/img/img1.png" width="85%"><br>
 </div>
 
@@ -405,7 +404,6 @@ flowchart LR
 #### Diagram 5 - Visual Receivable Fund Flow
 
 <div align="center">
-<sub>Visual User Flow</sub><br>
 <img src="./docs/static/img/img2.png" width="85%"><br>
 </div>
 
