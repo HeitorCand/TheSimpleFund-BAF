@@ -314,7 +314,7 @@ flowchart LR
     end
 
     subgraph Backend["Backend API (Node/TS)"]
-        API[REST/GraphQL API]
+        API[REST API]
         SvcStellar["Stellar Service<br/>@stellar/stellar-sdk"]
         SvcSoroban["Soroban Service<br/>Soroban JS SDK"]
         DB[(Relational DB)]
@@ -393,6 +393,22 @@ flowchart LR
 
     J --> K["Frontend dashboards show updated balances and tx links"]
 ```
+
+#### Diagram 4 - Visual User Flow
+
+<div align="center">
+<sub>Visual User Flow</sub><br>
+<img src="./docs/static/img/img1.png" width="85%"><br>
+</div>
+
+
+#### Diagram 5 - Visual Receivable Fund Flow
+
+<div align="center">
+<sub>Visual User Flow</sub><br>
+<img src="./docs/static/img/img2.png" width="85%"><br>
+</div>
+
 
 ## Success Criteria for the Hackathon
 
