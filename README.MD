@@ -4,6 +4,10 @@
 
 ## 📋 Table of Contents
 - [Day 01 - Documentation](#day-01---documentation)
+- [Day 02 - Documentation](#day-02---technical-foundation)
+- [Success Criteria for the Hackathon](#success-criteria-for-the-hackathon)
+
+
 - [Team](#team)
 
 
@@ -196,7 +200,7 @@ We propose a **simple, modular architecture**:
   - On-chain state on Stellar for:
     - Ownership, fund share balances, receivable references and distribution events.
 
-**High-level architecture diagram (text version):**
+**First draft architecture diagram (text version):**
 
 ```text
 [ Investor / Consultant / Manager ]
@@ -215,7 +219,200 @@ We propose a **simple, modular architecture**:
                 ├──► [ Blend (on-chain yield) ]
 ```
 
-### 6. Success Criteria for the Hackathon
+## Day 02 - Technical Foundation
+
+### Overview
+
+&emsp; Day 2 were focused on establishing the **technical foundation** for The Simple Fund: validating our architecture, defining our stack, and pushing the first meaningful implementations across the backend, frontend, and Soroban smart contracts.  
+&emsp; This day ensured that the MVP is a *working technical base* aligned with the long-term design of the platform.
+
+### MVP Architecture
+
+&emsp; We designed the initial end-to-end architecture for The Simple Fund, covering:
+
+- **Soroban smart contracts**
+  - Fund Share Token (fungible token contract)
+  - Receivables Registry (assignor → debtor → fund)
+  - Distribution Engine (pro-rata distribution to investors)
+  - ZK Tier Verifier contract for privacy-preserving investor tiers
+  - To know more, [click here](SMART_CONTRACTS.MD)
+
+- **Backend (Node.js + Fastify)**
+  - Role management: Manager, Consultant, Investor
+  - Fund creation and configuration APIs
+  - Receivable registration APIs
+  - Soroban contract invocation layer
+  - Early scaffolding for testnet event handling (receivable paid → trigger distribution)
+
+- **Frontend (React + Vite)**
+  - Fund creation UI (Manager)
+  - Receivable registration flow (Consultant)
+  - Investor dashboard (holdings, distributions)
+  - Wallet connection + testnet signing
+
+- **Data Flow**
+  1. Manager approves each role and fund → backend deploys/configures Soroban contracts.  
+  2. Consultant registers receivables and their funds → receivables/funds are stored off-chain and on-chain.  
+  3. Debtor payment is simulated or sent on-chain.  
+  4. Distribution contract calculates each investor’s pro-rata share.
+  5. Distributions are sent directly to investor wallets.  
+  6. Frontend reads on-chain + off-chain state and shows updated positions and audit trail.
+
+### Tech Stack
+
+**Smart Contracts:**  
+- Soroban (Rust)  
+- SEP-41 interface for tokenization  
+- Custom receivable + distribution logic  
+- Early interface design for a ZK Tier Verifier contract  
+
+**Backend:**  
+- Node.js + **Fastify** (HTTP API)  
+- **Prisma ORM** for data access  
+- **SQLite (MVP)** for:
+  - User login and authentication state
+  - Roles (Manager, Consultant, Investor)
+  - Funds, receivables, and other off-chain metadata  
+- Stellar SDK + Soroban RPC integration  
+- ZK proof generator module (stubbed for Investor Tiers)  
+
+**Frontend:**  
+- React + Vite  
+- Stellar wallet integration (e.g. Freighter)  
+- API client for the Fastify backend  
+- On-chain event and distribution explorer components  
+
+### Data / Storage Model (MVP)
+
+- **SQLite + Prisma** are used in the MVP to store:
+  - Users and roles (Manager, Consultant, Investor)
+  - Login/authentication data
+  - Funds, receivables, and other off-chain metadata (e.g. labels, UI state)  
+
+- **On-chain state on Stellar** is the source of truth for:
+  - Fund share token balances and ownership
+  - Receivable references and lifecycle events
+  - Distribution events to investors
+  - (Later) Investor tier credentials (ZK Tier registry or NFT)
+
+### Architecture Diagrams
+
+&emsp; To make the Day 2 technical foundation more concrete, we drafted a set of simple diagrams showing how The Simple Fund is wired end-to-end.
+
+#### Diagram 1 – System Architecture
+
+```mermaid
+flowchart LR
+    subgraph Users
+        Manager
+        Consultant
+        Investor
+    end
+
+    subgraph Frontend["Web Frontend (React/TS)"]
+        UI[Dashboards & Wallet Connect]
+    end
+
+    subgraph Backend["Backend API (Node/TS)"]
+        API[REST API]
+        SvcStellar["Stellar Service<br/>@stellar/stellar-sdk"]
+        SvcSoroban["Soroban Service<br/>Soroban JS SDK"]
+        DB[(Relational DB)]
+        ZKProver["ZK Prover"]
+    end
+
+    subgraph OnChain["Stellar + Soroban"]
+        FT["FundToken<br/>Contract"]
+        RV["ReceivableVault<br/>Contract"]
+        ZK["ZKTierVerifier<br/>Contract"]
+        SoroSwap["SoroSwap<br/>AMM Pools"]
+        Blend["Blend<br/>Yield Strategies"]
+    end
+
+    Users --> UI
+    UI --> API
+
+    API --> DB
+    API --> SvcStellar
+    API --> SvcSoroban
+    API --> ZKProver
+
+    SvcSoroban --> FT
+    SvcSoroban --> RV
+    SvcSoroban --> ZK
+
+    SvcStellar --> SoroSwap
+    SvcStellar --> Blend
+
+    FT --- RV
+    RV --- FT
+    ZK --- FT
+
+    SoroSwap --- FT
+```
+
+#### Diagram 2 - Authentication & Data Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User (Manager/Consultant/Investor)
+    participant FE as Frontend (React)
+    participant BE as Backend (Fastify)
+    participant DB as SQLite + Prisma
+    participant SC as Soroban Contracts
+
+    U->>FE: Open app / login
+    FE->>BE: POST /auth/login
+    BE->>DB: Validate user + role (Prisma query)
+    DB-->>BE: User record (role, permissions)
+    BE-->>FE: Auth token + session
+
+    U->>FE: Perform action (e.g. create fund, register receivable)
+    FE->>BE: Authenticated API call (Fastify route)
+    BE->>DB: Read fund/receivable metadata (Prisma)
+    BE->>SC: Call Soroban contract (e.g. create fund, register receivable)
+    SC-->>BE: Tx result / on-chain ID
+    BE->>DB: Persist mapping between on-chain data and off-chain records
+    BE-->>FE: Updated state to render in dashboards
+```
+
+#### Diagram 3 - Receivable Lifecycle & Distribution Flow
+
+```mermaid
+flowchart LR
+    A["Consultant registers receivable"] --> B["Backend API (Fastify)"]
+    B --> C["SQLite + Prisma (store receivable metadata)"]
+    B --> D["Soroban ReceivableRegistry contract"]
+    D --> E["On-chain receivable record"]
+
+    E --> F["Debtor pays on-chain (testnet)"]
+    F --> G["Soroban Distribution Engine"]
+    G --> H["Read investor share balances"]
+    H --> I["Calculate pro-rata amounts"]
+    I --> J["Send on-chain payments to investor wallets"]
+
+    J --> K["Frontend dashboards show updated balances and tx links"]
+```
+
+#### Diagram 4 - Visual User Flow
+
+<div align="center">
+<img src="./docs/static/img/img1.png" width="85%" alt=""><br>
+</div>
+
+
+#### Diagram 5 - Visual Receivable Fund Flow
+
+<div align="center">
+<img src="./docs/static/img/img2.png" width="85%" alt=""><br>
+</div>
+
+
+### Day 02 - Conclusion
+
+On Day 2 we focused on the technical foundation of The Simple Fund. We defined our MVP architecture across Soroban smart contracts, a Node.js + Fastify backend, and a React + Vite frontend, and documented the full data flow from fund creation to receivable registration and on-chain distribution. We implemented the first versions of our FundToken and ReceivableVault contracts and set up the backend with Prisma + SQLite for roles, funds and receivables. On the frontend, we started a new UI with wallet connection, fund creation and receivable registration flows, along with a visual rebranding of the app. As a team, we also refined our ideas for ZK-based investor tiers and DeFi integrations (SoroSwap/Blend) and aligned them with the long-term architecture.
+
+## Success Criteria for the Hackathon
 
 By the end of Stellar Hack+, we will consider our MVP successful if:
 
@@ -252,7 +449,7 @@ By the end of Stellar Hack+, we will consider our MVP successful if:
   * **LinkedIn:** [https://www.linkedin.com/in/heitorfariacandido/](https://www.linkedin.com/in/heitorfariacandido/)
   * **GitHub:** [https://github.com/HeitorCand](https://github.com/HeitorCand)
 
-* **Pablo Azevedo**: Frontend Developer + Videomaker
+* **Pablo Azevedo**: Bussiness analyst + Videomaker
 
   * **LinkedIn:** [https://www.linkedin.com/in/pabloazevedo/](https://www.linkedin.com/in/pabloazevedo/)
   * **GitHub:** [https://github.com/zzaved](https://github.com/zzaved)
