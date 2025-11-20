@@ -226,7 +226,7 @@ We propose a **simple, modular architecture**:
 &emsp; Day 2 were focused on establishing the **technical foundation** for The Simple Fund: validating our architecture, defining our stack, and pushing the first meaningful implementations across the backend, frontend, and Soroban smart contracts.  
 &emsp; This day ensured that the MVP is a *working technical base* aligned with the long-term design of the platform.
 
-### MVP Architecture (First Draft)
+### MVP Architecture
 
 &emsp; We designed the initial end-to-end architecture for The Simple Fund, covering:
 
@@ -250,7 +250,7 @@ We propose a **simple, modular architecture**:
   - Investor dashboard (holdings, distributions)
   - Wallet connection + testnet signing
 
-- **Data Flow (high-level)**
+- **Data Flow**
   1. Manager approves each role and fund → backend deploys/configures Soroban contracts.  
   2. Consultant registers receivables and their funds → receivables/funds are stored off-chain and on-chain.  
   3. Debtor payment is simulated or sent on-chain.  
@@ -299,7 +299,7 @@ We propose a **simple, modular architecture**:
 
 &emsp; To make the Day 2 technical foundation more concrete, we drafted a set of simple diagrams showing how The Simple Fund is wired end-to-end.
 
-#### Diagram 1 – High-level System Architecture
+#### Diagram 1 – System Architecture
 
 ```mermaid
 flowchart LR
