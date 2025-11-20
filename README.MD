@@ -215,6 +215,154 @@ We propose a **simple, modular architecture**:
                 ├──► [ Blend (on-chain yield) ]
 ```
 
+## Day 02 – Technical Foundation
+
+### Overview
+
+&emsp; Day 2 focused on establishing the **technical foundation** for The Simple Fund — validating our architecture, defining our stack, and pushing the first meaningful implementations across the backend, frontend, and Soroban smart contracts.  
+&emsp; This day ensured that the MVP is not just a concept, but a *working technical base* aligned with the long-term design of the platform.
+
+### MVP Architecture (First Draft)
+
+&emsp; We designed the initial end-to-end architecture for The Simple Fund, covering:
+
+- **Soroban smart contracts**
+  - Fund Share Token (fungible token contract)
+  - Receivables Registry (assignor → debtor → fund)
+  - Distribution Engine (pro-rata distribution to investors)
+  - (Planned) ZK Tier Verifier contract for privacy-preserving investor tiers
+
+- **Backend (Node.js + Fastify)**
+  - Role management: Manager, Consultant, Investor
+  - Fund creation and configuration APIs
+  - Receivable registration APIs
+  - Soroban contract invocation layer
+  - Early scaffolding for testnet event handling (receivable paid → trigger distribution)
+
+- **Frontend (React + Vite)**
+  - Fund creation UI (Manager)
+  - Receivable registration flow (Consultant)
+  - Investor dashboard (holdings, distributions)
+  - Wallet connection + testnet signing
+
+- **Data Flow (high-level)**
+  1. Manager approves each role and fund → backend deploys/configures Soroban contracts.  
+  2. Consultant registers receivables and their funds → receivables/funds are stored off-chain and on-chain.  
+  3. Debtor payment is simulated or sent on-chain.  
+  4. Distribution contract calculates each investor’s pro-rata share.
+  5. Distributions are sent directly to investor wallets.  
+  6. Frontend reads on-chain + off-chain state and shows updated positions and audit trail.
+
+### Tech Stack
+
+**Smart Contracts:**  
+- Soroban (Rust)  
+- SEP-41 interface for tokenization  
+- Custom receivable + distribution logic  
+- Early interface design for a ZK Tier Verifier contract  
+
+**Backend:**  
+- Node.js + **Fastify** (HTTP API)  
+- **Prisma ORM** for data access  
+- **SQLite (MVP)** for:
+  - User login and authentication state
+  - Roles (Manager, Consultant, Investor)
+  - Funds, receivables, and other off-chain metadata  
+- Stellar SDK + Soroban RPC integration  
+- ZK proof generator module (stubbed for Investor Tiers)  
+
+**Frontend:**  
+- React + Vite  
+- Stellar wallet integration (e.g. Freighter)  
+- API client for the Fastify backend  
+- On-chain event and distribution explorer components  
+
+**Additional Tools:**  
+- Docker for environment consistency  
+- GitHub Actions (CI/CD later)  
+- Mermaid + Figma for diagrams and flows  
+
+### Data / Storage Model (MVP)
+
+- **SQLite + Prisma** are used in the MVP to store:
+  - Users and roles (Manager, Consultant, Investor)
+  - Login/authentication data
+  - Funds, receivables, and other off-chain metadata (e.g. labels, UI state)  
+
+- **On-chain state on Stellar** is the source of truth for:
+  - Fund share token balances and ownership
+  - Receivable references and lifecycle events
+  - Distribution events to investors
+  - (Later) Investor tier credentials (ZK Tier registry or NFT)
+
+### Architecture Summary Submission
+
+&emsp; We used this Day 2 architecture and implementation snapshot to submit:
+
+- A short **architecture summary**
+- The **GitHub repository link**
+- Screenshots / diagrams of the flow
+
+### 5.1 Architecture Diagrams
+
+&emsp; To make the Day 2 technical foundation more concrete, we drafted a set of simple diagrams showing how The Simple Fund is wired end-to-end.
+
+#### Diagram 1 – High-level System Architecture
+
+```mermaid
+flowchart TD
+    A[Manager / Consultant / Investor] --> B[Web Frontend (React)]
+    B --> C[Backend API (Node.js + Fastify)]
+    C --> D[(SQLite via Prisma)\nUsers, Roles, Funds, Receivables]
+    C --> E[Soroban Contracts\nFund Shares, Receivables, Distributions]
+    E --> F[Stellar Network]
+    C --> G[SoroSwap AMM\nLiquidity & Swaps]
+    C --> H[Blend Protocol\nOn-chain Yield]
+
+````
+
+#### Diagram 2 - Authentication & Data Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User (Manager/Consultant/Investor)
+    participant FE as Frontend (React)
+    participant BE as Backend (Fastify)
+    participant DB as SQLite + Prisma
+    participant SC as Soroban Contracts
+
+    U->>FE: Open app / login
+    FE->>BE: POST /auth/login
+    BE->>DB: Validate user + role (Prisma query)
+    DB-->>BE: User record (role, permissions)
+    BE-->>FE: Auth token + session
+
+    U->>FE: Perform action (e.g. create fund, register receivable)
+    FE->>BE: Authenticated API call (Fastify route)
+    BE->>DB: Read fund/receivable metadata (Prisma)
+    BE->>SC: Call Soroban contract (e.g. create fund, register receivable)
+    SC-->>BE: Tx result / on-chain ID
+    BE->>DB: Persist mapping between on-chain data and off-chain records
+    BE-->>FE: Updated state to render in dashboards
+```
+
+#### Diagram 3 - Receivable Lifecycle & Distribution Flow
+
+```mermaid
+flowchart LR
+    A[Consultant\nregisters receivable] --> B[Backend API (Fastify)]
+    B --> C[SQLite + Prisma\nstore receivable metadata]
+    B --> D[Soroban ReceivableRegistry\ncontract]
+    D --> E[On-chain receivable record\n(assignor, debtor, amount, due date)]
+
+    E --> F[Debtor pays on-chain\n(simulated on testnet)]
+    F --> G[Soroban Distribution Engine]
+    G --> H[Read investor share balances\nfrom Fund Share Token]
+    H --> I[Calculate pro-rata amounts]
+    I --> J[Send on-chain payments\nto each investor wallet]
+
+    J --> K[Frontend dashboards\nshow updated balances + tx links]
+```
 ### 6. Success Criteria for the Hackathon
 
 By the end of Stellar Hack+, we will consider our MVP successful if:
