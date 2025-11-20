@@ -4,6 +4,10 @@
 
 ## 📋 Table of Contents
 - [Day 01 - Documentation](#day-01---documentation)
+- [Day 02 - Documentation](#day-02---technical-foundation)
+- [Success Criteria for the Hackathon](#success-criteria-for-the-hackathon)
+
+
 - [Team](#team)
 
 
@@ -196,7 +200,7 @@ We propose a **simple, modular architecture**:
   - On-chain state on Stellar for:
     - Ownership, fund share balances, receivable references and distribution events.
 
-**High-level architecture diagram (text version):**
+**First draft architecture diagram (text version):**
 
 ```text
 [ Investor / Consultant / Manager ]
@@ -215,7 +219,7 @@ We propose a **simple, modular architecture**:
                 ├──► [ Blend (on-chain yield) ]
 ```
 
-## Day 02 – Technical Foundation
+## Day 02 - Technical Foundation
 
 ### Overview
 
@@ -291,7 +295,7 @@ We propose a **simple, modular architecture**:
   - Distribution events to investors
   - (Later) Investor tier credentials (ZK Tier registry or NFT)
 
-### 5.1 Architecture Diagrams
+### Architecture Diagrams
 
 &emsp; To make the Day 2 technical foundation more concrete, we drafted a set of simple diagrams showing how The Simple Fund is wired end-to-end.
 
@@ -390,7 +394,7 @@ flowchart LR
     J --> K["Frontend dashboards show updated balances and tx links"]
 ```
 
-### 6. Success Criteria for the Hackathon
+## Success Criteria for the Hackathon
 
 By the end of Stellar Hack+, we will consider our MVP successful if:
 
