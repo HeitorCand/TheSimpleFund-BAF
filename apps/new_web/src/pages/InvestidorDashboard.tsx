@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/useAuth';
 import { fundService, orderService, stellarService } from '../services/api';
 import toast from 'react-hot-toast';
-import { FiHome, FiBriefcase, FiDollarSign, FiPlus, FiAlertTriangle } from 'react-icons/fi';
+import { FiHome, FiBriefcase, FiPlus, FiAlertTriangle } from 'react-icons/fi';
 import { getErrorMessage } from '../utils/errorHandler';
 
 // --- Type Definitions ---
