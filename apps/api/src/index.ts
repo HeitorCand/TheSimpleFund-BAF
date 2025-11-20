@@ -9,6 +9,7 @@ import { fundRoutes } from './routes/fund.js';
 import { receivableRoutes } from './routes/receivable.js';
 import { orderRoutes } from './routes/order.js';
 import { stellarRoutes } from './routes/stellar.js';
+import { dashboardRoutes } from './routes/dashboard.js';
 
 const prisma = new PrismaClient();
 
@@ -34,6 +35,7 @@ await fastify.register(fundRoutes, { prefix: '/api/funds' });
 await fastify.register(receivableRoutes, { prefix: '/api/receivables' });
 await fastify.register(orderRoutes, { prefix: '/api/orders' });
 await fastify.register(stellarRoutes, { prefix: '/api/stellar' });
+await fastify.register(dashboardRoutes, { prefix: '/api/dashboard' });
 
 // Health check
 fastify.get('/health', async () => {
