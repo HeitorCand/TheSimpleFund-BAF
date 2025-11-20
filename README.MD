@@ -277,11 +277,6 @@ We propose a **simple, modular architecture**:
 - API client for the Fastify backend  
 - On-chain event and distribution explorer components  
 
-**Additional Tools:**  
-- Docker for environment consistency  
-- GitHub Actions (CI/CD later)  
-- Mermaid + Figma for diagrams and flows  
-
 ### Data / Storage Model (MVP)
 
 - **SQLite + Prisma** are used in the MVP to store:
@@ -295,14 +290,6 @@ We propose a **simple, modular architecture**:
   - Distribution events to investors
   - (Later) Investor tier credentials (ZK Tier registry or NFT)
 
-### Architecture Summary Submission
-
-&emsp; We used this Day 2 architecture and implementation snapshot to submit:
-
-- A short **architecture summary**
-- The **GitHub repository link**
-- Screenshots / diagrams of the flow
-
 ### 5.1 Architecture Diagrams
 
 &emsp; To make the Day 2 technical foundation more concrete, we drafted a set of simple diagrams showing how The Simple Fund is wired end-to-end.
@@ -313,12 +300,11 @@ We propose a **simple, modular architecture**:
 flowchart TD
     A[Manager / Consultant / Investor] --> B[Web Frontend (React)]
     B --> C[Backend API (Node.js + Fastify)]
-    C --> D[(SQLite via Prisma)\nUsers, Roles, Funds, Receivables]
+    C --> D[(SQLite via Prisma\nUsers, Roles, Funds, Receivables)]
     C --> E[Soroban Contracts\nFund Shares, Receivables, Distributions]
     E --> F[Stellar Network]
     C --> G[SoroSwap AMM\nLiquidity & Swaps]
     C --> H[Blend Protocol\nOn-chain Yield]
-
 ````
 
 #### Diagram 2 - Authentication & Data Flow
@@ -350,18 +336,18 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    A[Consultant\nregisters receivable] --> B[Backend API (Fastify)]
-    B --> C[SQLite + Prisma\nstore receivable metadata]
-    B --> D[Soroban ReceivableRegistry\ncontract]
-    D --> E[On-chain receivable record\n(assignor, debtor, amount, due date)]
+    A[Consultant registers receivable] --> B[Backend API (Fastify)]
+    B --> C[SQLite + Prisma (store receivable metadata)]
+    B --> D[Soroban ReceivableRegistry contract]
+    D --> E[On-chain receivable record]
 
-    E --> F[Debtor pays on-chain\n(simulated on testnet)]
+    E --> F[Debtor pays on-chain (testnet)]
     F --> G[Soroban Distribution Engine]
-    G --> H[Read investor share balances\nfrom Fund Share Token]
+    G --> H[Read investor share balances]
     H --> I[Calculate pro-rata amounts]
-    I --> J[Send on-chain payments\nto each investor wallet]
+    I --> J[Send on-chain payments to investor wallets]
 
-    J --> K[Frontend dashboards\nshow updated balances + tx links]
+    J --> K[Frontend dashboards show updated balances and tx links]
 ```
 ### 6. Success Criteria for the Hackathon
 
