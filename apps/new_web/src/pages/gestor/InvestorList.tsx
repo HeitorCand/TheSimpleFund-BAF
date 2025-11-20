@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { userService } from '../../services/api';
 import type { User } from '../../contexts/AuthContext';
+import { getErrorMessage } from '../../utils/errorHandler';
 
 const InvestorList: React.FC = () => {
     const [investidores, setInvestidores] = useState<User[]>([]);
@@ -13,7 +14,7 @@ const InvestorList: React.FC = () => {
             const response = await userService.getInvestidores();
             setInvestidores(response?.investidores || []);
         } catch (error) {
-            toast.error('Error loading investors.');
+            toast.error(getErrorMessage(error));
         } finally {
             setLoading(false);
         }

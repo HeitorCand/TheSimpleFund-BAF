@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { FiBox, FiPlus, FiGrid } from 'react-icons/fi';
 import { fundService } from '../services/api';
+import { getErrorMessage } from '../utils/errorHandler';
 import FundCreationModal from '../components/FundCreationModal';
 import FundManagement from '../components/FundManagement'; // Import FundManagement
 
@@ -29,9 +30,9 @@ const ConsultorDashboard: React.FC = () => {
     setLoading(true);
     try {
       const response = await fundService.list(); // In a real app, this should fetch only the consultant's funds
-      setFunds(response || []);
+      setFunds(response?.funds || []);
     } catch (error) {
-      toast.error('Failed to load funds.');
+      toast.error(getErrorMessage(error));
       console.error(error);
     } finally {
       setLoading(false);

@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { sacadoService } from '../../services/api';
+import { getErrorMessage } from '../../utils/errorHandler';
 
 interface Debtor {
   id: string;
   name: string;
   document: string;
   status: string;
+  fund?: {
+    id: string;
+    name: string;
+  };
 }
 
 const DebtorList: React.FC = () => {
@@ -19,7 +24,7 @@ const DebtorList: React.FC = () => {
             const response = await sacadoService.list();
             setDebtors(response?.sacados || []);
         } catch (error) {
-            toast.error('Error loading debtors.');
+            toast.error(getErrorMessage(error));
         } finally {
             setLoading(false);
         }
@@ -57,6 +62,7 @@ const DebtorList: React.FC = () => {
                             <div>
                                 <p className="font-semibold">{item.name}</p>
                                 <p className="text-sm text-gray-500">{item.document}</p>
+                                <p className="text-sm text-gray-600"><span className="font-medium">Fund:</span> {item.fund?.name || 'N/A'}</p>
                                 <p className="text-sm text-gray-500">Status: {item.status}</p>
                             </div>
                             <div className="flex space-x-2 mt-2 sm:mt-0">

@@ -271,4 +271,45 @@ export async function orderRoutes(fastify: FastifyInstance) {
       return reply.status(500).send({ error: 'Internal server error' });
     }
   });
+
+  // Update order status (Gestor only)
+  fastify.patch('/:id/status', async (request, reply) => {
+    try {
+      const token = request.headers.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return reply.status(401).send({ error: 'No token provided' });
+      }
+
+      const payload = verifyToken(token);
+      if (payload.role !== 'GESTOR') {
+        return reply.status(403).send({ error: 'Only gestors can update order status' });
+      }
+
+      const { id } = request.params as { id: string };
+      const { status } = z.object({ 
+        status: z.enum(['PENDING', 'COMPLETED', 'FAILED']) 
+      }).parse(request.body);
+
+      const order = await fastify.prisma.order.update({
+        where: { id },
+        data: { status },
+        include: {
+          fund: {
+            select: { name: true, symbol: true }
+          },
+          investor: {
+            select: { email: true, publicKey: true }
+          }
+        }
+      });
+
+      return { order };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({ error: 'Invalid input', details: error.errors });
+      }
+      fastify.log.error(error);
+      return reply.status(500).send({ error: 'Internal server error' });
+    }
+  });
 }

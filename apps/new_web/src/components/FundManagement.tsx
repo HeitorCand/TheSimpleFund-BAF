@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { cedenteService, sacadoService } from '../services/api';
 import { FiArrowLeft, FiPlus } from 'react-icons/fi';
+import { getErrorMessage } from '../utils/errorHandler';
 
 // --- Type Definitions ---
 interface Fund {
@@ -13,12 +14,20 @@ interface Cedente {
     name: string;
     document: string;
     status: string;
+    fund?: {
+        id: string;
+        name: string;
+    };
 }
 interface Sacado {
     id: string;
     name: string;
     document: string;
     status: string;
+    fund?: {
+        id: string;
+        name: string;
+    };
 }
 interface FundManagementProps {
     fund: Fund;
@@ -40,14 +49,14 @@ const FundManagement: React.FC<FundManagementProps> = ({ fund, onBack }) => {
         setLoading(true);
         try {
             const service = activeTab === 'assignors' ? cedenteService : sacadoService;
-            const data = await service.listByFund(fund.id);
+            const response = await service.listByFund(fund.id);
             if (activeTab === 'assignors') {
-                setCedentes(data || []);
+                setCedentes(response?.cedentes || []);
             } else {
-                setSacados(data || []);
+                setSacados(response?.sacados || []);
             }
         } catch (error) {
-            toast.error(`Failed to load ${activeTab}.`);
+            toast.error(getErrorMessage(error));
         } finally {
             setLoading(false);
         }
@@ -118,6 +127,7 @@ const DataTable: React.FC<{ data: (Cedente | Sacado)[] }> = ({ data }) => {
                     <tr>
                         <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
                         <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Document</th>
+                        <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Fund</th>
                         <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                     </tr>
                 </thead>
@@ -126,6 +136,11 @@ const DataTable: React.FC<{ data: (Cedente | Sacado)[] }> = ({ data }) => {
                         <tr key={item.id} className="border-b hover:bg-gray-50">
                             <td className="py-4 px-6">{item.name}</td>
                             <td className="py-4 px-6">{item.document}</td>
+                            <td className="py-4 px-6">
+                                <span className="text-sm font-medium text-gray-700">
+                                    {item.fund?.name || 'N/A'}
+                                </span>
+                            </td>
                             <td className="py-4 px-6">
                                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'APPROVED' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
                                     {item.status}
@@ -153,7 +168,7 @@ const CreationForm: React.FC<{ fundId: string, type: Tab, onClose: () => void, o
             toast.success(`${type === 'assignors' ? 'Assignor' : 'Debtor'} created successfully!`);
             onCreated();
         } catch (error) {
-            toast.error('Failed to create item.');
+            toast.error(getErrorMessage(error));
         } finally {
             setLoading(false);
         }

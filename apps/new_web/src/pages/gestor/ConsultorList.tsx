@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { userService } from '../../services/api';
 import type { User } from '../../contexts/AuthContext';
+import { getErrorMessage } from '../../utils/errorHandler';
 
 const ConsultorList: React.FC = () => {
     const [consultores, setConsultores] = useState<User[]>([]);
@@ -13,7 +14,7 @@ const ConsultorList: React.FC = () => {
             const response = await userService.getConsultores();
             setConsultores(response?.consultores || []);
         } catch (error) {
-            toast.error('Error loading consultants.');
+            toast.error(getErrorMessage(error));
         } finally {
             setLoading(false);
         }

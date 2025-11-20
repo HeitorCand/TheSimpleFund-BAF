@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { fundService } from '../services/api';
+import { getErrorMessage } from '../utils/errorHandler';
 
 interface ModalProps {
   isOpen: boolean;
@@ -33,7 +34,7 @@ const FundCreationModal: React.FC<ModalProps> = ({ isOpen, onClose, onFundCreate
       onFundCreated();
       onClose();
     } catch (error) {
-      toast.error('Failed to create fund.');
+      toast.error(getErrorMessage(error));
       console.error(error);
     } finally {
       setLoading(false);

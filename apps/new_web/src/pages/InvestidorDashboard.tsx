@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/useAuth';
 import { fundService, orderService, stellarService } from '../services/api';
 import toast from 'react-hot-toast';
 import { FiHome, FiBriefcase, FiDollarSign, FiPlus, FiAlertTriangle } from 'react-icons/fi';
+import { getErrorMessage } from '../utils/errorHandler';
 
 // --- Type Definitions ---
 interface Fund {
@@ -40,13 +41,14 @@ const InvestidorDashboard: React.FC = () => {
     try {
       if (activeTab === 'marketplace') {
         const response = await fundService.list();
-        setFunds(response.filter((f: Fund) => f.status === 'APPROVED') || []);
+        const allFunds = response?.funds || [];
+        setFunds(allFunds.filter((f: Fund) => f.status === 'APPROVED'));
       } else {
         const response = await orderService.list();
-        setOrders(response || []);
+        setOrders(response?.orders || []);
       }
     } catch (error) {
-      toast.error(`Failed to load ${activeTab}.`);
+      toast.error(getErrorMessage(error));
     } finally {
       setLoading(false);
     }
@@ -68,7 +70,7 @@ const InvestidorDashboard: React.FC = () => {
       toast.success('Stellar keys generated!');
     } catch (error) {
       toast.dismiss();
-      toast.error('Failed to generate keys.');
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -202,7 +204,7 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
             onConfirm();
             onClose();
         } catch (error) {
-            toast.error('Investment failed.');
+            toast.error(getErrorMessage(error));
         } finally {
             setLoading(false);
         }

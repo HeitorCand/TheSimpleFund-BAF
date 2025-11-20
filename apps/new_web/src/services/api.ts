@@ -23,6 +23,14 @@ export const authService = {
   },
 };
 
+// --- Dashboard Service ---
+export const dashboardService = {
+  getPendingCounts: async () => {
+    const response = await api.get('/dashboard/pending-counts');
+    return response.data;
+  },
+};
+
 // --- User Service ---
 export const userService = {
   getConsultores: async () => {
@@ -111,6 +119,10 @@ export const orderService = {
   },
   create: async (data: any) => {
     const response = await api.post('/orders', data);
+    return response.data;
+  },
+  updateStatus: async (id: string, status: string) => {
+    const response = await api.patch(`/orders/${id}/status`, { status });
     return response.data;
   }
 };

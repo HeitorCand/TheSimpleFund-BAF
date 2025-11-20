@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
-import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFileText } from 'react-icons/fi';
+import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFileText, FiDollarSign } from 'react-icons/fi';
+import { dashboardService } from '../services/api';
 
 const gestorMenuItems = [
-    { to: '/dashboard/consultores', icon: <FiUsers />, name: 'Consultants' },
-    { to: '/dashboard/investidores', icon: <FiUserCheck />, name: 'Investors' },
-    { to: '/dashboard/fundos', icon: <FiBox />, name: 'Funds' },
-    { to: '/dashboard/assignors', icon: <FiFileText />, name: 'Assignors' },
-    { to: '/dashboard/debtors', icon: <FiFileText />, name: 'Debtors' },
+    { to: '/dashboard', icon: <FiHome />, name: 'Dashboard' },
+    { to: '/dashboard/consultores', icon: <FiUsers />, name: 'Consultants', countKey: 'consultores' },
+    { to: '/dashboard/investidores', icon: <FiUserCheck />, name: 'Investors', countKey: 'investidores' },
+    { to: '/dashboard/fundos', icon: <FiBox />, name: 'Funds', countKey: 'funds' },
+    { to: '/dashboard/investments', icon: <FiDollarSign />, name: 'Investments' },
+    { to: '/dashboard/assignors', icon: <FiFileText />, name: 'Assignors', countKey: 'assignors' },
+    { to: '/dashboard/debtors', icon: <FiFileText />, name: 'Debtors', countKey: 'debtors' },
 ];
 
 const consultorMenuItems = [
@@ -20,8 +23,16 @@ const investidorMenuItems = [
     { to: '/dashboard/portfolio', icon: <FiBriefcase />, name: 'Portfolio' },
 ];
 
-const Sidebar: React.FC<{ isOpen: boolean; role: string; }> = ({ isOpen, role }) => {
-    let menuItems = [];
+interface PendingCounts {
+  consultores: number;
+  investidores: number;
+  funds: number;
+  assignors: number;
+  debtors: number;
+}
+
+const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingCounts | null }> = ({ isOpen, role, pendingCounts }) => {
+    let menuItems: typeof gestorMenuItems | typeof consultorMenuItems | typeof investidorMenuItems = [];
     if (role === 'GESTOR') menuItems = gestorMenuItems;
     else if (role === 'CONSULTOR') menuItems = consultorMenuItems;
     else if (role === 'INVESTIDOR') menuItems = investidorMenuItems;
@@ -32,20 +43,32 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; }> = ({ isOpen, role })
         <Link to="/dashboard" className="text-2xl font-bold text-primary">TheSimpleFund</Link>
       </div>
       <nav className="flex-1 px-4 py-8 space-y-2">
-        {menuItems.map((item) => (
-          <NavLink
-            key={item.name}
-            to={item.to}
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 transition-colors duration-200 rounded-lg ${
-                isActive ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 hover:bg-primary/5'
-              }`
-            }
-          >
-            <span className="text-lg">{item.icon}</span>
-            <span className="ml-4 font-medium">{item.name}</span>
-          </NavLink>
-        ))}
+        {menuItems.map((item) => {
+          const count = 'countKey' in item && pendingCounts ? pendingCounts[item.countKey as keyof PendingCounts] : 0;
+          const showBadge = role === 'GESTOR' && count > 0;
+          
+          return (
+            <NavLink
+              key={item.name}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex items-center justify-between px-4 py-3 transition-colors duration-200 rounded-lg ${
+                  isActive ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 hover:bg-primary/5'
+                }`
+              }
+            >
+              <div className="flex items-center">
+                <span className="text-lg">{item.icon}</span>
+                <span className="ml-4 font-medium">{item.name}</span>
+              </div>
+              {showBadge && (
+                <span className="flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
+                  {count}
+                </span>
+              )}
+            </NavLink>
+          );
+        })}
       </nav>
       <div className="px-4 py-6 border-t">
         {/* Logout button moved to Header */}
@@ -70,13 +93,34 @@ const Header: React.FC<{ userEmail: string; onMenuClick: () => void; onLogout: (
 
 const DashboardLayout: React.FC = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [pendingCounts, setPendingCounts] = useState<PendingCounts | null>(null);
   const { user, logout } = useAuth();
+
+  useEffect(() => {
+    const fetchPendingCounts = async () => {
+      if (user?.role === 'GESTOR') {
+        try {
+          const response = await dashboardService.getPendingCounts();
+          setPendingCounts(response.pendingCounts);
+        } catch (error) {
+          console.error('Error fetching pending counts:', error);
+        }
+      }
+    };
+
+    fetchPendingCounts();
+    
+    // Refresh counts every 30 seconds
+    const interval = setInterval(fetchPendingCounts, 30000);
+    
+    return () => clearInterval(interval);
+  }, [user?.role]);
 
   if (!user) return null; // Should be handled by ProtectedRoute, but good practice
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar isOpen={isSidebarOpen} role={user.role} />
+      <Sidebar isOpen={isSidebarOpen} role={user.role} pendingCounts={pendingCounts} />
       <div className="flex flex-col flex-1">
         {isSidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 z-30 bg-black opacity-50 md:hidden"></div>}
         <Header userEmail={user.email} onMenuClick={() => setSidebarOpen(pre => !pre)} onLogout={logout} />
