@@ -297,15 +297,54 @@ We propose a **simple, modular architecture**:
 #### Diagram 1 – High-level System Architecture
 
 ```mermaid
-flowchart TD
-    A[Manager / Consultant / Investor] --> B[Web Frontend (React)]
-    B --> C[Backend API (Node.js + Fastify)]
-    C --> D[(SQLite via Prisma\nUsers, Roles, Funds, Receivables)]
-    C --> E[Soroban Contracts\nFund Shares, Receivables, Distributions]
-    E --> F[Stellar Network]
-    C --> G[SoroSwap AMM\nLiquidity & Swaps]
-    C --> H[Blend Protocol\nOn-chain Yield]
-````
+flowchart LR
+    subgraph Users
+        Manager
+        Consultant
+        Investor
+    end
+
+    subgraph Frontend["Web Frontend (React/TS)"]
+        UI[Dashboards & Wallet Connect]
+    end
+
+    subgraph Backend["Backend API (Node/TS)"]
+        API[REST/GraphQL API]
+        SvcStellar["Stellar Service<br/>@stellar/stellar-sdk"]
+        SvcSoroban["Soroban Service<br/>Soroban JS SDK"]
+        DB[(Relational DB)]
+        ZKProver["ZK Prover<br/>(optional)"]
+    end
+
+    subgraph OnChain["Stellar + Soroban"]
+        FT["FundToken<br/>Contract"]
+        RV["ReceivableVault<br/>Contract"]
+        ZK["ZKTierVerifier<br/>Contract<br/>(optional)"]
+        SoroSwap["SoroSwap<br/>AMM Pools"]
+        Blend["Blend<br/>Yield Strategies<br/>(optional)"]
+    end
+
+    Users --> UI
+    UI --> API
+
+    API --> DB
+    API --> SvcStellar
+    API --> SvcSoroban
+    API --> ZKProver
+
+    SvcSoroban --> FT
+    SvcSoroban --> RV
+    SvcSoroban --> ZK
+
+    SvcStellar --> SoroSwap
+    SvcStellar --> Blend
+
+    FT --- RV
+    RV --- FT
+    ZK --- FT
+
+    SoroSwap --- FT
+```
 
 #### Diagram 2 - Authentication & Data Flow
 
