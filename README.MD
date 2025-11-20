@@ -336,19 +336,20 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    A[Consultant registers receivable] --> B[Backend API (Fastify)]
-    B --> C[SQLite + Prisma (store receivable metadata)]
-    B --> D[Soroban ReceivableRegistry contract]
-    D --> E[On-chain receivable record]
+    A["Consultant registers receivable"] --> B["Backend API (Fastify)"]
+    B --> C["SQLite + Prisma (store receivable metadata)"]
+    B --> D["Soroban ReceivableRegistry contract"]
+    D --> E["On-chain receivable record"]
 
-    E --> F[Debtor pays on-chain (testnet)]
-    F --> G[Soroban Distribution Engine]
-    G --> H[Read investor share balances]
-    H --> I[Calculate pro-rata amounts]
-    I --> J[Send on-chain payments to investor wallets]
+    E --> F["Debtor pays on-chain (testnet)"]
+    F --> G["Soroban Distribution Engine"]
+    G --> H["Read investor share balances"]
+    H --> I["Calculate pro-rata amounts"]
+    I --> J["Send on-chain payments to investor wallets"]
 
-    J --> K[Frontend dashboards show updated balances and tx links]
+    J --> K["Frontend dashboards show updated balances and tx links"]
 ```
+
 ### 6. Success Criteria for the Hackathon
 
 By the end of Stellar Hack+, we will consider our MVP successful if:
