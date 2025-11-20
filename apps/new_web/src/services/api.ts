@@ -33,8 +33,8 @@ export const userService = {
     const response = await api.get('/users/investidores');
     return response.data;
   },
-  approveUser: async (id: string, action: 'approve' | 'reject') => {
-    const response = await api.patch(`/users/${id}/approve`, { action });
+  approveUser: async (id: string, status: 'APPROVED' | 'REJECTED') => {
+    const response = await api.patch(`/users/${id}/approval`, { status });
     return response.data;
   },
 };
@@ -50,7 +50,7 @@ export const fundService = {
     return response.data;
   },
   approve: async (id: string, status: 'APPROVED' | 'REJECTED') => {
-    const response = await api.patch(`/funds/${id}/approve`, { status });
+    const response = await api.patch(`/funds/${id}/approval`, { status });
     return response.data;
   },
   deactivate: async (id: string) => {
@@ -69,7 +69,7 @@ export const cedenteService = {
     const response = await api.get('/cedentes');
     return response.data;
   },
-  updateStatus: async (id: string, status: 'approved' | 'rejected') => {
+  updateStatus: async (id: string, status: 'APPROVED' | 'REJECTED') => {
     const response = await api.patch(`/cedentes/${id}/status`, { status });
     return response.data;
   },
@@ -78,7 +78,7 @@ export const cedenteService = {
     return response.data;
   },
   listByFund: async (fundId: string) => {
-    const response = await api.get(`/funds/${fundId}/cedentes`);
+    const response = await api.get(`/cedentes/fund/${fundId}`);
     return response.data;
   }
 };
@@ -89,7 +89,7 @@ export const sacadoService = {
     const response = await api.get('/sacados');
     return response.data;
   },
-  updateStatus: async (id: string, status: 'approved' | 'rejected') => {
+  updateStatus: async (id: string, status: 'APPROVED' | 'REJECTED') => {
     const response = await api.patch(`/sacados/${id}/status`, { status });
     return response.data;
   },
@@ -98,7 +98,7 @@ export const sacadoService = {
     return response.data;
   },
   listByFund: async (fundId: string) => {
-    const response = await api.get(`/funds/${fundId}/sacados`);
+    const response = await api.get(`/sacados/fund/${fundId}`);
     return response.data;
   }
 };

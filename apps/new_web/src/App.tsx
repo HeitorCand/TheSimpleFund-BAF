@@ -1,13 +1,18 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './contexts/useAuth';
+import { Toaster } from 'react-hot-toast';
 
 import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
 import LoginPage from './pages/LoginPage';
-
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import ConsultorList from './pages/gestor/ConsultorList';
+import InvestorList from './pages/gestor/InvestorList';
+import FundList from './pages/gestor/FundList';
+import AssignorList from './pages/gestor/AssignorList';
+import DebtorList from './pages/gestor/DebtorList';
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -19,16 +24,10 @@ const PublicRoute: React.FC = () => {
   return !isAuthenticated ? <Outlet /> : <Navigate to="/dashboard" />;
 };
 
-
-import { Toaster } from 'react-hot-toast';
-
 const App: React.FC = () => {
   const { loading } = useAuth();
 
-  console.log('App: Loading state:', loading);
-
   if (loading) {
-    console.log('App: Showing loading spinner');
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-primary"></div>
@@ -54,7 +53,14 @@ const App: React.FC = () => {
           {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
-              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="dashboard">
+                <Route index element={<DashboardPage />} />
+                <Route path="consultores" element={<ConsultorList />} />
+                <Route path="investidores" element={<InvestorList />} />
+                <Route path="fundos" element={<FundList />} />
+                <Route path="assignors" element={<AssignorList />} />
+                <Route path="debtors" element={<DebtorList />} />
+              </Route>
             </Route>
           </Route>
           
