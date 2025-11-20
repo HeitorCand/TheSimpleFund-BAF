@@ -1,6 +1,6 @@
-# Smart Contracts - TheSimpleFund
+# Smart Contracts - The Simple Fund
 
-This document provides a detailed explanation of the smart contracts developed in Rust for the Stellar blockchain using the Soroban SDK, which form the foundation of the TheSimpleFund platform.
+This document provides a detailed explanation of the smart contracts developed in Rust for the Stellar blockchain using the Soroban SDK, which form the foundation of The Simple Fund platform.
 
 ## Table of Contents
 
@@ -13,7 +13,7 @@ This document provides a detailed explanation of the smart contracts developed i
 
 ## Overview
 
-The TheSimpleFund platform utilizes two main contracts written in Rust for Soroban (Stellar):
+The Simple Fund platform utilizes two main contracts written in Rust for Soroban (Stellar):
 
 1. **Fund Token** - Manages fund share tokens with whitelist (KYC/AML)
 2. **Receivable Vault** - Manages receivables, funds, and revenue distribution
@@ -30,7 +30,7 @@ The two-contract architecture was strategically chosen for:
 - **Security**: Isolates risks and limits the attack surface of each contract
 - **Flexibility**: Allows different token configurations for different types of funds
 
-### Role in the TheSimpleFund Solution
+### Role in The Simple Fund Solution
 
 These contracts are the **technological backbone** of democratizing access to receivables investments:
 
@@ -651,5 +651,5 @@ The **Fund Token** and **Receivable Vault** smart contracts form a robust and se
 - **Security** (validations, pauses, limits)
 - **Fair distribution** (mathematical pro-rata)
 
-This architecture enables TheSimpleFund to democratize access to receivables investments in a secure, transparent, and regulated manner.
+This architecture enables The Simple Fund to democratize access to receivables investments in a secure, transparent, and regulated manner.
 

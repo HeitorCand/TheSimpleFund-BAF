@@ -223,8 +223,8 @@ We propose a **simple, modular architecture**:
 
 ### Overview
 
-&emsp; Day 2 focused on establishing the **technical foundation** for The Simple Fund — validating our architecture, defining our stack, and pushing the first meaningful implementations across the backend, frontend, and Soroban smart contracts.  
-&emsp; This day ensured that the MVP is not just a concept, but a *working technical base* aligned with the long-term design of the platform.
+&emsp; Day 2 were focused on establishing the **technical foundation** for The Simple Fund: validating our architecture, defining our stack, and pushing the first meaningful implementations across the backend, frontend, and Soroban smart contracts.  
+&emsp; This day ensured that the MVP is a *working technical base* aligned with the long-term design of the platform.
 
 ### MVP Architecture (First Draft)
 
@@ -234,7 +234,7 @@ We propose a **simple, modular architecture**:
   - Fund Share Token (fungible token contract)
   - Receivables Registry (assignor → debtor → fund)
   - Distribution Engine (pro-rata distribution to investors)
-  - (Planned) ZK Tier Verifier contract for privacy-preserving investor tiers
+  - ZK Tier Verifier contract for privacy-preserving investor tiers
   - To know more, [click here](SMART_CONTRACTS.MD)
 
 - **Backend (Node.js + Fastify)**
@@ -318,15 +318,15 @@ flowchart LR
         SvcStellar["Stellar Service<br/>@stellar/stellar-sdk"]
         SvcSoroban["Soroban Service<br/>Soroban JS SDK"]
         DB[(Relational DB)]
-        ZKProver["ZK Prover<br/>(optional)"]
+        ZKProver["ZK Prover"]
     end
 
     subgraph OnChain["Stellar + Soroban"]
         FT["FundToken<br/>Contract"]
         RV["ReceivableVault<br/>Contract"]
-        ZK["ZKTierVerifier<br/>Contract<br/>(optional)"]
+        ZK["ZKTierVerifier<br/>Contract"]
         SoroSwap["SoroSwap<br/>AMM Pools"]
-        Blend["Blend<br/>Yield Strategies<br/>(optional)"]
+        Blend["Blend<br/>Yield Strategies"]
     end
 
     Users --> UI
@@ -397,16 +397,20 @@ flowchart LR
 #### Diagram 4 - Visual User Flow
 
 <div align="center">
-<img src="./docs/static/img/img1.png" width="85%"><br>
+<img src="./docs/static/img/img1.png" width="85%" alt=""><br>
 </div>
 
 
 #### Diagram 5 - Visual Receivable Fund Flow
 
 <div align="center">
-<img src="./docs/static/img/img2.png" width="85%"><br>
+<img src="./docs/static/img/img2.png" width="85%" alt=""><br>
 </div>
 
+
+### Day 02 - Conclusion
+
+On Day 2 we focused on the technical foundation of The Simple Fund. We defined our MVP architecture across Soroban smart contracts, a Node.js + Fastify backend, and a React + Vite frontend, and documented the full data flow from fund creation to receivable registration and on-chain distribution. We implemented the first versions of our FundToken and ReceivableVault contracts and set up the backend with Prisma + SQLite for roles, funds and receivables. On the frontend, we started a new UI with wallet connection, fund creation and receivable registration flows, along with a visual rebranding of the app. As a team, we also refined our ideas for ZK-based investor tiers and DeFi integrations (SoroSwap/Blend) and aligned them with the long-term architecture.
 
 ## Success Criteria for the Hackathon
 
@@ -445,7 +449,7 @@ By the end of Stellar Hack+, we will consider our MVP successful if:
   * **LinkedIn:** [https://www.linkedin.com/in/heitorfariacandido/](https://www.linkedin.com/in/heitorfariacandido/)
   * **GitHub:** [https://github.com/HeitorCand](https://github.com/HeitorCand)
 
-* **Pablo Azevedo**: Frontend Developer + Videomaker
+* **Pablo Azevedo**: Bussiness analyst + Videomaker
 
   * **LinkedIn:** [https://www.linkedin.com/in/pabloazevedo/](https://www.linkedin.com/in/pabloazevedo/)
   * **GitHub:** [https://github.com/zzaved](https://github.com/zzaved)
