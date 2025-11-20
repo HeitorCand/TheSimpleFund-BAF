@@ -231,6 +231,7 @@ We propose a **simple, modular architecture**:
   - Receivables Registry (assignor → debtor → fund)
   - Distribution Engine (pro-rata distribution to investors)
   - (Planned) ZK Tier Verifier contract for privacy-preserving investor tiers
+  - To know more, [click here](SMART_CONTRACTS.MD)
 
 - **Backend (Node.js + Fastify)**
   - Role management: Manager, Consultant, Investor
