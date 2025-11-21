@@ -3,12 +3,14 @@ import { Outlet, Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { useWallet } from '../contexts/WalletContext';
 import { dashboardService } from '../services/api';
-import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFileText, FiShoppingCart, FiList } from 'react-icons/fi';
+import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFileText, FiShoppingCart, FiList, FiDollarSign } from 'react-icons/fi';
 
 const gestorMenuItems = [
+    { to: '/dashboard', icon: <FiHome />, name: 'Dashboard' },
     { to: '/dashboard/consultores', icon: <FiUsers />, name: 'Consultants' },
     { to: '/dashboard/investidores', icon: <FiUserCheck />, name: 'Investors' },
     { to: '/dashboard/fundos', icon: <FiBox />, name: 'Funds' },
+    { to: '/dashboard/investments', icon: <FiDollarSign />, name: 'Investments' },
     { to: '/dashboard/assignors', icon: <FiFileText />, name: 'Assignors' },
     { to: '/dashboard/debtors', icon: <FiFileText />, name: 'Debtors' },
 ];
@@ -79,7 +81,8 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
 };
 
 const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () => void; onLogout: () => void; }> = ({ userEmail, userRole, onMenuClick, onLogout }) => {
-  const { publicKey, isConnected, connect, disconnect } = userRole === 'INVESTIDOR' ? useWallet() : { publicKey: null, isConnected: false, connect: async () => {}, disconnect: () => {} };
+  const shouldShowWallet = userRole === 'INVESTIDOR' || userRole === 'GESTOR';
+  const { publicKey, isConnected, connect, disconnect } = shouldShowWallet ? useWallet() : { publicKey: null, isConnected: false, connect: async () => {}, disconnect: () => {} };
   
   return (
     <header className="flex items-center justify-between h-20 px-6 bg-white border-b md:justify-end">
@@ -87,7 +90,7 @@ const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () =>
         <FiMenu className="w-6 h-6" />
       </button>
       <div className="flex items-center space-x-4">
-        {userRole === 'INVESTIDOR' && (
+        {shouldShowWallet && (
           <>
             {isConnected && publicKey ? (
               <div className="flex items-center space-x-2">

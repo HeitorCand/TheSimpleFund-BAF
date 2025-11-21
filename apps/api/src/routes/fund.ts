@@ -12,7 +12,8 @@ const createFundSchema = z.object({
 });
 
 const approvalSchema = z.object({
-  status: z.enum(['APPROVED', 'REJECTED'])
+  status: z.enum(['APPROVED', 'REJECTED']),
+  fundWalletPublicKey: z.string().optional()
 });
 
 function verifyToken(token: string) {
@@ -276,9 +277,19 @@ export async function fundRoutes(fastify: FastifyInstance) {
         return reply.status(404).send({ error: 'Fund not found' });
       }
 
+      // If approving, require fund wallet
+      if (body.status === 'APPROVED' && !body.fundWalletPublicKey && !fund.fundWalletPublicKey) {
+        return reply.status(400).send({ error: 'Fund wallet public key is required for approval' });
+      }
+
+      const updateData: any = { status: body.status };
+      if (body.fundWalletPublicKey) {
+        updateData.fundWalletPublicKey = body.fundWalletPublicKey;
+      }
+
       const updatedFund = await fastify.prisma.fund.update({
         where: { id: params.id },
-        data: { status: body.status },
+        data: updateData,
         include: {
           consultor: {
             select: {

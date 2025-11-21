@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { fundService, orderService } from '../../services/api';
+import { useWallet } from '../../contexts/WalletContext';
 import { FiSearch } from 'react-icons/fi';
+import * as StellarSdk from 'stellar-sdk';
 
 // --- Type Definitions ---
 interface Fund {
@@ -21,6 +23,7 @@ const Marketplace: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const { isConnected } = useWallet();
 
     const loadFunds = useCallback(async () => {
         setLoading(true);
@@ -52,6 +55,13 @@ const Marketplace: React.FC = () => {
         <>
             {selectedFund && <InvestmentModal fund={selectedFund} onClose={() => setSelectedFund(null)} onConfirm={loadFunds} />}
             <div className="bg-white p-6 rounded-lg shadow-soft">
+                {!isConnected && (
+                    <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p className="text-yellow-800 text-sm">
+                            💡 <strong>Connect your wallet</strong> in the header to invest and make payments via Stellar Testnet.
+                        </p>
+                    </div>
+                )}
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-xl font-semibold">Marketplace</h2>
                     <div className="relative w-full max-w-xs">
@@ -92,24 +102,67 @@ const Marketplace: React.FC = () => {
     );
 };
 
-// Re-using the InvestmentModal from the old InvestorDashboard
+// Investment Modal with Wallet Integration
 const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: () => void }> = ({ fund, onClose, onConfirm }) => {
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false);
+    const { publicKey, isConnected, connect, signAndSubmitTransaction } = useWallet();
 
     const handleInvest = async () => {
+        if (!isConnected || !publicKey) {
+            toast.error('Please connect your wallet first');
+            await connect();
+            return;
+        }
+
         setLoading(true);
         try {
-            await orderService.create({
+            const quantity = parseFloat(amount) / fund.price;
+            const total = parseFloat(amount);
+
+            // Create order and get payment details
+            const response = await orderService.create({
                 fundId: fund.id,
-                quantity: parseFloat(amount) / fund.price,
-                total: parseFloat(amount)
+                quantity,
+                total
             });
-            toast.success('Investment successful!');
+
+            const { order, payment } = response;
+
+            if (!payment) {
+                toast.error('Payment details not available');
+                return;
+            }
+
+            // Build Stellar payment transaction
+            const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
+            const account = await server.loadAccount(publicKey);
+            
+            const transaction = new StellarSdk.TransactionBuilder(account, {
+                fee: StellarSdk.BASE_FEE,
+                networkPassphrase: StellarSdk.Networks.TESTNET
+            })
+              .addOperation(StellarSdk.Operation.payment({
+                destination: payment.destination,
+                asset: StellarSdk.Asset.native(),
+                amount: payment.amount
+              }))
+              .addMemo(StellarSdk.Memo.text(payment.memo))
+              .setTimeout(180)
+              .build();
+
+            // Sign and submit via wallet
+            const txHash = await signAndSubmitTransaction(transaction.toXDR());
+
+            // Complete the order with tx hash
+            await orderService.complete(order.id, txHash);
+
+            toast.success('Investment successful! Transaction: ' + txHash.substring(0, 8) + '...');
             onConfirm();
             onClose();
-        } catch (error) {
-            toast.error('Investment failed.');
+        } catch (error: any) {
+            console.error('Investment error:', error);
+            toast.error(error.message || 'Investment failed. Please try again.');
         } finally {
             setLoading(false);
         }

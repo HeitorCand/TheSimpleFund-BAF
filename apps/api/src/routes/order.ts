@@ -63,7 +63,7 @@ export async function orderRoutes(fastify: FastifyInstance) {
     }
   });
 
-  // Create buy order (Investidor only)
+  // Create buy order with payment transaction (Investidor only)
   fastify.post('/', async (request, reply) => {
     try {
       const token = request.headers.authorization?.replace('Bearer ', '');
@@ -85,7 +85,7 @@ export async function orderRoutes(fastify: FastifyInstance) {
           orders: {
             where: { 
               status: { 
-                in: ['COMPLETED', 'PENDING'] // Include both completed and pending orders
+                in: ['COMPLETED', 'PENDING'] 
               } 
             },
             select: { quantity: true }
@@ -119,17 +119,22 @@ export async function orderRoutes(fastify: FastifyInstance) {
         });
       }
 
-      // Use the fund's price instead of requiring it from the request
       const price = fund.price;
       const total = body.quantity * price;
 
+      if (!fund.fundWalletPublicKey) {
+        return reply.status(400).send({ error: 'Fund wallet not configured. Please contact the administrator.' });
+      }
+
+      // Create order in PENDING status
       const order = await fastify.prisma.order.create({
         data: {
           fundId: body.fundId,
           quantity: body.quantity,
           price: price,
           total,
-          investorId: payload.id // Fix: use payload.id instead of payload.userId
+          investorId: payload.id,
+          status: 'PENDING'
         },
         include: {
           fund: {
@@ -141,7 +146,14 @@ export async function orderRoutes(fastify: FastifyInstance) {
         }
       });
 
-      return { order };
+      return { 
+        order,
+        payment: {
+          destination: fund.fundWalletPublicKey,
+          amount: total.toString(),
+          memo: order.id.substring(0, 28) // Stellar memo limit is 28 bytes
+        }
+      };
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply.status(400).send({ error: 'Invalid input', details: error.errors });
@@ -304,6 +316,112 @@ export async function orderRoutes(fastify: FastifyInstance) {
       });
 
       return { order };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({ error: 'Invalid input', details: error.errors });
+      }
+      fastify.log.error(error);
+      return reply.status(500).send({ error: 'Internal server error' });
+    }
+  });
+
+  // Approve or reject order (Gestor only) - with automatic refund on rejection
+  fastify.patch('/:id/approve', async (request, reply) => {
+    try {
+      const token = request.headers.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return reply.status(401).send({ error: 'No token provided' });
+      }
+
+      const payload = verifyToken(token);
+      if (payload.role !== 'GESTOR') {
+        return reply.status(403).send({ error: 'Only gestors can approve orders' });
+      }
+
+      const { id } = request.params as { id: string };
+      const { action, refundTxHash } = z.object({ 
+        action: z.enum(['approve', 'reject']),
+        refundTxHash: z.string().optional()
+      }).parse(request.body);
+
+      // Get order with fund and investor details
+      const existingOrder = await fastify.prisma.order.findUnique({
+        where: { id },
+        include: {
+          fund: {
+            select: { name: true, symbol: true, fundWalletPublicKey: true }
+          },
+          investor: {
+            select: { email: true, publicKey: true }
+          }
+        }
+      });
+
+      if (!existingOrder) {
+        return reply.status(404).send({ error: 'Order not found' });
+      }
+
+      if (existingOrder.status !== 'COMPLETED') {
+        return reply.status(400).send({ 
+          error: 'Order must be completed before approval',
+          details: { currentStatus: existingOrder.status }
+        });
+      }
+
+      if (existingOrder.approvalStatus !== 'PENDING_APPROVAL') {
+        return reply.status(400).send({ 
+          error: 'Order already processed',
+          details: { currentApprovalStatus: existingOrder.approvalStatus }
+        });
+      }
+
+      if (action === 'approve') {
+        const order = await fastify.prisma.order.update({
+          where: { id },
+          data: { approvalStatus: 'APPROVED' },
+          include: {
+            fund: {
+              select: { name: true, symbol: true }
+            },
+            investor: {
+              select: { email: true, publicKey: true }
+            }
+          }
+        });
+
+        return { order, message: 'Order approved successfully' };
+      } else {
+        // Reject - requires refund transaction hash
+        if (!refundTxHash) {
+          // Return refund details for frontend to build the transaction
+          return {
+            requiresRefund: true,
+            refundDetails: {
+              destination: existingOrder.investor.publicKey,
+              amount: existingOrder.total.toString(),
+              memo: `Refund ${id.substring(0, 20)}`
+            }
+          };
+        }
+
+        const order = await fastify.prisma.order.update({
+          where: { id },
+          data: { 
+            approvalStatus: 'REJECTED',
+            refundTxHash
+          },
+          include: {
+            fund: {
+              select: { name: true, symbol: true }
+            },
+            investor: {
+              select: { email: true, publicKey: true }
+            }
+          }
+        });
+
+        return { order, message: 'Order rejected and refunded successfully' };
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply.status(400).send({ error: 'Invalid input', details: error.errors });

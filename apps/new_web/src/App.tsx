@@ -17,6 +17,7 @@ import DashboardPage from './pages/DashboardPage';
 import ConsultorList from './pages/gestor/ConsultorList';
 import InvestorList from './pages/gestor/InvestorList';
 import FundList from './pages/gestor/FundList';
+import InvestmentList from './pages/gestor/InvestmentList';
 import AssignorList from './pages/gestor/AssignorList';
 import DebtorList from './pages/gestor/DebtorList';
 
@@ -71,6 +72,7 @@ const App: React.FC = () => {
                 <Route path="consultores" element={<ConsultorList />} />
                 <Route path="investidores" element={<InvestorList />} />
                 <Route path="fundos" element={<FundList />} />
+                <Route path="investments" element={<InvestmentList />} />
                 <Route path="assignors" element={<AssignorList />} />
                 <Route path="debtors" element={<DebtorList />} />
                 {/* Investor Routes */}
