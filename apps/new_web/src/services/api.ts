@@ -59,8 +59,11 @@ export const fundService = {
     const response = await api.post('/funds', data);
     return response.data;
   },
-  approve: async (id: string, status: 'APPROVED' | 'REJECTED') => {
-    const response = await api.patch(`/funds/${id}/approval`, { status });
+  approve: async (id: string, status: 'APPROVED' | 'REJECTED', fundWalletPublicKey?: string) => {
+    const response = await api.patch(`/funds/${id}/approval`, { 
+      status,
+      ...(fundWalletPublicKey && { fundWalletPublicKey })
+    });
     return response.data;
   },
   deactivate: async (id: string) => {
@@ -123,8 +126,23 @@ export const orderService = {
     const response = await api.post('/orders', data);
     return response.data;
   },
+  complete: async (id: string, txHash: string) => {
+    const response = await api.patch(`/orders/${id}/complete`, { txHash });
+    return response.data;
+  },
+  cancel: async (id: string) => {
+    const response = await api.patch(`/orders/${id}/cancel`);
+    return response.data;
+  },
   updateStatus: async (id: string, status: string) => {
     const response = await api.patch(`/orders/${id}/status`, { status });
+    return response.data;
+  },
+  approve: async (id: string, action: 'approve' | 'reject', refundTxHash?: string) => {
+    const response = await api.patch(`/orders/${id}/approve`, { 
+      action,
+      ...(refundTxHash && { refundTxHash })
+    });
     return response.data;
   }
 };
@@ -137,6 +155,10 @@ export const stellarService = {
   },
   fundAccount: async (publicKey: string) => {
     const response = await api.post('/stellar/fund-account', { publicKey });
+    return response.data;
+  },
+  getBalance: async (publicKey: string) => {
+    const response = await api.post('/stellar/balance', { publicKey });
     return response.data;
   },
 };
