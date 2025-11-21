@@ -114,7 +114,7 @@ const ApprovalGate: React.FC<{ status: string }> = ({ status }) => (
 );
 
 const WalletSetup: React.FC<{ onGenerate: () => void }> = ({ onGenerate }) => (
-    <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg flex items-center justify-between">
+    <div className="bg-yellow-50 p-6 rounded-lg flex items-center justify-between">
         <div>
             <h3 className="font-bold text-yellow-800">Set Up Your Wallet</h3>
             <p className="text-sm text-yellow-700">A Stellar wallet is required to invest. Generate your keys to continue.</p>
