@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
 import { orderService } from '../../services/api';
 import toast from 'react-hot-toast';
-import { FiBriefcase, FiExternalLink, FiCheckCircle, FiClock } from 'react-icons/fi';
+import { FiBriefcase, FiExternalLink, FiCheckCircle } from 'react-icons/fi';
 import { getErrorMessage } from '../../utils/errorHandler';
 
 interface Order {

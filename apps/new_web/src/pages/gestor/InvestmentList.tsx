@@ -63,7 +63,7 @@ const InvestmentList: React.FC = () => {
         return matchesStatus && matchesApproval && matchesSearch;
     });
 
-    const handleApprove = async (id: string, investment: Investment) => {
+    const handleApprove = async (id: string, _investment: Investment) => {
         setProcessingId(id);
         try {
             await orderService.approve(id, 'approve');
@@ -76,7 +76,7 @@ const InvestmentList: React.FC = () => {
         }
     };
 
-    const handleReject = async (id: string, investment: Investment) => {
+    const handleReject = async (id: string, _investment: Investment) => {
         if (!isConnected || !publicKey) {
             toast.error('Please connect your wallet to process refunds');
             await connect();
