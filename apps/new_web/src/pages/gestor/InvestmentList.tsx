@@ -4,8 +4,6 @@ import { orderService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { useOrderApproval } from '../../hooks/useOrderApproval';
 import FilterBar from '../../components/FilterBar';
-import { StatusBadge } from '../../components/StatusBadge';
-import { TransactionLinks } from '../../components/TransactionLinks';
 
 interface Investment {
   id: string;
