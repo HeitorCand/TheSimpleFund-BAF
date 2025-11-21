@@ -15,6 +15,10 @@ interface Fund {
   totalIssued: number;
   maxSupply: number;
   price: number;
+  fundWalletPublicKey?: string;
+  consultor?: {
+    publicKey?: string;
+  };
 }
 
 // --- Main Component ---
@@ -124,7 +128,8 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
             const response = await orderService.create({
                 fundId: fund.id,
                 quantity,
-                total
+                total,
+                publicKey // Send wallet address to backend
             });
 
             const { order, payment } = response;
@@ -134,10 +139,63 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
                 return;
             }
 
-            // Build Stellar payment transaction
             const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
-            const account = await server.loadAccount(publicKey);
             
+            // Determine token issuer: prefer consultor's wallet, fallback to fund wallet
+            const issuerPublicKey = fund.consultor?.publicKey || fund.fundWalletPublicKey;
+            
+            if (!issuerPublicKey) {
+                toast.error('Fund issuer not configured');
+                return;
+            }
+            
+            const fundAsset = new StellarSdk.Asset(
+                fund.symbol.substring(0, 12).toUpperCase(),
+                issuerPublicKey // Gestor or fund wallet is the token issuer
+            );
+
+            // Step 1: Create trustline for fund token (if not exists)
+            // This allows the investor to receive the fund's custom token
+            let toastId = toast.loading('Creating trustline for fund token...');
+            
+            try {
+                const account = await server.loadAccount(publicKey);
+                
+                // Check if trustline already exists
+                const existingTrustline = account.balances.find(
+                    (b: any) => b.asset_code === fundAsset.code && b.asset_issuer === fundAsset.issuer
+                );
+
+                if (!existingTrustline) {
+                    const trustlineTransaction = new StellarSdk.TransactionBuilder(account, {
+                        fee: StellarSdk.BASE_FEE,
+                        networkPassphrase: StellarSdk.Networks.TESTNET
+                    })
+                      .addOperation(StellarSdk.Operation.changeTrust({
+                        asset: fundAsset,
+                      }))
+                      .addMemo(StellarSdk.Memo.text(`Trust ${fund.symbol}`))
+                      .setTimeout(180)
+                      .build();
+
+                    await signAndSubmitTransaction(trustlineTransaction.toXDR());
+                    toast.dismiss(toastId);
+                    toast.success('Trustline created successfully!');
+                } else {
+                    toast.dismiss(toastId);
+                    toast.success('Trustline already exists!');
+                }
+            } catch (trustError: any) {
+                toast.dismiss(toastId);
+                console.error('Trustline error:', trustError);
+                toast.error('Failed to create trustline: ' + (trustError.message || 'Unknown error'));
+                return;
+            }
+
+            // Step 2: Make payment for investment
+            toastId = toast.loading('Processing payment...');
+            
+            const account = await server.loadAccount(publicKey);
             const transaction = new StellarSdk.TransactionBuilder(account, {
                 fee: StellarSdk.BASE_FEE,
                 networkPassphrase: StellarSdk.Networks.TESTNET
@@ -153,15 +211,18 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
 
             // Sign and submit via wallet
             const txHash = await signAndSubmitTransaction(transaction.toXDR());
+            
+            toast.dismiss(toastId);
 
             // Complete the order with tx hash
             await orderService.complete(order.id, txHash);
 
-            toast.success('Investment successful! Transaction: ' + txHash.substring(0, 8) + '...');
+            toast.success(`Investment successful! You will receive ${quantity} ${fund.symbol} tokens after approval.`);
             onConfirm();
             onClose();
         } catch (error: any) {
             console.error('Investment error:', error);
+            toast.dismiss(); // Dismiss all toasts
             toast.error(error.message || 'Investment failed. Please try again.');
         } finally {
             setLoading(false);
