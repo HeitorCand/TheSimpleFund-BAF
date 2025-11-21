@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFilePlus, FiFileMinus, FiDollarSign } from 'react-icons/fi';
-import { dashboardService } from '../services/api';
+import { dashboardService, orderService } from '../services/api';
 
 const gestorMenuItems = [
-    { to: '/dashboard', icon: <FiHome />, name: 'Dashboard' },
-    { to: '/dashboard/consultores', icon: <FiUsers />, name: 'Consultants', countKey: 'consultores' },
-    { to: '/dashboard/investidores', icon: <FiUserCheck />, name: 'Investors', countKey: 'investidores' },
-    { to: '/dashboard/fundos', icon: <FiBox />, name: 'Funds', countKey: 'funds' },
-    { to: '/dashboard/investments', icon: <FiDollarSign />, name: 'Investments' },
-    { to: '/dashboard/assignors', icon: <FiFilePlus />, name: 'Assignors', countKey: 'assignors' },
-    { to: '/dashboard/debtors', icon: <FiFileMinus />, name: 'Debtors', countKey: 'debtors' },
+  { to: '/dashboard', icon: <FiHome />, name: 'Dashboard' },
+  { to: '/dashboard/consultores', icon: <FiUsers />, name: 'Consultants', countKey: 'consultores' },
+  { to: '/dashboard/investidores', icon: <FiUserCheck />, name: 'Investors', countKey: 'investidores' },
+  { to: '/dashboard/fundos', icon: <FiBox />, name: 'Funds', countKey: 'funds' },
+  { to: '/dashboard/investments', icon: <FiDollarSign />, name: 'Investments', countKey: 'investments' },
+  { to: '/dashboard/assignors', icon: <FiFilePlus />, name: 'Assignors', countKey: 'assignors' },
+  { to: '/dashboard/debtors', icon: <FiFileMinus />, name: 'Debtors', countKey: 'debtors' },
 ];
 
 const consultorMenuItems = [
@@ -27,6 +27,7 @@ interface PendingCounts {
   consultores: number;
   investidores: number;
   funds: number;
+  investments?: number;
   assignors: number;
   debtors: number;
 }
@@ -124,7 +125,20 @@ const DashboardLayout: React.FC = () => {
       if (user?.role === 'GESTOR') {
         try {
           const response = await dashboardService.getPendingCounts();
-          setPendingCounts(response.pendingCounts);
+          let counts = response.pendingCounts || null;
+
+          // Also compute pending investments to surface notifications in sidebar
+          try {
+            const ordersResp = await orderService.list();
+            const pendingInvestments = (ordersResp?.orders || []).filter(
+              (order: { status?: string }) => order.status === 'PENDING'
+            ).length;
+            counts = counts ? { ...counts, investments: pendingInvestments } : { investments: pendingInvestments };
+          } catch (orderErr) {
+            console.error('Error fetching investments count:', orderErr);
+          }
+
+          setPendingCounts(counts);
         } catch (error) {
           console.error('Error fetching pending counts:', error);
         }
