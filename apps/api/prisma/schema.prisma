@@ -123,6 +123,7 @@ model Order {
   approvalStatus String      @default("PENDING_APPROVAL") @map("approval_status") // PENDING_APPROVAL, APPROVED, REJECTED
   txHash         String?     @map("tx_hash")
   refundTxHash   String?     @map("refund_tx_hash")
+  tokenMintTxHash String?    @map("token_mint_tx_hash")
   createdAt      DateTime    @default(now()) @map("created_at")
   updatedAt      DateTime    @updatedAt @map("updated_at")
 

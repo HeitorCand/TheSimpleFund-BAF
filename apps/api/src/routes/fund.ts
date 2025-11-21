@@ -95,7 +95,8 @@ export async function fundRoutes(fastify: FastifyInstance) {
         include: {
           consultor: {
             select: {
-              email: true
+              email: true,
+              publicKey: true
             }
           },
           receivables: {

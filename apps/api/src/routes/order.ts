@@ -7,7 +7,8 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const createOrderSchema = z.object({
   fundId: z.string(),
   quantity: z.number().positive(),
-  amount: z.number().positive().optional() // Optional amount, will calculate from fund price
+  amount: z.number().positive().optional(), // Optional amount, will calculate from fund price
+  publicKey: z.string().optional() // Investor's wallet public key
 });
 
 function verifyToken(token: string) {
@@ -124,6 +125,14 @@ export async function orderRoutes(fastify: FastifyInstance) {
 
       if (!fund.fundWalletPublicKey) {
         return reply.status(400).send({ error: 'Fund wallet not configured. Please contact the administrator.' });
+      }
+
+      // Save investor's publicKey if provided
+      if (body.publicKey) {
+        await fastify.prisma.user.update({
+          where: { id: payload.id },
+          data: { publicKey: body.publicKey }
+        });
       }
 
       // Create order in PENDING status
@@ -339,9 +348,10 @@ export async function orderRoutes(fastify: FastifyInstance) {
       }
 
       const { id } = request.params as { id: string };
-      const { action, refundTxHash } = z.object({ 
+      const { action, refundTxHash, tokenMintTxHash } = z.object({ 
         action: z.enum(['approve', 'reject']),
-        refundTxHash: z.string().optional()
+        refundTxHash: z.string().optional(),
+        tokenMintTxHash: z.string().optional()
       }).parse(request.body);
 
       // Get order with fund and investor details
@@ -349,7 +359,15 @@ export async function orderRoutes(fastify: FastifyInstance) {
         where: { id },
         include: {
           fund: {
-            select: { name: true, symbol: true, fundWalletPublicKey: true }
+            select: { 
+              name: true, 
+              symbol: true, 
+              fundWalletPublicKey: true,
+              tokenContractId: true,
+              consultor: {
+                select: { publicKey: true }
+              }
+            }
           },
           investor: {
             select: { email: true, publicKey: true }
@@ -376,9 +394,34 @@ export async function orderRoutes(fastify: FastifyInstance) {
       }
 
       if (action === 'approve') {
+        if (!existingOrder.investor.publicKey) {
+          return reply.status(400).send({ 
+            error: 'Investor wallet not configured. Cannot mint tokens.' 
+          });
+        }
+
+        // First approval step: return mint details for frontend to execute
+        if (!tokenMintTxHash) {
+          return {
+            requiresTokenMint: true,
+            mintDetails: {
+              contractId: existingOrder.fund.tokenContractId,
+              destination: existingOrder.investor.publicKey,
+              amount: existingOrder.quantity,
+              fundSymbol: existingOrder.fund.symbol,
+              fundName: existingOrder.fund.name,
+              issuerPublicKey: existingOrder.fund.consultor?.publicKey || existingOrder.fund.fundWalletPublicKey // Prefer consultor, fallback to fund wallet
+            },
+          };
+        }
+
+        // Second approval step: save token mint tx hash and complete approval
         const order = await fastify.prisma.order.update({
           where: { id },
-          data: { approvalStatus: 'APPROVED' },
+          data: { 
+            approvalStatus: 'APPROVED',
+            tokenMintTxHash
+          },
           include: {
             fund: {
               select: { name: true, symbol: true }
@@ -389,7 +432,7 @@ export async function orderRoutes(fastify: FastifyInstance) {
           }
         });
 
-        return { order, message: 'Order approved successfully' };
+        return { order, message: 'Order approved and tokens minted successfully' };
       } else {
         // Reject - requires refund transaction hash
         if (!refundTxHash) {

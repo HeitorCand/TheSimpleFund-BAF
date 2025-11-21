@@ -47,6 +47,10 @@ export const userService = {
     const response = await api.patch(`/users/${id}/approval`, { status });
     return response.data;
   },
+  updateWallet: async (publicKey: string) => {
+    const response = await api.patch('/users/wallet', { publicKey });
+    return response.data;
+  },
 };
 
 // --- Fund Service ---
@@ -138,10 +142,11 @@ export const orderService = {
     const response = await api.patch(`/orders/${id}/status`, { status });
     return response.data;
   },
-  approve: async (id: string, action: 'approve' | 'reject', refundTxHash?: string) => {
+  approve: async (id: string, action: 'approve' | 'reject', refundTxHash?: string, tokenMintTxHash?: string) => {
     const response = await api.patch(`/orders/${id}/approve`, { 
       action,
-      ...(refundTxHash && { refundTxHash })
+      ...(refundTxHash && { refundTxHash }),
+      ...(tokenMintTxHash && { tokenMintTxHash })
     });
     return response.data;
   }
