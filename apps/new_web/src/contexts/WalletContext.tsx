@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { StellarWalletsKit, WalletNetwork, allowAllModules } from '@creit.tech/stellar-wallets-kit';
 import type { ISupportedWallet } from '@creit.tech/stellar-wallets-kit';
 import * as StellarSdk from 'stellar-sdk';
+import { userService } from '../services/api';
 
 interface WalletContextType {
   kit: StellarWalletsKit | null;
@@ -47,6 +48,16 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
           setPublicKey(address);
           setIsConnected(true);
           localStorage.setItem('stellarPublicKey', address);
+          
+          // Save publicKey to backend
+          try {
+            const token = localStorage.getItem('token');
+            if (token) {
+              await userService.updateWallet(address);
+            }
+          } catch (error) {
+            console.error('Failed to save wallet to backend:', error);
+          }
         },
       });
     } catch (error) {

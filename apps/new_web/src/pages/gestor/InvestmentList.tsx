@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { orderService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
-import { useWallet } from '../../contexts/WalletContext';
-import * as StellarSdk from 'stellar-sdk';
+import { useOrderApproval } from '../../hooks/useOrderApproval';
+import FilterBar from '../../components/FilterBar';
 
 interface Investment {
   id: string;
@@ -14,6 +14,7 @@ interface Investment {
   approvalStatus: string;
   txHash?: string;
   refundTxHash?: string;
+  tokenMintTxHash?: string;
   createdAt: string;
   investor: {
     id: string;
@@ -28,14 +29,12 @@ interface Investment {
 }
 
 const InvestmentList: React.FC = () => {
-    const { publicKey, isConnected, connect, signAndSubmitTransaction } = useWallet();
     const [investments, setInvestments] = useState<Investment[]>([]);
     const [loading, setLoading] = useState(false);
-    const [processingId, setProcessingId] = useState<string | null>(null);
     const [filterStatus, setFilterStatus] = useState<string>('all');
     const [filterApproval, setFilterApproval] = useState<string>('all');
     const [searchTerm, setSearchTerm] = useState('');
-
+    
     const loadData = useCallback(async () => {
         setLoading(true);
         try {
@@ -47,6 +46,8 @@ const InvestmentList: React.FC = () => {
             setLoading(false);
         }
     }, []);
+
+    const { processingId, handleApprove, handleReject } = useOrderApproval(loadData);
 
     useEffect(() => {
         loadData();
@@ -63,67 +64,10 @@ const InvestmentList: React.FC = () => {
         return matchesStatus && matchesApproval && matchesSearch;
     });
 
-    const handleApprove = async (id: string, _investment: Investment) => {
-        setProcessingId(id);
-        try {
-            await orderService.approve(id, 'approve');
-            toast.success('Investment approved successfully!');
-            loadData();
-        } catch (error) {
-            toast.error(getErrorMessage(error));
-        } finally {
-            setProcessingId(null);
-        }
-    };
-
-    const handleReject = async (id: string, _investment: Investment) => {
-        if (!isConnected || !publicKey) {
-            toast.error('Please connect your wallet to process refunds');
-            await connect();
-            return;
-        }
-
-        setProcessingId(id);
-        try {
-            // First call to get refund details
-            const response = await orderService.approve(id, 'reject');
-
-            if (response.requiresRefund && response.refundDetails) {
-                // Build refund transaction
-                const server = new StellarSdk.Horizon.Server('https://horizon-testnet.stellar.org');
-                const account = await server.loadAccount(publicKey);
-                
-                const transaction = new StellarSdk.TransactionBuilder(account, {
-                    fee: StellarSdk.BASE_FEE,
-                    networkPassphrase: StellarSdk.Networks.TESTNET
-                })
-                  .addOperation(StellarSdk.Operation.payment({
-                    destination: response.refundDetails.destination,
-                    asset: StellarSdk.Asset.native(),
-                    amount: response.refundDetails.amount
-                  }))
-                  .addMemo(StellarSdk.Memo.text(response.refundDetails.memo))
-                  .setTimeout(180)
-                  .build();
-
-                // Sign and submit
-                const refundTxHash = await signAndSubmitTransaction(transaction.toXDR());
-
-                // Complete rejection with refund tx hash
-                await orderService.approve(id, 'reject', refundTxHash);
-                
-                toast.success(`Investment rejected and refunded! Tx: ${refundTxHash.substring(0, 8)}...`);
-            } else {
-                toast.success('Investment rejected successfully!');
-            }
-            
-            loadData();
-        } catch (error: any) {
-            console.error('Refund error:', error);
-            toast.error(error.message || 'Failed to process refund');
-        } finally {
-            setProcessingId(null);
-        }
+    const handleClearFilters = () => {
+        setSearchTerm('');
+        setFilterStatus('all');
+        setFilterApproval('all');
     };
 
     if (loading) return <div className="text-center p-8">Loading investments...</div>;
@@ -132,61 +76,19 @@ const InvestmentList: React.FC = () => {
         <div className="bg-white p-4 md:p-6 rounded-lg shadow-soft">
             <h2 className="text-xl font-semibold mb-4">Manage Investments</h2>
             
-            {/* Filters */}
-            <div className="mb-6 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                        <input
-                            type="text"
-                            placeholder="Investor, Fund..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Payment Status</label>
-                        <select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                            <option value="all">All</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="COMPLETED">Completed</option>
-                            <option value="FAILED">Failed</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Approval Status</label>
-                        <select
-                            value={filterApproval}
-                            onChange={(e) => setFilterApproval(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                            <option value="all">All</option>
-                            <option value="PENDING_APPROVAL">Pending Approval</option>
-                            <option value="APPROVED">Approved</option>
-                            <option value="REJECTED">Rejected</option>
-                        </select>
-                    </div>
-                    <div className="flex items-end">
-                        <button
-                            onClick={() => {
-                                setSearchTerm('');
-                                setFilterStatus('all');
-                                setFilterApproval('all');
-                            }}
-                            className="w-full px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                        >
-                            Clear Filters
-                        </button>
-                    </div>
-                </div>
-                <div className="text-sm text-gray-600">
-                    Showing {filteredInvestments.length} of {investments.length} investments
-                </div>
+            <FilterBar
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                filterStatus={filterStatus}
+                onStatusChange={setFilterStatus}
+                filterApproval={filterApproval}
+                onApprovalChange={setFilterApproval}
+                onClearFilters={handleClearFilters}
+                searchPlaceholder="Search by investor, fund name or symbol..."
+            />
+            
+            <div className="text-sm text-gray-600 mb-4">
+                Showing {filteredInvestments.length} of {investments.length} investments
             </div>
 
             {filteredInvestments.length === 0 ? (
@@ -249,14 +151,14 @@ const InvestmentList: React.FC = () => {
                                                 {item.status === 'COMPLETED' && item.approvalStatus === 'PENDING_APPROVAL' && (
                                                     <>
                                                         <button 
-                                                            onClick={() => handleApprove(item.id, item)} 
+                                                            onClick={() => handleApprove(item)} 
                                                             disabled={processingId === item.id}
                                                             className="px-2.5 py-1 text-xs text-white bg-green-500 rounded hover:bg-green-600 disabled:bg-green-300 whitespace-nowrap"
                                                         >
                                                             {processingId === item.id ? 'Processing...' : 'Approve'}
                                                         </button>
                                                         <button 
-                                                            onClick={() => handleReject(item.id, item)} 
+                                                            onClick={() => handleReject(item)} 
                                                             disabled={processingId === item.id}
                                                             className="px-2.5 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600 disabled:bg-red-300 whitespace-nowrap"
                                                         >
@@ -282,6 +184,16 @@ const InvestmentList: React.FC = () => {
                                                         className="text-xs text-purple-600 hover:underline"
                                                     >
                                                         Refund Tx
+                                                    </a>
+                                                )}
+                                                {item.tokenMintTxHash && (
+                                                    <a 
+                                                        href={`https://stellar.expert/explorer/testnet/tx/${item.tokenMintTxHash}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="text-xs text-green-600 hover:underline"
+                                                    >
+                                                        Token Mint Tx
                                                     </a>
                                                 )}
                                             </div>
@@ -340,14 +252,14 @@ const InvestmentList: React.FC = () => {
                                     {item.status === 'COMPLETED' && item.approvalStatus === 'PENDING_APPROVAL' && (
                                         <div className="grid grid-cols-2 gap-2">
                                             <button 
-                                                onClick={() => handleApprove(item.id, item)} 
+                                                onClick={() => handleApprove(item)} 
                                                 disabled={processingId === item.id}
                                                 className="px-3 py-2 text-sm text-white bg-green-500 rounded-md hover:bg-green-600 disabled:bg-green-300"
                                             >
                                                 {processingId === item.id ? 'Processing...' : 'Approve'}
                                             </button>
                                             <button 
-                                                onClick={() => handleReject(item.id, item)} 
+                                                onClick={() => handleReject(item)} 
                                                 disabled={processingId === item.id}
                                                 className="px-3 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 disabled:bg-red-300"
                                             >
@@ -374,6 +286,16 @@ const InvestmentList: React.FC = () => {
                                                 className="text-xs text-purple-600 hover:underline"
                                             >
                                                 View Refund Transaction
+                                            </a>
+                                        )}
+                                        {item.tokenMintTxHash && (
+                                            <a 
+                                                href={`https://stellar.expert/explorer/testnet/tx/${item.tokenMintTxHash}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-xs text-green-600 hover:underline"
+                                            >
+                                                View Token Mint Transaction
                                             </a>
                                         )}
                                     </div>
