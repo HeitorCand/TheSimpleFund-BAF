@@ -139,6 +139,10 @@ export const stellarService = {
     const response = await api.post('/stellar/fund-account', { publicKey });
     return response.data;
   },
+  getBalance: async (publicKey: string) => {
+    const response = await api.post('/stellar/balance', { publicKey });
+    return response.data;
+  },
 };
 
 

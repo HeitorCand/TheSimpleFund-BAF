@@ -1,19 +1,30 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './contexts/useAuth';
+import { WalletProvider } from './contexts/WalletContext';
 import { Toaster } from 'react-hot-toast';
 
+// Layouts
 import AuthLayout from './layouts/AuthLayout';
 import DashboardLayout from './layouts/DashboardLayout';
+
+// Pages
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+
+// Gestor Pages
 import ConsultorList from './pages/gestor/ConsultorList';
 import InvestorList from './pages/gestor/InvestorList';
 import FundList from './pages/gestor/FundList';
-import InvestmentList from './pages/gestor/InvestmentList';
 import AssignorList from './pages/gestor/AssignorList';
 import DebtorList from './pages/gestor/DebtorList';
+
+// Investor Pages
+import Marketplace from './pages/investor/Marketplace';
+import Portfolio from './pages/investor/Portfolio';
+import OrderList from './pages/investor/OrderList';
+
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -39,37 +50,41 @@ const App: React.FC = () => {
   return (
     <>
       <Toaster position="bottom-right" />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" />} />
+      <WalletProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
 
-          {/* Public routes */}
-          <Route element={<PublicRoute />}>
-            <Route element={<AuthLayout />}>
-              <Route path="login" element={<LoginPage />} />
-              <Route path="register" element={<RegisterPage />} />
+            {/* Public routes */}
+            <Route element={<PublicRoute />}>
+              <Route element={<AuthLayout />}>
+                <Route path="login" element={<LoginPage />} />
+                <Route path="register" element={<RegisterPage />} />
+              </Route>
             </Route>
-          </Route>
 
-          {/* Protected routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="dashboard">
+            {/* Protected routes */}
+            <Route path="/dashboard" element={<ProtectedRoute />}>
+              <Route element={<DashboardLayout />}>
                 <Route index element={<DashboardPage />} />
+                {/* Gestor Routes */}
                 <Route path="consultores" element={<ConsultorList />} />
                 <Route path="investidores" element={<InvestorList />} />
                 <Route path="fundos" element={<FundList />} />
-                <Route path="investments" element={<InvestmentList />} />
                 <Route path="assignors" element={<AssignorList />} />
                 <Route path="debtors" element={<DebtorList />} />
+                {/* Investor Routes */}
+                <Route path="marketplace" element={<Marketplace />} />
+                <Route path="portfolio" element={<Portfolio />} />
+                <Route path="orders" element={<OrderList />} />
               </Route>
             </Route>
-          </Route>
-          
-          {/* Fallback route */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </BrowserRouter>
+            
+            {/* Fallback route */}
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </BrowserRouter>
+      </WalletProvider>
     </>
   );
 };
