@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet, Link, NavLink } from 'react-router-dom';
+import { Outlet, Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { useWallet } from '../contexts/WalletContext';
-import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFilePlus, FiFileMinus, FiDollarSign } from 'react-icons/fi';
+import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFilePlus, FiFileMinus, FiDollarSign, FiList, FiShoppingCart } from 'react-icons/fi';
 import { dashboardService, orderService } from '../services/api';
 
 const gestorMenuItems = [
@@ -40,9 +40,23 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
   role,
   pendingCounts,
 }) => {
+  const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const isExpanded = isOpen || !isCollapsed;
   const sidebarWidth = isExpanded ? 'w-64' : 'w-20';
+  const [showLabels, setShowLabels] = useState(false);
+
+  useEffect(() => {
+    let timer: number | undefined;
+    if (isExpanded) {
+      timer = window.setTimeout(() => setShowLabels(true), 120); // wait for width animation
+    } else {
+      setShowLabels(false);
+    }
+    return () => {
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [isExpanded]);
 
   let menuItems: typeof gestorMenuItems | typeof consultorMenuItems | typeof investidorMenuItems = [];
   if (role === 'GESTOR') menuItems = gestorMenuItems;
@@ -64,14 +78,19 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
       </div>
       <nav className="flex-1 px-2 py-8 space-y-2">
         {menuItems.map((item) => {
-          const count = 'countKey' in item && pendingCounts ? pendingCounts[item.countKey as keyof PendingCounts] : 0;
+          const count =
+            'countKey' in item && pendingCounts ? (pendingCounts[item.countKey as keyof PendingCounts] ?? 0) : 0;
           const showBadge = role === 'GESTOR' && count > 0;
-          
+          const isActive =
+            item.to === '/dashboard'
+              ? location.pathname === '/dashboard'
+              : location.pathname === item.to || location.pathname.startsWith(`${item.to}/`);
+
           return (
             <NavLink
               key={item.name}
               to={item.to}
-              className={({ isActive }) =>
+              className={() =>
                 `flex items-center ${isExpanded ? 'px-4 gap-3' : 'justify-center px-3'} py-3 transition-colors duration-200 rounded-lg ${
                   isActive ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 hover:bg-primary/5'
                 }`
@@ -86,8 +105,8 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
                     </span>
                   )}
                 </div>
-                {isExpanded && <span className="ml-4 font-medium">{item.name}</span>}
-                {showBadge && isExpanded && (
+                {showLabels && <span className="ml-4 font-medium">{item.name}</span>}
+                {showBadge && showLabels && (
                   <span className="ml-auto flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
                     {count}
                   </span>
