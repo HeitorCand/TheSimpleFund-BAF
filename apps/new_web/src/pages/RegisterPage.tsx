@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { authService } from '../services/api';
 import { Link } from 'react-router-dom';
+import { authService } from '../services/api';
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +9,7 @@ const RegisterPage: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const heroImage = '/login.png';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,80 +26,96 @@ const RegisterPage: React.FC = () => {
     }
   };
 
-  if (success) {
-    return (
-      <div className="text-center space-y-4">
-        <h2 className="text-2xl font-semibold text-gray-800">Registration Successful!</h2>
-        <p className="text-gray-600">
-          Your account has been created and is now awaiting approval from an administrator.
-        </p>
-        <p className="text-gray-600">
-          You will be notified by email once your account is approved.
-        </p>
-        <Link to="/login" className="inline-block mt-4 text-primary hover:underline">
-          Back to Login
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <h2 className="text-2xl font-semibold text-center text-gray-800">Create Account</h2>
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+    <div className="min-h-screen flex bg-gray-50 text-gray-900">
+      <div
+        className="hidden lg:flex flex-[0.65] bg-cover bg-left"
+        style={{
+          backgroundImage: `url("${heroImage}")`,
+        }}
+      />
 
-      <div>
-        <label className="block mb-1 text-sm font-medium text-gray-600">Email</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-          placeholder="you@example.com"
-        />
+      <div className="flex-1 lg:flex-[0.35] flex items-center justify-center px-10 lg:px-14 xl:px-20">
+        <div className="w-full max-w-2xl px-4 sm:px-8">
+          {success ? (
+            <div className="space-y-6">
+              <h2 className="text-4xl font-semibold text-gray-900">Registration Successful!</h2>
+              <p className="text-gray-600 text-base">
+                Your account has been created and is now awaiting approval from an administrator.
+              </p>
+              <p className="text-gray-600 text-base">
+                You will be notified by email once your account is approved.
+              </p>
+              <Link to="/login" className="text-purple-700 font-semibold hover:underline">
+                Back to Login
+              </Link>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-10 px-2 sm:px-4">
+              <div>
+                <h2 className="text-4xl font-semibold text-gray-900">Create Account</h2>
+              </div>
+
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 py-2 pb-3 text-base placeholder-gray-400"
+                    placeholder="you@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 py-2 pb-3 text-base placeholder-gray-400"
+                    placeholder="Create a password"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">I am a...</label>
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as any)}
+                    className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 pb-3 text-base bg-transparent"
+                  >
+                    <option value="INVESTIDOR">Investor</option>
+                    <option value="CONSULTOR">Consultant</option>
+                    <option value="GESTOR">Manager</option>
+                  </select>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 text-white rounded-lg bg-gradient-to-r from-purple-700 to-indigo-600 hover:shadow-lg transition-all disabled:opacity-60"
+              >
+                {loading ? 'Creating Account...' : 'Register'}
+              </button>
+
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <span>Already have an account?</span>
+                <Link to="/login" className="text-purple-700 font-semibold hover:underline">
+                  Log in
+                </Link>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
-
-      <div>
-        <label className="block mb-1 text-sm font-medium text-gray-600">Password</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
-          placeholder="Create a password"
-        />
-      </div>
-
-      <div>
-        <label className="block mb-1 text-sm font-medium text-gray-600">I am a...</label>
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value as any)}
-          className="w-full px-4 py-2 border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary/50"
-        >
-          <option value="INVESTIDOR">Investor</option>
-          <option value="CONSULTOR">Consultant</option>
-          <option value="GESTOR">Manager</option>
-        </select>
-      </div>
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full py-3 text-white rounded-lg bg-primary hover:bg-primary/90 disabled:bg-primary/50 transition-colors"
-      >
-        {loading ? 'Creating Account...' : 'Register'}
-      </button>
-
-      <p className="text-sm text-center text-gray-600">
-        Already have an account?{' '}
-        <Link to="/login" className="font-medium text-primary hover:underline">
-          Log in
-        </Link>
-      </p>
-    </form>
+    </div>
   );
 };
 

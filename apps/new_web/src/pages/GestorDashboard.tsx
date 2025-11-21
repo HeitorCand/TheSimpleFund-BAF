@@ -98,7 +98,7 @@ const GestorDashboard: React.FC = () => {
 
       {/* Pending Approvals Alert */}
       {totalPending > 0 && (
-        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+        <div className="bg-yellow-50 p-6 rounded-lg">
           <div className="flex items-start">
             <FiAlertCircle className="text-yellow-400 text-2xl mr-4 flex-shrink-0 mt-1" />
             <div>
