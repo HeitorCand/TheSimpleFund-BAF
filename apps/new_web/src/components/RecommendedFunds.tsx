@@ -154,25 +154,35 @@ const RecommendedFunds: React.FC = () => {
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-3">
-                            <span className="inline-flex items-center space-x-1 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                                <FiTrendingUp className="text-xs" />
-                                <span>{fund.fundType}</span>
-                            </span>
-                            <span className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-1 rounded ${getRiskColor(fund.riskLevel)}`}>
-                                <FiShield className="text-xs" />
-                                <span>{fund.riskLevel}</span>
-                            </span>
-                            <span className="inline-flex items-center space-x-1 text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded">
-                                <span>{fund.sector}</span>
-                            </span>
-                            <span className="inline-flex items-center space-x-1 text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                                <FiClock className="text-xs" />
-                                <span>{fund.durationMonths}m</span>
-                            </span>
-                            <span className="inline-flex items-center space-x-1 text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
-                                <FiDollarSign className="text-xs" />
-                                <span>Min: R${fund.minTicket.toLocaleString()}</span>
-                            </span>
+                            {fund.fundType && (
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                    <FiTrendingUp className="text-xs" />
+                                    <span>{fund.fundType}</span>
+                                </span>
+                            )}
+                            {fund.riskLevel && (
+                                <span className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-1 rounded ${getRiskColor(fund.riskLevel)}`}>
+                                    <FiShield className="text-xs" />
+                                    <span>{fund.riskLevel}</span>
+                                </span>
+                            )}
+                            {fund.sector && (
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded">
+                                    <span>{fund.sector}</span>
+                                </span>
+                            )}
+                            {fund.durationMonths && (
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                                    <FiClock className="text-xs" />
+                                    <span>{fund.durationMonths}m</span>
+                                </span>
+                            )}
+                            {fund.minTicket && (
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
+                                    <FiDollarSign className="text-xs" />
+                                    <span>Min: R${fund.minTicket.toLocaleString()}</span>
+                                </span>
+                            )}
                         </div>
 
                         <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3">
