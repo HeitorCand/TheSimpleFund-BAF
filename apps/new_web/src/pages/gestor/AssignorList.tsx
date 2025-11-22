@@ -20,11 +20,12 @@ const AssignorList: React.FC = () => {
     const [assignors, setAssignors] = useState<Assignor[]>([]);
     const [loading, setLoading] = useState(false);
     const { user } = useAuth();
+    const role = user?.role as string | undefined;
 
-    if (user?.role === 'CONSULTOR') {
+    if (role === 'CONSULTOR') {
         return <Navigate to="/dashboard" replace />;
     }
-    if (user && user.role !== 'GESTOR') {
+    if (role && role !== 'GESTOR') {
         return <p className="p-6 text-gray-600">Access restricted.</p>;
     }
 

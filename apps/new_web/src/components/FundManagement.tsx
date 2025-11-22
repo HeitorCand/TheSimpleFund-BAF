@@ -67,10 +67,6 @@ const FundManagement: React.FC<FundManagementProps> = ({ fund, onBack }) => {
         loadData();
     }, [loadData]);
 
-    const handleCreation = () => {
-        loadData();
-    }
-
     return (
         <>
             <div className="space-y-6">

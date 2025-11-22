@@ -7,14 +7,10 @@ import { useWallet } from '../contexts/WalletContext';
 interface Fund {
   id: string;
   name: string;
-  symbol: string;
+  symbol?: string;
   price: number;
-}
-
-interface Props {
-  fund: Fund;
-  onClose: () => void;
-  onConfirm: () => void;
+  consultor?: { publicKey?: string };
+  fundWalletPublicKey?: string | null;
 }
 // Investment Modal with Wallet Integration
 const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: () => void }> = ({ fund, onClose, onConfirm }) => {
@@ -59,10 +55,8 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
                 return;
             }
             
-            const fundAsset = new StellarSdk.Asset(
-                fund.symbol.substring(0, 12).toUpperCase(),
-                issuerPublicKey // Gestor or fund wallet is the token issuer
-            );
+            const code = (fund.symbol || 'FUND').substring(0, 12).toUpperCase();
+            const fundAsset = new StellarSdk.Asset(code, issuerPublicKey);
 
             // Step 1: Create trustline for fund token (if not exists)
             // This allows the investor to receive the fund's custom token
@@ -84,7 +78,7 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
                       .addOperation(StellarSdk.Operation.changeTrust({
                         asset: fundAsset,
                       }))
-                      .addMemo(StellarSdk.Memo.text(`Trust ${fund.symbol}`))
+                      .addMemo(StellarSdk.Memo.text(`Trust ${code}`))
                       .setTimeout(180)
                       .build();
 
@@ -149,10 +143,10 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
                         type="number" 
                         value={amount} 
                         onChange={e => setAmount(e.target.value)} 
-                        placeholder="Amount to invest (BRL)" 
+                        placeholder="Amount to invest (USD)" 
                         className="w-full p-3 border rounded-lg"
                     />
-                    {amount && <p className="text-sm">You will receive approx. {Math.floor(parseFloat(amount) / fund.price)} {fund.symbol} tokens.</p>}
+                    {amount && <p className="text-sm">You will receive approx. {Math.floor(parseFloat(amount) / fund.price)} {fund.symbol || 'TOKEN'} tokens.</p>}
                 </div>
                 <div className="flex justify-end space-x-4 mt-6">
                     <button onClick={onClose} className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>

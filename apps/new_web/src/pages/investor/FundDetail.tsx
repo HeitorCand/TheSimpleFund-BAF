@@ -8,6 +8,7 @@ import InvestmentModal from '../../components/InvestmentModal';
 interface Fund {
   id: string;
   name: string;
+  symbol?: string;
   cnpj?: string;
   fundType?: string;
   investorProfile?: string;
@@ -43,10 +44,6 @@ interface Fund {
   maxSupply?: number;
   totalIssued?: number;
   status?: string;
-}
-
-interface FundWithPayment extends Fund {
-  investment?: never;
 }
 
 const Field: React.FC<{ label: string; value?: React.ReactNode }> = ({ label, value }) => (
@@ -173,7 +170,7 @@ const FundDetail: React.FC = () => {
 
       {showInvest && selectedFund && (
         <InvestmentModal
-          fund={selectedFund}
+          fund={selectedFund as any}
           onClose={() => {
             setShowInvest(false);
             setSelectedFund(null);

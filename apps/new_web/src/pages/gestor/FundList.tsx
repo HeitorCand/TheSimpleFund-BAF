@@ -19,6 +19,7 @@ interface Fund {
 const FundList: React.FC = () => {
     const { publicKey, isConnected, connect } = useWallet();
     const { user } = useAuth();
+    const role = user?.role as string | undefined;
     const [funds, setFunds] = useState<Fund[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
@@ -133,7 +134,7 @@ const FundList: React.FC = () => {
             <div className="bg-white p-6 rounded-lg shadow-soft">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold">Manage Funds</h2>
-                    {user?.role === 'CONSULTOR' && (
+                    {role === 'CONSULTOR' && (
                         <Link
                             to="/dashboard/fundos/new"
                             className="px-3 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary/90 transition-colors"
