@@ -4,6 +4,7 @@ import { orderService } from '../../services/api';
 import toast from 'react-hot-toast';
 import { FiBriefcase, FiExternalLink, FiCheckCircle } from 'react-icons/fi';
 import { getErrorMessage } from '../../utils/errorHandler';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Order {
     id: string;
@@ -117,7 +118,9 @@ const Portfolio: React.FC = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                             <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
                                 <p className="text-sm text-green-700">Total Invested</p>
-                                <p className="text-2xl font-bold text-green-900">${totalInvested.toLocaleString()}</p>
+                                <p className="text-2xl font-bold text-green-900">
+                                    <FiatWithXlmValue amountUsd={totalInvested} />
+                                </p>
                             </div>
                             <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
                                 <p className="text-sm text-blue-700">Total Quotas</p>
@@ -148,7 +151,9 @@ const Portfolio: React.FC = () => {
                                             </div>
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-gray-600">Total Value:</span>
-                                                <span className="font-semibold">${group.totalValue.toLocaleString()}</span>
+                                                <span className="font-semibold">
+                                                    <FiatWithXlmValue amountUsd={group.totalValue} />
+                                                </span>
                                             </div>
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-gray-600">Orders:</span>

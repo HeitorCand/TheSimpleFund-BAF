@@ -117,7 +117,7 @@ const AssignorCreate: React.FC = () => {
       email: 'contact@assignoragro.com',
       phone: '+1 555-9999-9999',
       website: 'https://assignoragro.com',
-      address: '123 Flower St',
+      address: '123 Flower St, São Paulo',
       city: 'São Paulo',
       state: 'SP',
       country: 'BR',

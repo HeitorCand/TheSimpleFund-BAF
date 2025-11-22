@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { fundService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import InvestmentModal from '../../components/InvestmentModal';
+import { useAuth } from '../../contexts/useAuth';
+import { useWallet } from '../../contexts/WalletContext';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Fund {
   id: string;
@@ -56,28 +59,117 @@ const Field: React.FC<{ label: string; value?: React.ReactNode }> = ({ label, va
 const FundDetail: React.FC = () => {
   const { fundId } = useParams<{ fundId: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { publicKey, isConnected, connect } = useWallet();
   const [loading, setLoading] = useState(false);
   const [fund, setFund] = useState<Fund | null>(null);
   const [showInvest, setShowInvest] = useState(false);
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
+  const [processing, setProcessing] = useState(false);
+  const [showIssueModal, setShowIssueModal] = useState(false);
+  const [issueAmount, setIssueAmount] = useState('');
+  const [issuing, setIssuing] = useState(false);
+
+  const isGestor = user?.role === 'GESTOR';
+
+  const loadFund = useCallback(async () => {
+    if (!fundId) return;
+    setLoading(true);
+    try {
+      const response = await fundService.getById(fundId);
+      const resolvedFund = response.fund || response;
+      setFund(resolvedFund);
+      setSelectedFund(resolvedFund);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setLoading(false);
+    }
+  }, [fundId]);
 
   useEffect(() => {
-    const load = async () => {
-      if (!fundId) return;
-      setLoading(true);
-      try {
-        const response = await fundService.getById(fundId);
-        const resolvedFund = response.fund || response;
-        setFund(resolvedFund);
-        setSelectedFund(resolvedFund);
-      } catch (error) {
-        toast.error(getErrorMessage(error));
-      } finally {
-        setLoading(false);
+    loadFund();
+  }, [loadFund]);
+
+  const handleApprove = async (action: 'approve' | 'reject') => {
+    if (!fundId || !fund) return;
+    if (!isGestor) {
+      toast.error('Only managers can approve or reject funds.');
+      return;
+    }
+
+    if (action === 'approve') {
+      if (!isConnected || !publicKey) {
+        toast.error('Please connect your wallet first to approve the fund.');
+        try {
+          await connect();
+          toast.success('Wallet connected! Click Approve again to continue.');
+        } catch (error) {
+          toast.error('Failed to connect wallet.');
+        }
+        return;
       }
-    };
-    load();
-  }, [fundId]);
+    }
+
+    setProcessing(true);
+    toast.loading(action === 'approve' ? 'Approving fund...' : 'Rejecting fund...');
+    try {
+      await fundService.approve(
+        fundId,
+        action === 'approve' ? 'APPROVED' : 'REJECTED',
+        action === 'approve' ? (publicKey || undefined) : undefined
+      );
+      toast.dismiss();
+      toast.success(action === 'approve' ? 'Fund approved successfully.' : 'Fund rejected.');
+      await loadFund();
+    } catch (error) {
+      toast.dismiss();
+      toast.error(getErrorMessage(error));
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleDeactivate = async () => {
+    if (!fundId) return;
+    if (!confirm('Are you sure you want to deactivate this fund?')) return;
+
+    toast.loading('Deactivating fund...');
+    try {
+      await fundService.deactivate(fundId);
+      toast.dismiss();
+      toast.success('Fund deactivated successfully.');
+      await loadFund();
+    } catch (error) {
+      toast.dismiss();
+      toast.error(getErrorMessage(error));
+    }
+  };
+
+  const handleIssueSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!fund || !fundId) return;
+    const amountNum = parseInt(issueAmount, 10);
+    const maxAvailable = (fund.maxSupply ?? 0) - (fund.totalIssued ?? 0);
+
+    if (!amountNum || amountNum <= 0 || amountNum > maxAvailable) {
+      toast.error(`Amount must be between 1 and ${maxAvailable.toLocaleString()}`);
+      return;
+    }
+
+    setIssuing(true);
+    try {
+      await fundService.issueQuotas(fundId, amountNum);
+      toast.success(`Successfully issued ${amountNum.toLocaleString()} quotas!`);
+      setShowIssueModal(false);
+      setIssueAmount('');
+      await loadFund();
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setIssuing(false);
+    }
+  };
 
   if (loading) return <div className="p-8 text-center">Loading fund...</div>;
   if (!fund) return <div className="p-8 text-center text-gray-600">Fund not found.</div>;
@@ -90,19 +182,59 @@ const FundDetail: React.FC = () => {
           <p className="text-sm text-gray-600">{fund.description}</p>
         </div>
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate('/marketplace')} className="text-primary text-sm hover:underline">
-            Back to marketplace
+          <button
+            onClick={() => navigate(isGestor ? '/fundos' : '/marketplace')}
+            className="text-primary text-sm hover:underline"
+          >
+            {isGestor ? 'Back to Manage Funds' : 'Back to marketplace'}
           </button>
-          {fund && (
-            <button
-              onClick={() => {
-                setSelectedFund(fund);
-                setShowInvest(true);
-              }}
-              className="px-4 py-2 text-white bg-primary rounded-lg hover:bg-primary/90"
-            >
-              Invest Now
-            </button>
+          {isGestor ? (
+            fund.status === 'PENDING' && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleApprove('approve')}
+                  disabled={processing}
+                  className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-green-400"
+                >
+                  {processing ? 'Approving...' : 'Approve'}
+                </button>
+                <button
+                  onClick={() => handleApprove('reject')}
+                  disabled={processing}
+                  className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 disabled:bg-red-400"
+                >
+                  {processing ? 'Rejecting...' : 'Reject'}
+                </button>
+              </div>
+            )
+          ) : (
+            fund && (
+              <button
+                onClick={() => {
+                  setSelectedFund(fund);
+                  setShowInvest(true);
+                }}
+                className="px-4 py-2 text-white bg-primary rounded-lg hover:bg-primary/90"
+              >
+                Invest Now
+              </button>
+            )
+          )}
+          {isGestor && fund.status === 'APPROVED' && (
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowIssueModal(true)}
+                className="px-4 py-2 text-white bg-primary rounded-lg hover:bg-primary/90"
+              >
+                Issue quotas
+              </button>
+              <button
+                onClick={handleDeactivate}
+                className="px-4 py-2 text-white bg-gray-500 rounded-lg hover:bg-gray-600"
+              >
+                Deactivate
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -113,9 +245,9 @@ const FundDetail: React.FC = () => {
         <Field label="Target investor" value={fund.investorProfile} />
         <Field label="CVM code" value={fund.cvmCode} />
         <Field label="Status" value={fund.status} />
-        <Field label="Price" value={fund.price ? `$${fund.price.toLocaleString()}` : undefined} />
-        <Field label="NAV (per share)" value={fund.navPerShare ? `$${fund.navPerShare}` : undefined} />
-        <Field label="AUM / PL" value={fund.aum ? `$${fund.aum.toLocaleString()}` : undefined} />
+        <Field label="Price" value={fund.price ? <FiatWithXlmValue amountUsd={fund.price} /> : undefined} />
+        <Field label="NAV (per share)" value={fund.navPerShare ? <FiatWithXlmValue amountUsd={fund.navPerShare} /> : undefined} />
+        <Field label="AUM / PL" value={fund.aum ? <FiatWithXlmValue amountUsd={fund.aum} /> : undefined} />
         <Field label="Return 12m" value={fund.return12m ? `${fund.return12m}%` : undefined} />
         <Field label="Return YTD" value={fund.returnYtd ? `${fund.returnYtd}%` : undefined} />
         <Field label="Return since inception" value={fund.returnSinceInception ? `${fund.returnSinceInception}%` : undefined} />
@@ -177,6 +309,59 @@ const FundDetail: React.FC = () => {
           }}
           onConfirm={() => setShowInvest(false)}
         />
+      )}
+
+      {showIssueModal && fund && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 m-4">
+            <h2 className="text-xl font-bold mb-4">Issue Quotas - {fund.name}</h2>
+            <form onSubmit={handleIssueSubmit} className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-2">
+                  Current: <span className="font-semibold">{(fund.totalIssued ?? 0).toLocaleString()}</span> / {(fund.maxSupply ?? 0).toLocaleString()}
+                </p>
+                <p className="text-sm text-gray-600 mb-4">
+                  Available to issue:{' '}
+                  <span className="font-semibold text-blue-600">
+                    {((fund.maxSupply ?? 0) - (fund.totalIssued ?? 0)).toLocaleString()}
+                  </span>
+                </p>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Amount to Issue
+                </label>
+                <input
+                  type="number"
+                  value={issueAmount}
+                  onChange={(e) => setIssueAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  min="1"
+                  max={(fund.maxSupply ?? 0) - (fund.totalIssued ?? 0)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowIssueModal(false);
+                    setIssueAmount('');
+                  }}
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={issuing || !issueAmount}
+                  className="px-4 py-2 text-white bg-primary rounded-md hover:bg-primary/90 disabled:bg-primary/50 transition-colors"
+                >
+                  {issuing ? 'Issuing...' : 'Issue Quotas'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

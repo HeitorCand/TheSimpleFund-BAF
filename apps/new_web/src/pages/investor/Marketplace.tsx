@@ -5,6 +5,7 @@ import { useWallet } from '../../contexts/WalletContext';
 import { FiSearch } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import InvestmentModal from '../../components/InvestmentModal';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Fund {
   id: string;
@@ -95,7 +96,7 @@ const Marketplace: React.FC = () => {
               </div>
               <div className="text-sm space-y-2 mt-4">
                 <p>
-                  <strong>Price:</strong> ${fund.price.toLocaleString()}
+                  <strong>Price:</strong> <FiatWithXlmValue amountUsd={fund.price} />
                 </p>
                 <p>
                   <strong>Available:</strong> {(fund.maxSupply - fund.totalIssued).toLocaleString()}

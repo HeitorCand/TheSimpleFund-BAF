@@ -84,6 +84,7 @@ const App: React.FC = () => {
                 <Route path="debtors" element={<DebtorList />} />
                 <Route path="pools" element={<PoolList />} />
                 <Route path="debtors/new" element={<DebtorCreate />} />
+                <Route path="fundos/:fundId" element={<FundDetail />} />
                 {/* Investor Routes */}
                 <Route path="marketplace" element={<Marketplace />} />
                 <Route path="marketplace/:fundId" element={<FundDetail />} />

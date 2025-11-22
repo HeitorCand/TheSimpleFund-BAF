@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { FiPlus, FiTrendingUp, FiDollarSign, FiPercent } from 'react-icons/fi';
 import { poolService, fundService } from '../../services/api';
 import { useWallet } from '../../contexts/WalletContext';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Pool {
   id: string;
@@ -156,7 +157,7 @@ const PoolList: React.FC = () => {
                       <FiDollarSign size={16} /> Deposited
                     </span>
                     <span className="font-semibold">
-                      ${pool.totalDeposited.toLocaleString()}
+                      <FiatWithXlmValue amountUsd={pool.totalDeposited} />
                     </span>
                   </div>
 
@@ -165,7 +166,7 @@ const PoolList: React.FC = () => {
                       <FiTrendingUp size={16} /> Current Balance
                     </span>
                     <span className="font-semibold">
-                      ${pool.currentBalance.toLocaleString()}
+                      <FiatWithXlmValue amountUsd={pool.currentBalance} />
                     </span>
                   </div>
 
@@ -176,7 +177,7 @@ const PoolList: React.FC = () => {
                     <span className={`font-semibold ${
                       (pool.currentYield || 0) > 0 ? 'text-green-600' : 'text-gray-600'
                     }`}>
-                      ${(pool.currentYield || 0).toLocaleString()} ({(pool.yieldPercentage || 0).toFixed(2)}%)
+                      <FiatWithXlmValue amountUsd={pool.currentYield || 0} /> ({(pool.yieldPercentage || 0).toFixed(2)}%)
                     </span>
                   </div>
 
@@ -451,7 +452,7 @@ const DepositModal: React.FC<{
           <p className="text-sm text-gray-600">Pool: {pool.name}</p>
           <p className="text-sm text-gray-600">Fund: {pool.fund.name}</p>
           <p className="text-sm text-gray-600">
-            Current Balance: ${pool.currentBalance.toLocaleString()}
+            Current Balance: <FiatWithXlmValue amountUsd={pool.currentBalance} />
           </p>
         </div>
 

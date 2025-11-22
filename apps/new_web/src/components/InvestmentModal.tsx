@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import * as StellarSdk from 'stellar-sdk';
 import { orderService } from '../services/api';
 import { useWallet } from '../contexts/WalletContext';
+import FiatWithXlmValue from './FiatWithXlmValue';
 
 interface Fund {
   id: string;
@@ -138,7 +139,7 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
             <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
                 <h2 className="text-2xl font-bold mb-4">Invest in {fund.name}</h2>
                 <div className="space-y-4">
-                    <p>Price per token: ${fund.price}</p>
+                    <p>Price per token: <FiatWithXlmValue amountUsd={fund.price} /></p>
                     <input 
                         type="number" 
                         value={amount} 
@@ -146,7 +147,14 @@ const InvestmentModal: React.FC<{ fund: Fund, onClose: () => void, onConfirm: ()
                         placeholder="Amount to invest (USD)" 
                         className="w-full p-3 border rounded-lg"
                     />
-                    {amount && <p className="text-sm">You will receive approx. {Math.floor(parseFloat(amount) / fund.price)} {fund.symbol || 'TOKEN'} tokens.</p>}
+                    {amount && (
+                        <div className="text-sm space-y-1">
+                            <p>You will receive approx. {Math.floor(parseFloat(amount) / fund.price)} {fund.symbol || 'TOKEN'} tokens.</p>
+                            <p className="text-gray-600">
+                                Investment: <FiatWithXlmValue amountUsd={parseFloat(amount)} />
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <div className="flex justify-end space-x-4 mt-6">
                     <button onClick={onClose} className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300">Cancel</button>
