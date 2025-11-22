@@ -14,6 +14,7 @@ import FundList from './pages/gestor/FundList';
 import InvestmentList from './pages/gestor/InvestmentList';
 import AssignorList from './pages/gestor/AssignorList';
 import DebtorList from './pages/gestor/DebtorList';
+import HomePage from './pages/lp/HomePage';
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -41,6 +42,10 @@ const App: React.FC = () => {
       <Toaster position="bottom-right" />
       <BrowserRouter>
         <Routes>
+          {/* Landing Page - Completely public, no auth check */}
+          <Route path="/home" element={<HomePage />} />
+          
+          {/* Root redirects to dashboard if logged in, or login if not */}
           <Route path="/" element={<Navigate to="/dashboard" />} />
 
           {/* Public routes */}
