@@ -71,7 +71,6 @@ const FundDetail: React.FC = () => {
   const [issuing, setIssuing] = useState(false);
 
   const isGestor = user?.role === 'GESTOR';
-  const isInvestidor = user?.role === 'INVESTIDOR';
 
   const loadFund = useCallback(async () => {
     if (!fundId) return;
@@ -118,7 +117,7 @@ const FundDetail: React.FC = () => {
       await fundService.approve(
         fundId,
         action === 'approve' ? 'APPROVED' : 'REJECTED',
-        action === 'approve' ? publicKey : undefined
+        action === 'approve' ? (publicKey || undefined) : undefined
       );
       toast.dismiss();
       toast.success(action === 'approve' ? 'Fund approved successfully.' : 'Fund rejected.');

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { fundService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
-import { useWallet } from '../../contexts/WalletContext';
 import { useAuth } from '../../contexts/useAuth';
 import { Link, Navigate } from 'react-router-dom';
 import FiatWithXlmValue from '../../components/FiatWithXlmValue';
@@ -18,7 +17,6 @@ interface Fund {
 }
 
 const FundList: React.FC = () => {
-    const { publicKey, isConnected, connect } = useWallet();
     const { user } = useAuth();
     const role = user?.role as string | undefined;
     const [funds, setFunds] = useState<Fund[]>([]);
@@ -48,54 +46,6 @@ const FundList: React.FC = () => {
     if (user && user.role !== 'GESTOR') {
         return <p className="p-6 text-gray-600">Access restricted.</p>;
     }
-
-    const handleApprove = async (id: string, action: 'approve' | 'reject') => {
-        if (user?.role !== 'GESTOR') {
-            toast.error('Only managers can approve or reject funds.');
-            return;
-        }
-        if (action === 'approve') {
-            // Check if wallet is connected
-            if (!isConnected || !publicKey) {
-                toast.error('Please connect your wallet first to approve the fund');
-                try {
-                    await connect();
-                    // After connection, the user can try again
-                    toast.success('Wallet connected! Click Approve again to use this wallet for the fund.');
-                } catch (error) {
-                    toast.error('Failed to connect wallet');
-                }
-                return;
-            }
-
-            // Use the connected wallet as the fund wallet
-            const fundWalletPublicKey = publicKey;
-            
-            toast.loading('Processing...');
-            try {
-                const status = 'APPROVED';
-                await fundService.approve(id, status, fundWalletPublicKey);
-                toast.dismiss();
-                toast.success(`Fund approved with wallet: ${fundWalletPublicKey.slice(0, 4)}...${fundWalletPublicKey.slice(-4)}`);
-                loadData();
-            } catch (error) {
-                toast.dismiss();
-                toast.error(getErrorMessage(error));
-            }
-        } else {
-            toast.loading('Processing...');
-            try {
-                const status = 'REJECTED';
-                await fundService.approve(id, status);
-                toast.dismiss();
-                toast.success('Fund rejected successfully!');
-                loadData();
-            } catch (error) {
-                toast.dismiss();
-                toast.error(getErrorMessage(error));
-            }
-        }
-    };
 
     const handleDeactivate = async (id: string) => {
         if (!confirm('Are you sure you want to deactivate this fund?')) return;
