@@ -6,16 +6,22 @@ const prisma = new PrismaClient();
 async function createTestData() {
   try {
     console.log('🗃️  Limpando dados existentes...');
-    
+
     // Limpar dados existentes na ordem correta devido às foreign keys
-    // Ordem: dependências primeiro, depois as tabelas principais
-    await prisma.order.deleteMany();
-    await prisma.receivable.deleteMany();
-    await prisma.pool.deleteMany(); // Pools devem ser deletados antes de Funds
-    await prisma.cedente.deleteMany();
-    await prisma.sacado.deleteMany();
-    await prisma.fund.deleteMany();
-    await prisma.user.deleteMany();
+    await prisma.$transaction([
+      // Tabelas que dependem de User e Fund
+      prisma.fundInteraction.deleteMany(), // fund_interactions (depende de fund e investor)
+
+      prisma.order.deleteMany(),           // orders (depende de fund e investor)
+      prisma.receivable.deleteMany(),      // receivables (depende de fund e sacado)
+
+      prisma.pool.deleteMany(),            // pools (depende de fund)
+      prisma.cedente.deleteMany(),         // cedentes (depende de fund e consultor)
+      prisma.sacado.deleteMany(),          // sacados (depende de fund e consultor)
+
+      prisma.fund.deleteMany(),            // funds (depende de consultor?)
+      prisma.user.deleteMany(),            // users
+    ]);
 
     console.log('👥 Criando usuários de teste...');
 
@@ -28,8 +34,8 @@ async function createTestData() {
         email: 'gestor@vero.com',
         password: defaultPassword,
         role: 'GESTOR',
-        status: 'APPROVED'
-      }
+        status: 'APPROVED',
+      },
     });
     console.log('✅ Gestor criado:', gestor.email);
 
@@ -39,8 +45,8 @@ async function createTestData() {
         email: 'consultor@vero.com',
         password: defaultPassword,
         role: 'CONSULTOR',
-        status: 'APPROVED'
-      }
+        status: 'APPROVED',
+      },
     });
     console.log('✅ Consultor criado:', consultor.email);
 
@@ -50,19 +56,19 @@ async function createTestData() {
         email: 'investidor@vero.com',
         password: defaultPassword,
         role: 'INVESTIDOR',
-        status: 'APPROVED'
-      }
+        status: 'APPROVED',
+      },
     });
     console.log('✅ Investidor criado:', investidor.email);
 
-    // 4. Criar usuários adicionais pendentes para demonstrar aprovação
+    // 4. Usuários pendentes
     const consultorPendente = await prisma.user.create({
       data: {
         email: 'consultor.pendente@vero.com',
         password: defaultPassword,
         role: 'CONSULTOR',
-        status: 'PENDING'
-      }
+        status: 'PENDING',
+      },
     });
     console.log('⏳ Consultor pendente criado:', consultorPendente.email);
 
@@ -71,8 +77,8 @@ async function createTestData() {
         email: 'investidor.pendente@vero.com',
         password: defaultPassword,
         role: 'INVESTIDOR',
-        status: 'PENDING'
-      }
+        status: 'PENDING',
+      },
     });
     console.log('⏳ Investidor pendente criado:', investidorPendente.email);
 
