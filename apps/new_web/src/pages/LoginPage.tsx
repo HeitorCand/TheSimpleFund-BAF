@@ -43,97 +43,135 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const inputBase =
+    'w-full rounded-lg px-3 py-3 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition';
+
   return (
-    <div className="min-h-screen flex bg-dark text-gray-200">
-      <div
-        className="hidden lg:flex flex-[0.65] bg-cover bg-left"
-        style={{
-          backgroundImage: `url("${heroImage}")`,
-        }}
-      />
+    <div className="min-h-screen flex flex-col lg:flex-row bg-[#020617] bg-[radial-gradient(circle_at_top,_#134e4a_0,_#020617_55%,_#020617_100%)] text-white">
+      {/* Hero topo (mobile) / lateral (desktop) */}
+      <div className="w-full h-40 sm:h-56 lg:h-auto lg:flex-[0.6] relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url("${heroImage}")` }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#020617] via-[#020617]/40 to-transparent" />
+      </div>
 
-      <div className="flex-1 lg:flex-[0.35] flex items-center justify-center px-6 lg:px-10 xl:px-14">
-        <div className="w-full max-w-2xl px-3 sm:px-6">
-          <form onSubmit={handleSubmit} className="space-y-8 px-2 sm:px-3">
-            <div>
-              <h2 className="text-4xl sm:text-5xl font-semibold text-white">Login</h2>
-            </div>
-
-            {error && <p className="text-red-500 text-base">{error}</p>}
-
-            <div className="space-y-6">
-              <div>
-                <label className="block text-base font-semibold text-gray-300 mb-2">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full bg-dark-200 border border-gray-600 rounded-lg px-3 py-3 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
-                  placeholder="you@example.com"
-                />
+      {/* Bloco do formulário */}
+      <div className="flex-1 lg:flex-[0.4] flex items-center justify-center px-4 sm:px-6 lg:px-10 xl:px-14 py-8 lg:py-0">
+        <div className="w-full max-w-sm sm:max-w-md">
+          <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Header */}
+              <div className="space-y-2">
+                <p className="text-[10px] sm:text-xs tracking-[0.2em] uppercase text-emerald-300">
+                  The Simple Fund
+                </p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white">
+                  Sign in
+                </h2>
+                <p className="text-xs sm:text-sm text-white/70">
+                  Access your receivables operations dashboard.
+                </p>
               </div>
 
-              <div>
-                <label className="block text-base font-semibold text-gray-300 mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full bg-dark-200 border border-gray-600 rounded-lg px-3 py-3 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
+              {error && (
+                <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/40 rounded-lg px-3 py-2">
+                  {error}
+                </p>
+              )}
 
-            <div className="flex items-center justify-end text-sm text-gray-400">
-              <div className="flex items-center gap-1">
-                <span>Don&apos;t have an account?</span>
-                <Link to="/register" className="text-primary font-semibold hover:underline">
-                  Create one
-                </Link>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 text-white rounded-lg bg-primary hover:shadow-lg transition-all disabled:opacity-60"
-            >
-              {loading ? 'Logging in...' : 'Sign in'}
-            </button>
-
-            <div className="pt-6 border-t border-gray-700 space-y-3">
-              <p className="text-sm text-gray-400">Quick access to test profiles</p>
+              {/* Campos */}
               <div className="space-y-5">
-                <button
-                  type="button"
-                  onClick={() => handleTestLogin('gestor@vero.com', '123456')}
-                  disabled={loading}
-                  className="w-full py-2 text-sm text-primary-700 bg-primary-100 border border-primary-200 rounded-lg hover:bg-primary-200 disabled:opacity-50 transition-colors"
-                >
-                  Login as <strong>MANAGER</strong>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTestLogin('consultor@vero.com', '123456')}
-                  disabled={loading}
-                  className="w-full py-2 text-sm text-primary-700 bg-primary-100 border border-primary-200 rounded-lg hover:bg-primary-200 disabled:opacity-50 transition-colors"
-                >
-                  Login as <strong>CONSULTANT</strong>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTestLogin('investidor@vero.com', '123456')}
-                  disabled={loading}
-                  className="w-full py-2 text-sm text-primary-700 bg-primary-100 border border-primary-200 rounded-lg hover:bg-primary-200 disabled:opacity-50 transition-colors"
-                >
-                  Login as <strong>INVESTOR</strong>
-                </button>
+                <div>
+                  <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className={inputBase}
+                    placeholder="you@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className={inputBase}
+                    placeholder="••••••••"
+                  />
+                </div>
               </div>
-            </div>
-          </form>
+
+              {/* Link register */}
+              <div className="flex items-center justify-between text-xs sm:text-sm text-white/70">
+                <div className="flex items-center gap-1">
+                  <span>Don&apos;t have an account?</span>
+                  <Link
+                    to="/register"
+                    className="text-emerald-300 font-semibold hover:text-emerald-200 hover:underline underline-offset-4 transition"
+                  >
+                    Create one
+                  </Link>
+                </div>
+              </div>
+
+              {/* Botão principal */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3.5 text-sm font-medium rounded-2xl bg-white text-black hover:opacity-90 hover:scale-[1.02] shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Logging in…' : 'Sign in'}
+              </button>
+
+              {/* Acesso rápido – perfis de teste */}
+              <div className="pt-5 border-t border-white/10 space-y-3">
+                <p className="text-[11px] sm:text-xs text-white/60">
+                  Quick access to test profiles
+                </p>
+                <div className="space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => handleTestLogin('gestor@vero.com', '123456')}
+                    disabled={loading}
+                    className="w-full py-2.5 text-xs sm:text-sm rounded-xl bg-white/5 border border-white/15 text-white/90 hover:bg-white/10 transition disabled:opacity-50"
+                  >
+                    Login as <span className="font-semibold">MANAGER</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTestLogin('consultor@vero.com', '123456')}
+                    disabled={loading}
+                    className="w-full py-2.5 text-xs sm:text-sm rounded-xl bg-white/5 border border-white/15 text-white/90 hover:bg-white/10 transition disabled:opacity-50"
+                  >
+                    Login as <span className="font-semibold">CONSULTANT</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTestLogin('investidor@vero.com', '123456')}
+                    disabled={loading}
+                    className="w-full py-2.5 text-xs sm:text-sm rounded-xl bg-white/5 border border-white/15 text-white/90 hover:bg-white/10 transition disabled:opacity-50"
+                  >
+                    Login as <span className="font-semibold">INVESTOR</span>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div className="mt-6 text-center text-[11px] text-white/40">
+            © {new Date().getFullYear()} The Simple Fund
+          </div>
         </div>
       </div>
     </div>

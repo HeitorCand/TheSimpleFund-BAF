@@ -137,14 +137,14 @@ const PoolList: React.FC = () => {
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-bold">{pool.name}</h3>
-                    <p className="text-sm text-gray-600">{pool.fund.name}</p>
+                    <h3 className="text-xl font-bold text-white">{pool.name}</h3>
+                    <p className="text-sm text-gray-300">{pool.fund.name}</p>
                   </div>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${
                       pool.status === 'ACTIVE'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-green-900/50 text-green-300'
+                        : 'bg-gray-700/50 text-gray-300'
                     }`}
                   >
                     {pool.status}
@@ -153,29 +153,29 @@ const PoolList: React.FC = () => {
 
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 flex items-center gap-1">
+                    <span className="text-gray-300 flex items-center gap-1">
                       <FiDollarSign size={16} /> Deposited
                     </span>
-                    <span className="font-semibold">
+                    <span className="font-semibold text-white">
                       <FiatWithXlmValue amountUsd={pool.totalDeposited} />
                     </span>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 flex items-center gap-1">
+                    <span className="text-gray-300 flex items-center gap-1">
                       <FiTrendingUp size={16} /> Current Balance
                     </span>
-                    <span className="font-semibold">
+                    <span className="font-semibold text-white">
                       <FiatWithXlmValue amountUsd={pool.currentBalance} />
                     </span>
                   </div>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 flex items-center gap-1">
+                    <span className="text-gray-300 flex items-center gap-1">
                       <FiPercent size={16} /> Yield Earned
                     </span>
                     <span className={`font-semibold ${
-                      (pool.currentYield || 0) > 0 ? 'text-green-600' : 'text-gray-600'
+                      (pool.currentYield || 0) > 0 ? 'text-green-400' : 'text-gray-300'
                     }`}>
                       <FiatWithXlmValue amountUsd={pool.currentYield || 0} /> ({(pool.yieldPercentage || 0).toFixed(2)}%)
                     </span>
@@ -183,7 +183,7 @@ const PoolList: React.FC = () => {
 
                   {pool.apy && (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">APY</span>
+                      <span className="text-gray-300">APY</span>
                       <span className="font-semibold text-primary">
                         {pool.apy.toFixed(2)}%
                       </span>
@@ -202,7 +202,7 @@ const PoolList: React.FC = () => {
                   <button
                     onClick={() => handleWithdraw(pool)}
                     disabled={pool.status !== 'ACTIVE' || pool.currentBalance === 0}
-                    className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Withdraw
                   </button>
@@ -311,7 +311,7 @@ const CreatePoolModal: React.FC<{
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-md p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-        <h2 className="text-2xl font-bold mb-6">Create Yield Pool</h2>
+        <h2 className="text-2xl font-bold mb-6 text-white">Create Yield Pool</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">Pool Name</label>
@@ -447,7 +447,7 @@ const DepositModal: React.FC<{
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-md p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-        <h2 className="text-2xl font-bold mb-4">Deposit to Pool</h2>
+        <h2 className="text-2xl font-bold mb-4 text-white">Deposit to Pool</h2>
         <div className="mb-6">
           <p className="text-sm text-gray-300">Pool: {pool.name}</p>
           <p className="text-sm text-gray-300">Fund: {pool.fund.name}</p>
@@ -561,7 +561,7 @@ const WithdrawModal: React.FC<{
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-md p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-        <h2 className="text-2xl font-bold mb-4">Withdraw from Pool</h2>
+        <h2 className="text-2xl font-bold mb-4 text-white">Withdraw from Pool</h2>
         <div className="mb-6">
           <p className="text-sm text-gray-300">Pool: {pool.name}</p>
           <p className="text-sm text-gray-300">Fund: {pool.fund.name}</p>

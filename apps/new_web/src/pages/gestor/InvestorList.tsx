@@ -38,7 +38,14 @@ const InvestorList: React.FC = () => {
         }
     };
 
-    if (loading) return <div className="text-center p-8 text-white">Loading investors...</div>;
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center p-8">
+                <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-primary mb-4"></div>
+                <p className="text-white">Loading investors...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">

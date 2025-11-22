@@ -79,7 +79,14 @@ const DebtorList: React.FC = () => {
         }
     };
 
-    if (loading) return <div className="text-center p-8 text-white">Loading debtors...</div>;
+    if (loading) {
+        return (
+            <div className="flex flex-col items-center justify-center p-8">
+                <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-primary mb-4"></div>
+                <p className="text-white">Loading debtors...</p>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -107,8 +114,8 @@ const DebtorList: React.FC = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                        item.status === 'APPROVED' ? 'bg-primary-100 text-primary-800' :
-                                        item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                        item.status === 'APPROVED' ? 'bg-[#A0E4B0] text-primary-800' :
+                                        item.status === 'PENDING' ? 'bg-[#F8FBA2] text-yellow-800' :
                                         'bg-[#fa7f7f]-100 text-red-800'
                                     }`}>
                                         {item.status}
@@ -137,8 +144,8 @@ const DebtorList: React.FC = () => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                    selected.status === 'APPROVED' ? 'bg-primary-100 text-primary-800' :
-                                    selected.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                    selected.status === 'APPROVED' ? 'bg-[#A0E4B0] text-primary-800' :
+                                    selected.status === 'PENDING' ? 'bg-[#F8FBA2] text-yellow-800' :
                                     'bg-[#fa7f7f]-100 text-red-800'
                                 }`}>
                                     {selected.status}

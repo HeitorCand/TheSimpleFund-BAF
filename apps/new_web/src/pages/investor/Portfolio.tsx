@@ -117,8 +117,8 @@ const Portfolio: React.FC = () => {
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
                             <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-                                <p className="text-sm text-green-700">Total Invested</p>
-                                <p className="text-2xl font-bold text-green-900">
+                                <p className="text-sm text-[#A0E4B0]">Total Invested</p>
+                                <p className="text-2xl font-bold text-[[#A0E4B0]]">
                                     <FiatWithXlmValue amountUsd={totalInvested} />
                                 </p>
                             </div>
@@ -127,8 +127,8 @@ const Portfolio: React.FC = () => {
                                 <p className="text-2xl font-bold text-blue-900">{totalQuotas.toLocaleString()}</p>
                             </div>
                             <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-                                <p className="text-sm text-purple-700">Funds Invested</p>
-                                <p className="text-2xl font-bold text-purple-900">{Object.keys(groupedOrders).length}</p>
+                                <p className="text-sm text-[#836FFF]">Funds Invested</p>
+                                <p className="text-2xl font-bold text-[#836FFF]">{Object.keys(groupedOrders).length}</p>
                             </div>
                         </div>
 
