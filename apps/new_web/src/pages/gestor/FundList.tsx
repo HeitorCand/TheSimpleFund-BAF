@@ -175,22 +175,17 @@ const FundList: React.FC = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <Link
+                                            to={`/fundos/${item.id}`}
+                                            className="px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary/10 transition-colors"
+                                        >
+                                            More info
+                                        </Link>
                                         {item.status === 'PENDING' && (
-                                            <>
-                                                <button 
-                                                    onClick={() => handleApprove(item.id, 'approve')} 
-                                                    className="px-3 py-1.5 text-sm text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors"
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleApprove(item.id, 'reject')} 
-                                                    className="px-3 py-1.5 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
-                                                >
-                                                    Reject
-                                                </button>
-                                            </>
+                                            <span className="px-3 py-1.5 text-sm rounded-md bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                                Pending approval
+                                            </span>
                                         )}
                                         {item.status === 'APPROVED' && (
                                             <>
