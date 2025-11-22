@@ -3,47 +3,87 @@ title: "User Experience"
 sidebar_position: 5
 ---
 
-
 # UX and UI 
 
 ## Introduction
 
-**The Simple Fund** was designed to ensure an **accessible and enjoyable user experience**, with a **clean and intuitive interface** for each user type: **Investor**, **Consultant**, and **Manager**. Each screen was carefully crafted to facilitate navigation and provide a **smooth experience** from onboarding to daily interactions. The use of **blockchain** ensures the **security, transparency, and immutability** of transactions and data, guaranteeing that each participant has full control over their actions and information.
+**The Simple Fund** was designed to ensure an **accessible and enjoyable user experience**, with a **clean and intuitive interface** tailored to each user type: **Investor**, **Consultant**, and **Manager**. The platform combines a modern Web3 UX with non-custodial access through the **Freighter wallet**, ensuring that each user interacts directly with their assets. The interface prioritizes clarity, transparency, and ease of use, from onboarding to daily operations.
+
+The use of **Stellar blockchain** and **smart contracts** ensures **security, transparency, and immutability**, while integrated analytics, real-time pricing, and DeFi yield data (via Blend pools) enhance decision-making and provide a richer experience.
+
 
 ## Investor Screen
 
 ### Accessibility and Usability
 
-The **Investor** screen features a **clear and straightforward interface**. The main dashboard displays information about the **available funds** for investment, the **amount invested**, and **accumulated returns**. This information is easy to read, with **simple graphs** showing the performance of investments.
+The **Investor** screen features a **clean, guided interface** that highlights:
 
-### Blockchain Security
+- **Available funds** with tags (risk, sector, APY, duration)  
+- **Current investments** and **portfolio performance**  
+- **Share price (in XLM and USD)**  
+- **NAV per share**, updated from on-chain pool balances  
+- **Yield generated from Blend lending pools**
 
-The use of **Stellar blockchain** ensures that the **Investor** has full **control over their shares**. The **shares are tokenized** and stored directly in the **Investor's digital wallet**, with **transactions recorded in a public and auditable manner**. This guarantees **immutable proof of ownership** and the **security** of the Investor’s shares, along with the ability to **trade them instantly on Stellar DEX**. The **onboarding process** is also simplified, with the **generation of Stellar keys** to ensure secure transactions from the very first access.
+Charts and indicators provide visual insight into returns over time.  
+A built-in **recommendation engine** suggests funds aligned with the investor’s risk profile and behavior.
+
+### Non-Custodial Security
+
+Investors connect through **Freighter**, enabling:
+
+- direct token ownership,
+- local signature of every transaction,
+- transparent pricing,
+- and immediate liquidity on the Stellar DEX.
+
+All shares are tokenized and held **fully on-chain**, providing immutable proof of ownership and instant tradability.
 
 
 ## Consultant Screen
 
 ### Accessibility and Usability
 
-The **Consultant** screen facilitates **fund creation**, **assignor and debtor registration**, and the ability to **generate detailed reports** on each transaction. The consultant has a clear view of the **required steps** for registering and approving operations, with visual indicators to guide every action. The platform is designed to be **intuitive**, with **well-placed navigation buttons** and simplified input fields.
+The **Consultant** interface simplifies the onboarding and management of:
 
-### Blockchain Security
+- **Assignors (cedentes)**  
+- **Debtors (sacados)**  
+- **Receivables** linked to specific funds  
 
-**Stellar blockchain** ensures that the **Consultant** has **complete transparency** when registering **operations**. Each **assignor and debtor** is registered **on-chain**, ensuring that all information is **impossible to alter** without trace. The use of **smart contracts** also allows **transactions to be automated and verified** securely, ensuring that the consultant can trust that funds will be properly allocated and distributed without external interference.
+Each action follows a guided workflow, with validation steps, visual status indicators, and intuitive forms. Consultants can also access fund concentration metrics (cedente, sacado, sector) and compliance-related information.
+
+### Transparency and Security
+
+All registrations are recorded **on-chain**, ensuring immutability and full auditability.  
+Receivables linked to a fund update its risk and exposure parameters, providing transparency for managers and investors.
 
 
 ## Manager Screen
 
 ### Accessibility and Usability
 
-The **Manager** screen provides an overview of the **fund's performance**, allowing for tracking of **payment statuses**, viewing **detailed reports**, and managing **investors and consultants** associated with the fund. The interface is designed to be **clean** and **free of unnecessary clutter**, with graphs that show cash flows and returns. The **control panel** is intuitive and allows the manager to act quickly, whether approving new operations or distributing returns.
+The **Manager** dashboard provides a high-level overview of the entire fund operation, including:
 
-### Blockchain Security
+- **Fund performance and historical returns**  
+- **Blend pool status** (APY, total deposited, yield accrued)  
+- **Cash flow insights from receivables**  
+- **Investors, consultants, and order approvals**  
+- **Share issuance, supply, and price controls**  
 
-The **Manager** has full access to **management and auditing** of the **funds registered on Stellar blockchain**, which ensures **clear, real-time visibility** of transactions. The use of **smart contracts** to automatically distribute returns eliminates any risk of human error or fraud, as payments and distributions are **executed according to the predefined rules** in the contract. Additionally, the **hard freeze** feature on the dashboard allows the manager to **pause operations** if something needs to be reviewed, providing extra control over the platform.
+Managers can approve operations, monitor pool health, review exposures, and manage issuance directly through an intuitive control panel.
+
+### Blockchain Reliability
+
+On-chain data ensures real-time accuracy:
+
+- **Smart contracts** automate share issuance, minting, and distributions  
+- **Blend pools** provide isolated and secure yield generation  
+- **Hard freeze** allows pausing fund operations when needed  
+- **All activity is auditable** with transparent transaction hashes  
+
 
 ## Conclusion
 
-The **UX** of **The Simple Fund** was developed to provide an **intuitive**, **pleasant**, and **accessible experience** for all user types. The **clean UI** and **well-structured layout** make navigation easy and ensure that each **Investor**, **Consultant**, and **Manager** can complete their operations efficiently. The use of **Stellar blockchain** provides **unmatched security**, ensuring that transactions, data, and funds for each user are **secure and immutable**. With this solid foundation of security and design, **The Simple Fund** not only facilitates the management of receivables funds but also sets a new standard for transparency and trust in the financial market.
+The **UX** of **The Simple Fund** focuses on delivering a **simple, transparent, and highly secure** experience for all user types. Through a combination of **clean UI**, **non-custodial wallet integration**, **on-chain data**, and **DeFi yield mechanisms**, the platform provides users with full control over their assets while maintaining institutional-grade security and operational efficiency.
 
+With this foundation, **The Simple Fund** redefines how receivables funds are managed, offering a modern, intuitive, and globally scalable Web3 experience.
 

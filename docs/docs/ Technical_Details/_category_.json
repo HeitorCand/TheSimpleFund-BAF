@@ -3,6 +3,6 @@
   "position": 4,
   "link": {
     "type": "generated-index",
-    "description": "This section presents the technical details of our solution. Here we show the platform architecture, explain how the smart contracts work, and justify why we chose the Stellar blockchain as our technological foundation."
+    "description": "This section presents the technical details of our solution: platform architecture, database schema, smart contracts, Blend DeFi integration, AI-powered recommendation system, ZK investor badges, and complete API reference."
   }
 }

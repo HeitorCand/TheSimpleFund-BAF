@@ -6,8 +6,6 @@
 
 import { themes as prismThemes } from "prism-react-renderer";
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "TSF Documentation",
@@ -16,23 +14,27 @@ const config = {
 
   // Set the production url of your site here
   url: "https://heitorcand.github.io",
-  baseUrl: '/TheSimpleFund-BAF/',
+  baseUrl: "/TheSimpleFund-BAF/",
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: "heitorcand", // Usually your GitHub org/user name.
-  projectName: "TheSimpleFund-BAF", // Usually your repo name.
+  organizationName: "heitorcand",
+  projectName: "TheSimpleFund-BAF",
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
   },
+
+  // 🔹 Habilita Mermaid no markdown
+  markdown: {
+    mermaid: true,
+  },
+
+  // 🔹 Adiciona o tema de Mermaid
+  themes: ["@docusaurus/theme-mermaid"],
 
   presets: [
     [
@@ -41,8 +43,6 @@ const config = {
       ({
         docs: {
           sidebarPath: "./sidebars.js",
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
             "https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/",
           routeBasePath: "/",
@@ -58,7 +58,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
       image: "img/TSF.svg",
       navbar: {
         title: "The Simple Fund Documentation",
@@ -66,7 +65,6 @@ const config = {
           alt: "The Simple Fund logo",
           srcDark: "img/TSF.svg",
           src: "img/TSF_dark.svg",
-
         },
         items: [
           {
