@@ -91,8 +91,32 @@ model Fund {
   orders      Order[]
   cedentes    Cedente[]
   sacados     Sacado[]
+  pools       Pool[]
 
   @@map("funds")
+}
+
+model Pool {
+  id                  String   @id @default(cuid())
+  name                String
+  blendPoolAddress    String   @map("blend_pool_address") // Endereço do pool no Blend Protocol
+  assetAddress        String   @map("asset_address") // Endereço do asset (USDC, XLM, etc)
+  totalDeposited      Float    @default(0) @map("total_deposited") // Total depositado no pool
+  currentBalance      Float    @default(0) @map("current_balance") // Saldo atual (deposited + yield)
+  yieldEarned         Float    @default(0) @map("yield_earned") // Yield acumulado
+  apy                 Float?   // APY atual do pool
+  status              String   @default("ACTIVE") // ACTIVE, PAUSED, CLOSED
+  lastYieldUpdate     DateTime? @map("last_yield_update")
+  depositTxHash       String?  @map("deposit_tx_hash") // Hash da última transação de depósito
+  withdrawTxHash      String?  @map("withdraw_tx_hash") // Hash da última transação de saque
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  fundId String @map("fund_id")
+  fund   Fund   @relation(fields: [fundId], references: [id])
+
+  @@map("pools")
 }
 
 model Receivable {

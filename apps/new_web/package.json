@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blend-capital/blend-sdk": "^3.2.1",
     "@creit.tech/stellar-wallets-kit": "^1.9.5",
     "axios": "^1.13.2",
     "react": "^19.2.0",
