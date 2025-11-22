@@ -51,30 +51,36 @@ export async function dashboardRoutes(fastify: FastifyInstance) {
       const progress = getBadgeProgress(user.totalInvested);
 
       // Get investment statistics
-      const completedOrders = await fastify.prisma.order.findMany({
-        where: {
-          investorId: user.id,
-          status: 'COMPLETED'
-        },
-        include: {
-          fund: {
-            select: {
-              name: true,
-              symbol: true
+      const [completedOrders, pendingOrders] = await Promise.all([
+        fastify.prisma.order.findMany({
+          where: {
+            investorId: user.id,
+            status: 'COMPLETED'
+          },
+          select: {
+            id: true,
+            total: true,
+            txHash: true,
+            createdAt: true,
+            fund: {
+              select: {
+                name: true,
+                symbol: true
+              }
             }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 100
+        }),
+        fastify.prisma.order.count({
+          where: {
+            investorId: user.id,
+            status: 'PENDING'
           }
-        },
-        orderBy: {
-          createdAt: 'desc'
-        }
-      });
-
-      const pendingOrders = await fastify.prisma.order.count({
-        where: {
-          investorId: user.id,
-          status: 'PENDING'
-        }
-      });
+        })
+      ]);
 
       // Calculate portfolio distribution
       const portfolioByFund = completedOrders.reduce((acc, order) => {

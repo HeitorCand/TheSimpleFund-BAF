@@ -35,7 +35,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL ||
     ? 'http://localhost:3001/api' 
     : 'https://thesimplefund.onrender.com/api');
 
-const InvestorBadge: React.FC<{ userId: string }> = ({ userId }) => {
+const InvestorBadge: React.FC<{ userId: string }> = React.memo(({ userId }) => {
   const [badgeData, setBadgeData] = useState<UserBadgeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -163,6 +163,8 @@ const InvestorBadge: React.FC<{ userId: string }> = ({ userId }) => {
       </div>
     </div>
   );
-};
+});
+
+InvestorBadge.displayName = 'InvestorBadge';
 
 export default InvestorBadge;

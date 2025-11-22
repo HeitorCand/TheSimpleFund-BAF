@@ -21,7 +21,7 @@ interface RecommendedFund {
     reason: string;
 }
 
-const RecommendedFunds: React.FC = () => {
+const RecommendedFunds: React.FC = React.memo(() => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const { trackInteraction } = useFundInteraction();
@@ -209,6 +209,8 @@ const RecommendedFunds: React.FC = () => {
             </div>
         </div>
     );
-};
+});
+
+RecommendedFunds.displayName = 'RecommendedFunds';
 
 export default RecommendedFunds;

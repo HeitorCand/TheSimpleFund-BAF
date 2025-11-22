@@ -166,25 +166,48 @@ export async function cedenteRoutes(fastify: FastifyInstance) {
       }
 
       const payload = verifyToken(token);
+      const { page = '1', limit = '50' } = request.query as { page?: string; limit?: string };
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const take = parseInt(limit);
 
       const where = payload.role === 'CONSULTOR' 
         ? { consultorId: payload.id }
         : {};
 
-      const cedentes = await fastify.prisma.cedente.findMany({
-        where,
-        include: {
-          consultor: {
-            select: { email: true, role: true }
+      const [cedentes, total] = await Promise.all([
+        fastify.prisma.cedente.findMany({
+          where,
+          select: {
+            id: true,
+            name: true,
+            fantasyName: true,
+            document: true,
+            email: true,
+            status: true,
+            createdAt: true,
+            consultor: {
+              select: { email: true, role: true }
+            },
+            fund: {
+              select: { name: true, id: true }
+            }
           },
-          fund: {
-            select: { name: true, id: true }
-          }
-        },
-        orderBy: { createdAt: 'desc' }
-      });
+          skip,
+          take,
+          orderBy: { createdAt: 'desc' }
+        }),
+        fastify.prisma.cedente.count({ where })
+      ]);
 
-      return { cedentes };
+      return { 
+        cedentes,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          totalPages: Math.ceil(total / parseInt(limit))
+        }
+      };
     } catch (error) {
       fastify.log.error(error);
       return reply.status(500).send({ error: 'Internal server error' });

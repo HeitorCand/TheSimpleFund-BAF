@@ -156,34 +156,59 @@ export async function fundRoutes(fastify: FastifyInstance) {
   // List funds
   fastify.get('/', async (request, reply) => {
     try {
-      const funds = await fastify.prisma.fund.findMany({
-        include: {
-          consultor: {
-            select: {
-              email: true,
-              publicKey: true
+      const { page = '1', limit = '50' } = request.query as { page?: string; limit?: string };
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const take = parseInt(limit);
+
+      const [funds, total] = await Promise.all([
+        fastify.prisma.fund.findMany({
+          select: {
+            id: true,
+            name: true,
+            symbol: true,
+            status: true,
+            maxSupply: true,
+            totalIssued: true,
+            price: true,
+            fundType: true,
+            description: true,
+            cvmCode: true,
+            createdAt: true,
+            consultor: {
+              select: {
+                email: true,
+                publicKey: true
+              }
             }
           },
-          receivables: {
-            select: {
-              id: true,
-              faceValue: true,
-              status: true
-            }
-          },
-          orders: {
-            where: { status: 'COMPLETED' },
-            select: {
-              quantity: true
-            }
-          }
-        },
-        orderBy: { createdAt: 'desc' }
-      });
+          skip,
+          take,
+          orderBy: { createdAt: 'desc' }
+        }),
+        fastify.prisma.fund.count()
+      ]);
+
+      // Buscar métricas apenas para os fundos da página atual
+      const fundIds = funds.map(f => f.id);
+      const [receivablesData, ordersData] = await Promise.all([
+        fastify.prisma.receivable.groupBy({
+          by: ['fundId'],
+          where: { fundId: { in: fundIds } },
+          _sum: { faceValue: true }
+        }),
+        fastify.prisma.order.groupBy({
+          by: ['fundId'],
+          where: { fundId: { in: fundIds }, status: 'COMPLETED' },
+          _sum: { quantity: true }
+        })
+      ]);
+
+      const receivablesMap = new Map(receivablesData.map(r => [r.fundId, r._sum.faceValue || 0]));
+      const ordersMap = new Map(ordersData.map(o => [o.fundId, o._sum.quantity || 0]));
 
       const fundsWithMetrics = funds.map(fund => {
-        const totalSold = fund.orders.reduce((sum, order) => sum + order.quantity, 0);
-        const totalReceivables = fund.receivables.reduce((sum, rec) => sum + rec.faceValue, 0);
+        const totalSold = ordersMap.get(fund.id) || 0;
+        const totalReceivables = receivablesMap.get(fund.id) || 0;
         
         return {
           ...fund,
@@ -193,7 +218,15 @@ export async function fundRoutes(fastify: FastifyInstance) {
         };
       });
 
-      return { funds: fundsWithMetrics };
+      return { 
+        funds: fundsWithMetrics, 
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          totalPages: Math.ceil(total / parseInt(limit))
+        }
+      };
     } catch (error) {
       fastify.log.error(error);
       return reply.status(500).send({ error: 'Internal server error' });
@@ -205,37 +238,52 @@ export async function fundRoutes(fastify: FastifyInstance) {
     try {
       const { id } = request.params as { id: string };
 
-      const fund = await fastify.prisma.fund.findUnique({
-        where: { id },
-        include: {
-          receivables: {
-            include: {
-              sacado: {
-                select: { name: true, document: true }
-              }
+      const [fund, receivables, orders] = await Promise.all([
+        fastify.prisma.fund.findUnique({
+          where: { id }
+        }),
+        fastify.prisma.receivable.findMany({
+          where: { fundId: id },
+          select: {
+            id: true,
+            faceValue: true,
+            status: true,
+            dueDate: true,
+            sacado: {
+              select: { name: true, document: true }
             }
           },
-          orders: {
-            where: { status: 'COMPLETED' },
-            include: {
-              investor: {
-                select: { email: true, publicKey: true }
-              }
+          take: 100,
+          orderBy: { createdAt: 'desc' }
+        }),
+        fastify.prisma.order.findMany({
+          where: { fundId: id, status: 'COMPLETED' },
+          select: {
+            id: true,
+            quantity: true,
+            total: true,
+            createdAt: true,
+            investor: {
+              select: { email: true, publicKey: true }
             }
-          }
-        }
-      });
+          },
+          take: 100,
+          orderBy: { createdAt: 'desc' }
+        })
+      ]);
 
       if (!fund) {
         return reply.status(404).send({ error: 'Fund not found' });
       }
 
-      const totalSold = fund.orders.reduce((sum, order) => sum + order.quantity, 0);
-      const totalReceivables = fund.receivables.reduce((sum, rec) => sum + rec.faceValue, 0);
+      const totalSold = orders.reduce((sum, order) => sum + order.quantity, 0);
+      const totalReceivables = receivables.reduce((sum, rec) => sum + rec.faceValue, 0);
 
       return {
         fund: {
           ...fund,
+          receivables,
+          orders,
           totalSold,
           totalReceivables,
           availableQuotas: fund.totalIssued - totalSold
