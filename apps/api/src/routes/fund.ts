@@ -365,6 +365,41 @@ export async function fundRoutes(fastify: FastifyInstance) {
         }
       });
 
+      // 🚀 CRIAR POOL BLEND AUTOMATICAMENTE quando aprovar o fundo
+      if (body.status === 'APPROVED') {
+        try {
+          // Importar configurações do Blend
+          const { BLEND_CONTRACTS } = await import('../config/blend.js');
+          
+          // Verificar se já existe uma pool para este fundo
+          const existingPool = await fastify.prisma.pool.findFirst({
+            where: { fundId: params.id }
+          });
+
+          if (!existingPool) {
+            // Criar pool automaticamente
+            const pool = await fastify.prisma.pool.create({
+              data: {
+                name: `${fund.name} - Yield Pool`,
+                fundId: params.id,
+                blendPoolAddress: BLEND_CONTRACTS.USDC_POOL,
+                assetAddress: BLEND_CONTRACTS.USDC,
+                totalDeposited: 0,
+                currentBalance: 0,
+                yieldEarned: 0,
+                status: 'ACTIVE',
+              }
+            });
+
+            fastify.log.info(`✅ Pool criado automaticamente para o fundo ${fund.name}: ${pool.id}`);
+          }
+        } catch (poolError) {
+          fastify.log.error(poolError);
+          fastify.log.error('Erro ao criar pool automaticamente');
+          // Não falhar a aprovação por causa do erro da pool
+        }
+      }
+
       return { fund: updatedFund };
     } catch (error) {
       if (error instanceof z.ZodError) {

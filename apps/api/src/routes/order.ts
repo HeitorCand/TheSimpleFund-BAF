@@ -226,13 +226,48 @@ export async function orderRoutes(fastify: FastifyInstance) {
         },
         include: {
           fund: {
-            select: { name: true, symbol: true }
+            select: { 
+              name: true, 
+              symbol: true,
+              id: true
+            }
           },
           investor: {
             select: { email: true, publicKey: true }
           }
         }
       });
+
+      // 🚀 DEPOSITAR AUTOMATICAMENTE NA POOL BLEND
+      try {
+        // Buscar a pool do fundo
+        const pool = await fastify.prisma.pool.findFirst({
+          where: { 
+            fundId: order.fund.id,
+            status: 'ACTIVE'
+          }
+        });
+
+        if (pool) {
+          // Atualizar saldo da pool
+          await fastify.prisma.pool.update({
+            where: { id: pool.id },
+            data: {
+              totalDeposited: pool.totalDeposited + order.total,
+              currentBalance: pool.currentBalance + order.total,
+              depositTxHash: txHash,
+              lastYieldUpdate: new Date(),
+            }
+          });
+
+          fastify.log.info(`✅ Investimento de ${order.total} USDC depositado automaticamente na pool ${pool.id}`);
+        } else {
+          fastify.log.warn(`⚠️ Pool não encontrada para o fundo ${order.fund.id}, investimento não depositado automaticamente`);
+        }
+      } catch (poolError) {
+        fastify.log.error('Erro ao depositar na pool:', poolError);
+        // Não falhar o completion da order por causa do erro da pool
+      }
 
       return { order };
     } catch (error) {
