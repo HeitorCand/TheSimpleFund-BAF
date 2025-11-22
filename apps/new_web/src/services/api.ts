@@ -168,5 +168,72 @@ export const stellarService = {
   },
 };
 
+// --- Pool Service ---
+export const poolService = {
+  getAvailablePools: async () => {
+    const response = await api.get('/pools/available');
+    return response.data;
+  },
+  list: async () => {
+    const response = await api.get('/pools');
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await api.get(`/pools/${id}`);
+    return response.data;
+  },
+  getByFund: async (fundId: string) => {
+    const response = await api.get(`/funds/${fundId}/pools`);
+    return response.data;
+  },
+  create: async (data: {
+    name: string;
+    fundId: string;
+    blendPoolAddress: string;
+    assetAddress: string;
+  }) => {
+    const response = await api.post('/pools', data);
+    return response.data;
+  },
+  buildDepositTx: async (poolId: string, amount: number, userAddress: string) => {
+    const response = await api.post('/pools/build-deposit', {
+      poolId,
+      amount,
+      userAddress,
+    });
+    return response.data;
+  },
+  confirmDeposit: async (poolId: string, amount: number, txHash: string) => {
+    const response = await api.post('/pools/deposit', {
+      poolId,
+      amount,
+      txHash,
+    });
+    return response.data;
+  },
+  buildWithdrawTx: async (poolId: string, amount: number, userAddress: string) => {
+    const response = await api.post('/pools/build-withdraw', {
+      poolId,
+      amount,
+      userAddress,
+    });
+    return response.data;
+  },
+  confirmWithdraw: async (poolId: string, amount: number, txHash: string) => {
+    const response = await api.post('/pools/withdraw', {
+      poolId,
+      amount,
+      txHash,
+    });
+    return response.data;
+  },
+  updateYield: async (poolId: string, currentBalance: number, apy?: number) => {
+    const response = await api.post(`/pools/${poolId}/update-yield`, {
+      currentBalance,
+      apy,
+    });
+    return response.data;
+  },
+};
 
 export default api;

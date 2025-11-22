@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, Link, NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/useAuth';
 import { useWallet } from '../contexts/WalletContext';
-import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFilePlus, FiFileMinus, FiDollarSign, FiList, FiShoppingCart } from 'react-icons/fi';
+import { FiMenu, FiLogOut, FiUsers, FiBox, FiUserCheck, FiHome, FiBriefcase, FiFilePlus, FiFileMinus, FiDollarSign, FiList, FiShoppingCart, FiTrendingUp } from 'react-icons/fi';
 import { dashboardService, orderService } from '../services/api';
 
 const gestorMenuItems = [
@@ -11,6 +11,7 @@ const gestorMenuItems = [
   { to: '/dashboard/investidores', icon: <FiUserCheck />, name: 'Investors', countKey: 'investidores' },
   { to: '/dashboard/fundos', icon: <FiBox />, name: 'Funds', countKey: 'funds' },
   { to: '/dashboard/investments', icon: <FiDollarSign />, name: 'Investments', countKey: 'investments' },
+  { to: '/dashboard/pools', icon: <FiTrendingUp />, name: 'Yield Pools' },
   { to: '/dashboard/assignors', icon: <FiFilePlus />, name: 'Assignors', countKey: 'assignors' },
   { to: '/dashboard/debtors', icon: <FiFileMinus />, name: 'Debtors', countKey: 'debtors' },
 ];

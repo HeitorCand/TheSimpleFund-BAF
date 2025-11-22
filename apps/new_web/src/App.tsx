@@ -20,6 +20,7 @@ import FundList from './pages/gestor/FundList';
 import InvestmentList from './pages/gestor/InvestmentList';
 import AssignorList from './pages/gestor/AssignorList';
 import DebtorList from './pages/gestor/DebtorList';
+import PoolList from './pages/gestor/PoolList';
 
 // Investor Pages
 import Marketplace from './pages/investor/Marketplace';
@@ -75,6 +76,7 @@ const App: React.FC = () => {
                 <Route path="investments" element={<InvestmentList />} />
                 <Route path="assignors" element={<AssignorList />} />
                 <Route path="debtors" element={<DebtorList />} />
+                <Route path="pools" element={<PoolList />} />
                 {/* Investor Routes */}
                 <Route path="marketplace" element={<Marketplace />} />
                 <Route path="portfolio" element={<Portfolio />} />
