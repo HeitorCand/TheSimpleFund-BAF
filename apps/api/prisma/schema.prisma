@@ -3,9 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
 
 model User {
   id        String   @id @default(cuid())
@@ -15,6 +17,13 @@ model User {
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED (for CONSULTOR approval)
   publicKey String?  @map("public_key")
   secretKey String?  @map("secret_key")
+  
+  // Investor Badge System with ZK Proof
+  totalInvested Float @default(0) @map("total_invested") // Total investido na plataforma
+  investorBadge String @default("NONE") @map("investor_badge") // NONE, BRONZE, SILVER, GOLD, DIAMOND
+  badgeProofHash String? @map("badge_proof_hash") // ZK proof hash para verificação
+  lastBadgeUpdate DateTime? @map("last_badge_update")
+  
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -23,7 +32,15 @@ model User {
   cedentes  Cedente[]
   sacados   Sacado[]
   funds     Fund[]   @relation("ConsultorFunds")
+  fundInteractions FundInteraction[]
 
+  @@index([email])
+  @@index([role])
+  @@index([status])
+  @@index([investorBadge])
+  @@index([role, status])
+  @@index([totalInvested])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -31,7 +48,25 @@ model Cedente {
   id        String   @id @default(cuid())
   name      String
   document  String   // CNPJ/CPF
+  fantasyName String? @map("fantasy_name")
+  cnae      String?
+  email     String?
+  phone     String?
+  website   String?
   address   String?
+  city      String?
+  state     String?
+  country   String? @default("BR")
+  postalCode String? @map("postal_code")
+  beneficialOwners String? @map("beneficial_owners")
+  isPep     Boolean? @map("is_pep")
+  revenueLast12m Float? @map("revenue_last_12m")
+  totalDebt Float? @map("total_debt")
+  mainBanks String? @map("main_banks")
+  riskRating String? @map("risk_rating")
+  operationDescription String? @map("operation_description")
+  creditPolicy String? @map("credit_policy")
+  guarantees String?
   publicKey String?  @map("public_key")
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt DateTime @default(now()) @map("created_at")
@@ -43,6 +78,13 @@ model Cedente {
   fundId      String @map("fund_id")
   fund        Fund   @relation(fields: [fundId], references: [id])
 
+  @@index([consultorId])
+  @@index([fundId])
+  @@index([status])
+  @@index([consultorId, status])
+  @@index([fundId, status])
+  @@index([document])
+  @@index([createdAt])
   @@map("cedentes")
 }
 
@@ -50,7 +92,24 @@ model Sacado {
   id        String   @id @default(cuid())
   name      String
   document  String   // CNPJ/CPF
+  personType String? @map("person_type")
+  email     String?
+  phone     String?
   address   String?
+  city      String?
+  state     String?
+  country   String? @default("BR")
+  postalCode String? @map("postal_code")
+  sector    String?
+  size      String?
+  rating    String?
+  paymentHistory String? @map("payment_history")
+  exposure  Float?
+  creditLimitFund Float? @map("credit_limit_fund")
+  concentrationPercent Float? @map("concentration_percent")
+  defaultRate30d Float? @map("default_rate_30d")
+  defaultRate60d Float? @map("default_rate_60d")
+  defaultRate90d Float? @map("default_rate_90d")
   publicKey String?  @map("public_key")
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt DateTime @default(now()) @map("created_at")
@@ -63,6 +122,13 @@ model Sacado {
   fund        Fund         @relation(fields: [fundId], references: [id])
   receivables Receivable[]
 
+  @@index([consultorId])
+  @@index([fundId])
+  @@index([status])
+  @@index([consultorId, status])
+  @@index([fundId, status])
+  @@index([document])
+  @@index([createdAt])
   @@map("sacados")
 }
 
@@ -70,16 +136,54 @@ model Fund {
   id              String   @id @default(cuid())
   name            String
   symbol          String   @unique
+  cnpj            String?
+  investorProfile String?   @map("investor_profile")
+  cvmCode         String?   @map("cvm_code")
+  administratorName String? @map("administrator_name")
+  administratorCnpj String? @map("administrator_cnpj")
+  managerName     String?   @map("manager_name")
+  managerCnpj     String?   @map("manager_cnpj")
+  custodianName   String?   @map("custodian_name")
+  auditorName     String?   @map("auditor_name")
+  fiduciaryAgentName String? @map("fiduciary_agent_name")
+  sectorFocus     String?   @map("sector_focus")
+  eligibilityCriteria String? @map("eligibility_criteria")
+  maxCedenteConcentrationPercent Float? @map("max_cedente_concentration_pct")
+  maxSacadoConcentrationPercent Float? @map("max_sacado_concentration_pct")
+  sectorConcentrationPercent Float? @map("sector_concentration_pct")
+  targetPmt       Float?    @map("target_pmt")
+  keyRisks        String?   @map("key_risks")
+  administrationFee Float?  @map("administration_fee")
+  managementFee   Float?    @map("management_fee")
+  performanceFee  Float?    @map("performance_fee")
+  otherFees       String?   @map("other_fees")
+  liquidityType   String?   @map("liquidity_type")
+  lockupDays      Int?      @map("lockup_days")
+  redemptionTerms String?   @map("redemption_terms")
+  navPerShare     Float?    @map("nav_per_share")
+  aum             Float?
+  return12m       Float?    @map("return_12m")
+  returnYtd       Float?    @map("return_ytd")
+  returnSinceInception Float? @map("return_since_inception")
   contractAddress String?  @map("contract_address")
   tokenContractId String?  @map("token_contract_id")
   vaultContractId String?  @map("vault_contract_id")
   adminSecretKey  String?  @map("admin_secret_key")
+  fundWalletPublicKey String? @map("fund_wallet_public_key") // Wallet do fundo que recebe investimentos
   maxSupply       Int      @map("max_supply")
   totalIssued     Int      @default(0) @map("total_issued")
   price           Float    @default(1.0) // Price per quota in XLM/USDC
   status          String   @default("PENDING") // PENDING, APPROVED, REJECTED, ACTIVE, CLOSED
   targetAmount    Float?   @map("target_amount")
   description     String?
+  
+  // Metadados para recomendação
+  fundType        String        @default("FIDC") @map("fund_type")       // tipo do fundo (FIDC, FII, AGRO, VAREJO, OUTROS)
+  riskLevel       String?       @map("risk_level")      // nível de risco (BAIXO, MEDIO, ALTO)
+  sector          String?       @map("sector")          // setor principal (AGRO, VAREJO, etc.)
+  durationMonths  Int?          @map("duration_months") // prazo médio da carteira
+  minTicket       Float?        @map("min_ticket")      // ticket mínimo recomendado
+  
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
@@ -90,8 +194,51 @@ model Fund {
   orders      Order[]
   cedentes    Cedente[]
   sacados     Sacado[]
+  pools       Pool[]
+  fundInteractions FundInteraction[]
 
+  @@index([symbol])
+  @@index([status])
+  @@index([consultorId])
+  @@index([fundType])
+  @@index([riskLevel])
+  @@index([sector])
+  @@index([status, fundType])
+  @@index([status, riskLevel])
+  @@index([status, sector])
+  @@index([fundType, riskLevel, sector])
+  @@index([consultorId, status])
+  @@index([createdAt])
+  @@index([price])
   @@map("funds")
+}
+
+model Pool {
+  id                  String   @id @default(cuid())
+  name                String
+  blendPoolAddress    String   @map("blend_pool_address") // Endereço do pool no Blend Protocol
+  assetAddress        String   @map("asset_address") // Endereço do asset (USDC, XLM, etc)
+  totalDeposited      Float    @default(0) @map("total_deposited") // Total depositado no pool
+  currentBalance      Float    @default(0) @map("current_balance") // Saldo atual (deposited + yield)
+  yieldEarned         Float    @default(0) @map("yield_earned") // Yield acumulado
+  apy                 Float?   // APY atual do pool
+  status              String   @default("ACTIVE") // ACTIVE, PAUSED, CLOSED
+  lastYieldUpdate     DateTime? @map("last_yield_update")
+  depositTxHash       String?  @map("deposit_tx_hash") // Hash da última transação de depósito
+  withdrawTxHash      String?  @map("withdraw_tx_hash") // Hash da última transação de saque
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  fundId String @map("fund_id")
+  fund   Fund   @relation(fields: [fundId], references: [id])
+
+  @@index([fundId])
+  @@index([status])
+  @@index([fundId, status])
+  @@index([lastYieldUpdate])
+  @@index([createdAt])
+  @@map("pools")
 }
 
 model Receivable {
@@ -110,18 +257,29 @@ model Receivable {
   sacadoId String @map("sacado_id")
   sacado  Sacado @relation(fields: [sacadoId], references: [id])
 
+  @@index([fundId])
+  @@index([sacadoId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([fundId, status])
+  @@index([sacadoId, status])
+  @@index([status, dueDate])
+  @@index([createdAt])
   @@map("receivables")
 }
 
 model Order {
-  id         String      @id @default(cuid())
-  quantity   Int
-  price      Float
-  total      Float
-  status     String      @default("PENDING") // PENDING, COMPLETED, FAILED
-  txHash     String?     @map("tx_hash")
-  createdAt  DateTime    @default(now()) @map("created_at")
-  updatedAt  DateTime    @updatedAt @map("updated_at")
+  id             String      @id @default(cuid())
+  quantity       Int
+  price          Float
+  total          Float
+  status         String      @default("PENDING") // PENDING, COMPLETED, FAILED
+  approvalStatus String      @default("PENDING_APPROVAL") @map("approval_status") // PENDING_APPROVAL, APPROVED, REJECTED
+  txHash         String?     @map("tx_hash")
+  refundTxHash   String?     @map("refund_tx_hash")
+  tokenMintTxHash String?    @map("token_mint_tx_hash")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
 
   // Relations
   investorId String @map("investor_id")
@@ -129,5 +287,39 @@ model Order {
   fundId     String @map("fund_id")
   fund       Fund   @relation(fields: [fundId], references: [id])
 
+  @@index([investorId])
+  @@index([fundId])
+  @@index([status])
+  @@index([approvalStatus])
+  @@index([createdAt])
+  @@index([investorId, status])
+  @@index([fundId, status])
+  @@index([investorId, createdAt])
+  @@index([status, approvalStatus])
+  @@index([status, createdAt])
+  @@index([updatedAt])
   @@map("orders")
+}
+
+model FundInteraction {
+  id         String              @id @default(cuid())
+
+  investorId String              @map("investor_id")
+  investor   User                @relation(fields: [investorId], references: [id])
+
+  fundId     String              @map("fund_id")
+  fund       Fund                @relation(fields: [fundId], references: [id])
+
+  type       String              // tipo de interação (VIEW, CLICK, FAVORITE, START_ORDER)
+  createdAt  DateTime            @default(now()) @map("created_at")
+
+  @@index([investorId])
+  @@index([fundId])
+  @@index([type])
+  @@index([investorId, fundId])
+  @@index([investorId, type])
+  @@index([fundId, type])
+  @@index([investorId, createdAt])
+  @@index([createdAt])
+  @@map("fund_interactions")
 }

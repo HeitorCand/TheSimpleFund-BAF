@@ -51,7 +51,7 @@ const AccessDeniedModal: React.FC<AccessDeniedModalProps> = ({
           <div className="flex flex-col gap-3">
             <button
               onClick={onClose}
-              className="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
+              className="w-full bg-[#fa7f7f]-600 text-white px-4 py-2 rounded hover:bg-[#fa7f7f]-700 transition-colors"
             >
               I Understand
             </button>

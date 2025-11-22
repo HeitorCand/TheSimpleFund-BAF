@@ -134,4 +134,38 @@ export async function userRoutes(fastify: FastifyInstance) {
       return reply.status(500).send({ error: 'Internal server error' });
     }
   });
+
+  // Update wallet public key
+  fastify.patch('/wallet', async (request, reply) => {
+    try {
+      const token = request.headers.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return reply.status(401).send({ error: 'No token provided' });
+      }
+
+      const user = verifyToken(token);
+      const { publicKey } = z.object({ 
+        publicKey: z.string().min(1) 
+      }).parse(request.body);
+
+      const updatedUser = await fastify.prisma.user.update({
+        where: { id: user.id },
+        data: { publicKey },
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          publicKey: true
+        }
+      });
+
+      return { user: updatedUser };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.status(400).send({ error: 'Invalid input', details: error.errors });
+      }
+      fastify.log.error(error);
+      return reply.status(500).send({ error: 'Internal server error' });
+    }
+  });
 }

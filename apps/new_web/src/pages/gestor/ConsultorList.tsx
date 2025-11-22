@@ -38,26 +38,26 @@ const ConsultorList: React.FC = () => {
         }
     };
 
-    if (loading) return <div className="text-center p-8">Loading consultants...</div>;
+    if (loading) return <div className="text-center p-8 text-white">Loading consultants...</div>;
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-soft">
-            <h2 className="text-xl font-semibold mb-4">Manage Consultants</h2>
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
+            <h2 className="text-xl font-semibold mb-4 text-white">Manage Consultants</h2>
             <div className="space-y-4">
                 {consultores.length === 0 ? (
-                    <p className="text-center text-gray-500 py-8">No consultants found.</p>
+                    <p className="text-center text-gray-400 py-8">No consultants found.</p>
                 ) : (
                     consultores.map((item) => (
-                        <div key={item.id} className="border-b last:border-b-0 pb-4 last:pb-0 flex flex-col sm:flex-row justify-between sm:items-center">
+                        <div key={item.id} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                             <div>
-                                <p className="font-semibold">{item.email}</p>
-                                <p className="text-sm text-gray-500">Status: {item.status}</p>
+                                <p className="font-semibold text-white">{item.email}</p>
+                                <p className="text-sm text-gray-300">Status: {item.status}</p>
                             </div>
                             <div className="flex space-x-2 mt-2 sm:mt-0">
                                 {item.status === 'PENDING' && (
                                     <>
-                                        <button onClick={() => handleApprove(item.id, 'approve')} className="px-3 py-1 text-sm text-white bg-green-500 rounded-md hover:bg-green-600">Approve</button>
-                                        <button onClick={() => handleApprove(item.id, 'reject')} className="px-3 py-1 text-sm text-white bg-red-500 rounded-md hover:bg-red-600">Reject</button>
+                                        <button onClick={() => handleApprove(item.id, 'approve')} className="px-3 py-1 text-sm text-white bg-primary rounded-md hover:bg-primary/90">Approve</button>
+                                        <button onClick={() => handleApprove(item.id, 'reject')} className="px-3 py-1 text-sm text-white bg-[#fa7f7f]-500 rounded-md hover:bg-[#fa7f7f]-600">Reject</button>
                                     </>
                                 )}
                             </div>

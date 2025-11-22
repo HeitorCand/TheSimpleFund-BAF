@@ -6,6 +6,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
     'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true'
   },
 });
 
@@ -47,6 +48,10 @@ export const userService = {
     const response = await api.patch(`/users/${id}/approval`, { status });
     return response.data;
   },
+  updateWallet: async (publicKey: string) => {
+    const response = await api.patch('/users/wallet', { publicKey });
+    return response.data;
+  },
 };
 
 // --- Fund Service ---
@@ -59,8 +64,15 @@ export const fundService = {
     const response = await api.post('/funds', data);
     return response.data;
   },
-  approve: async (id: string, status: 'APPROVED' | 'REJECTED') => {
-    const response = await api.patch(`/funds/${id}/approval`, { status });
+  getById: async (id: string) => {
+    const response = await api.get(`/funds/${id}`);
+    return response.data;
+  },
+  approve: async (id: string, status: 'APPROVED' | 'REJECTED', fundWalletPublicKey?: string) => {
+    const response = await api.patch(`/funds/${id}/approval`, { 
+      status,
+      ...(fundWalletPublicKey && { fundWalletPublicKey })
+    });
     return response.data;
   },
   deactivate: async (id: string) => {
@@ -123,8 +135,24 @@ export const orderService = {
     const response = await api.post('/orders', data);
     return response.data;
   },
+  complete: async (id: string, txHash: string) => {
+    const response = await api.patch(`/orders/${id}/complete`, { txHash });
+    return response.data;
+  },
+  cancel: async (id: string) => {
+    const response = await api.patch(`/orders/${id}/cancel`);
+    return response.data;
+  },
   updateStatus: async (id: string, status: string) => {
     const response = await api.patch(`/orders/${id}/status`, { status });
+    return response.data;
+  },
+  approve: async (id: string, action: 'approve' | 'reject', refundTxHash?: string, tokenMintTxHash?: string) => {
+    const response = await api.patch(`/orders/${id}/approve`, { 
+      action,
+      ...(refundTxHash && { refundTxHash }),
+      ...(tokenMintTxHash && { tokenMintTxHash })
+    });
     return response.data;
   }
 };
@@ -139,7 +167,78 @@ export const stellarService = {
     const response = await api.post('/stellar/fund-account', { publicKey });
     return response.data;
   },
+  getBalance: async (publicKey: string) => {
+    const response = await api.post('/stellar/balance', { publicKey });
+    return response.data;
+  },
 };
 
+// --- Pool Service ---
+export const poolService = {
+  getAvailablePools: async () => {
+    const response = await api.get('/pools/available');
+    return response.data;
+  },
+  list: async () => {
+    const response = await api.get('/pools');
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await api.get(`/pools/${id}`);
+    return response.data;
+  },
+  getByFund: async (fundId: string) => {
+    const response = await api.get(`/funds/${fundId}/pools`);
+    return response.data;
+  },
+  create: async (data: {
+    name: string;
+    fundId: string;
+    blendPoolAddress: string;
+    assetAddress: string;
+  }) => {
+    const response = await api.post('/pools', data);
+    return response.data;
+  },
+  buildDepositTx: async (poolId: string, amount: number, userAddress: string) => {
+    const response = await api.post('/pools/build-deposit', {
+      poolId,
+      amount,
+      userAddress,
+    });
+    return response.data;
+  },
+  confirmDeposit: async (poolId: string, amount: number, txHash: string) => {
+    const response = await api.post('/pools/deposit', {
+      poolId,
+      amount,
+      txHash,
+    });
+    return response.data;
+  },
+  buildWithdrawTx: async (poolId: string, amount: number, userAddress: string) => {
+    const response = await api.post('/pools/build-withdraw', {
+      poolId,
+      amount,
+      userAddress,
+    });
+    return response.data;
+  },
+  confirmWithdraw: async (poolId: string, amount: number, txHash: string) => {
+    const response = await api.post('/pools/withdraw', {
+      poolId,
+      amount,
+      txHash,
+    });
+    return response.data;
+  },
+  updateYield: async (poolId: string, currentBalance: number, apy?: number) => {
+    const response = await api.post(`/pools/${poolId}/update-yield`, {
+      currentBalance,
+      apy,
+    });
+    return response.data;
+  },
+};
 
 export default api;
