@@ -21,11 +21,15 @@ import InvestmentList from './pages/gestor/InvestmentList';
 import AssignorList from './pages/gestor/AssignorList';
 import DebtorList from './pages/gestor/DebtorList';
 import PoolList from './pages/gestor/PoolList';
+import FundCreate from './pages/gestor/FundCreate';
+import AssignorCreate from './pages/gestor/AssignorCreate';
+import DebtorCreate from './pages/gestor/DebtorCreate';
 
 // Investor Pages
 import Marketplace from './pages/investor/Marketplace';
 import Portfolio from './pages/investor/Portfolio';
 import OrderList from './pages/investor/OrderList';
+import FundDetail from './pages/investor/FundDetail';
 
 
 const ProtectedRoute: React.FC = () => {
@@ -66,19 +70,23 @@ const App: React.FC = () => {
             </Route>
 
             {/* Protected routes */}
-            <Route path="/dashboard" element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute />}>
               <Route element={<DashboardLayout />}>
-                <Route index element={<DashboardPage />} />
-                {/* Gestor Routes */}
+                <Route path="dashboard" element={<DashboardPage />} />
+                {/* Gestor/Consultor Routes */}
                 <Route path="consultores" element={<ConsultorList />} />
                 <Route path="investidores" element={<InvestorList />} />
                 <Route path="fundos" element={<FundList />} />
+                <Route path="fundos/new" element={<FundCreate />} />
                 <Route path="investments" element={<InvestmentList />} />
                 <Route path="assignors" element={<AssignorList />} />
+                <Route path="assignors/new" element={<AssignorCreate />} />
                 <Route path="debtors" element={<DebtorList />} />
                 <Route path="pools" element={<PoolList />} />
+                <Route path="debtors/new" element={<DebtorCreate />} />
                 {/* Investor Routes */}
                 <Route path="marketplace" element={<Marketplace />} />
+                <Route path="marketplace/:fundId" element={<FundDetail />} />
                 <Route path="portfolio" element={<Portfolio />} />
                 <Route path="orders" element={<OrderList />} />
               </Route>

@@ -7,13 +7,13 @@ import { dashboardService, orderService } from '../services/api';
 
 const gestorMenuItems = [
   { to: '/dashboard', icon: <FiHome />, name: 'Dashboard' },
-  { to: '/dashboard/consultores', icon: <FiUsers />, name: 'Consultants', countKey: 'consultores' },
-  { to: '/dashboard/investidores', icon: <FiUserCheck />, name: 'Investors', countKey: 'investidores' },
-  { to: '/dashboard/fundos', icon: <FiBox />, name: 'Funds', countKey: 'funds' },
-  { to: '/dashboard/investments', icon: <FiDollarSign />, name: 'Investments', countKey: 'investments' },
-  { to: '/dashboard/pools', icon: <FiTrendingUp />, name: 'Yield Pools' },
-  { to: '/dashboard/assignors', icon: <FiFilePlus />, name: 'Assignors', countKey: 'assignors' },
-  { to: '/dashboard/debtors', icon: <FiFileMinus />, name: 'Debtors', countKey: 'debtors' },
+  { to: '/consultores', icon: <FiUsers />, name: 'Consultants', countKey: 'consultores' },
+  { to: '/investidores', icon: <FiUserCheck />, name: 'Investors', countKey: 'investidores' },
+  { to: '/fundos', icon: <FiBox />, name: 'Funds', countKey: 'funds' },
+  { to: '/pools', icon: <FiTrendingUp />, name: 'Yield Pools' },
+  { to: '/investments', icon: <FiDollarSign />, name: 'Investments', countKey: 'investments' },
+  { to: '/assignors', icon: <FiFilePlus />, name: 'Assignors', countKey: 'assignors' },
+  { to: '/debtors', icon: <FiFileMinus />, name: 'Debtors', countKey: 'debtors' },
 ];
 
 const consultorMenuItems = [
@@ -22,9 +22,9 @@ const consultorMenuItems = [
 
 const investidorMenuItems = [
     { to: '/dashboard', icon: <FiHome />, name: 'Dashboard' },
-    { to: '/dashboard/marketplace', icon: <FiShoppingCart />, name: 'Marketplace' },
-    { to: '/dashboard/portfolio', icon: <FiBriefcase />, name: 'Portfolio' },
-    { to: '/dashboard/orders', icon: <FiList />, name: 'Orders' },
+    { to: '/marketplace', icon: <FiShoppingCart />, name: 'Marketplace' },
+    { to: '/portfolio', icon: <FiBriefcase />, name: 'Portfolio' },
+    { to: '/orders', icon: <FiList />, name: 'Orders' },
 ];
 
 interface PendingCounts {
