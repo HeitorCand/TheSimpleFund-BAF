@@ -1,12 +1,12 @@
 // src/services/recommendationService.ts
-import { PrismaClient, Fund } from '@prisma/client';
+import { PrismaClient, Fund } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 // Types for the recommendation system (SQLite doesn't support native enums)
-type RiskLevel = 'BAIXO' | 'MEDIO' | 'ALTO';
-type FundType = 'FIDC' | 'FII' | 'AGRO' | 'VAREJO' | 'OUTROS';
-type FundInteractionType = 'VIEW' | 'CLICK' | 'FAVORITE' | 'START_ORDER';
+type RiskLevel = "BAIXO" | "MEDIO" | "ALTO";
+type FundType = "FIDC" | "FII" | "AGRO" | "VAREJO" | "OUTROS";
+type FundInteractionType = "VIEW" | "CLICK" | "FAVORITE" | "START_ORDER";
 
 /**
  * Builds a simple investor profile based on invested or viewed funds.
@@ -18,7 +18,7 @@ export async function buildInvestorProfile(investorId: string) {
     prisma.order.findMany({
       where: {
         investorId,
-        status: 'COMPLETED',
+        status: "COMPLETED",
       },
       select: {
         fund: {
@@ -28,8 +28,8 @@ export async function buildInvestorProfile(investorId: string) {
             riskLevel: true,
             durationMonths: true,
             minTicket: true,
-          }
-        }
+          },
+        },
       },
     }),
     // 2) Interactions - select only the needed fields
@@ -44,20 +44,21 @@ export async function buildInvestorProfile(investorId: string) {
             riskLevel: true,
             durationMonths: true,
             minTicket: true,
-          }
-        }
+          },
+        },
       },
-    })
+    }),
   ]);
 
-  const touchedFunds: { fund: Fund; weight: number }[] = [
+  // fund objects returned by the minimal select are partial compared to the full Prisma Fund type
+  const touchedFunds: { fund: Partial<Fund>; weight: number }[] = [
     // investments weigh more
     ...orders.map((o) => ({ fund: o.fund, weight: 3 })),
     // implicit interactions
     ...interactions.map((i) => {
       let base = 1;
-      if (i.type === 'FAVORITE') base = 2;
-      if (i.type === 'START_ORDER') base = 2;
+      if (i.type === "FAVORITE") base = 2;
+      if (i.type === "START_ORDER") base = 2;
       return { fund: i.fund, weight: base };
     }),
   ];
@@ -74,13 +75,15 @@ export async function buildInvestorProfile(investorId: string) {
 
   for (const { fund, weight } of touchedFunds) {
     if (fund.fundType) {
-      fundTypeCount[fund.fundType] = (fundTypeCount[fund.fundType] || 0) + weight;
+      fundTypeCount[fund.fundType] =
+        (fundTypeCount[fund.fundType] || 0) + weight;
     }
     if (fund.sector) {
       sectorCount[fund.sector] = (sectorCount[fund.sector] || 0) + weight;
     }
     if (fund.riskLevel) {
-      riskLevelCount[fund.riskLevel] = (riskLevelCount[fund.riskLevel] || 0) + weight;
+      riskLevelCount[fund.riskLevel] =
+        (riskLevelCount[fund.riskLevel] || 0) + weight;
     }
     if (fund.durationMonths != null) {
       // repeat the value by weight to pull the average
@@ -134,10 +137,10 @@ export async function getCandidateFunds(investorId: string) {
   const investedOrders = await prisma.order.findMany({
     where: {
       investorId,
-      status: 'COMPLETED',
+      status: "COMPLETED",
     },
     select: { fundId: true },
-    distinct: ['fundId'], // Remove duplicatas no banco
+    distinct: ["fundId"], // Remove duplicatas no banco
   });
 
   const investedFundIds = investedOrders.map((o) => o.fundId);
@@ -145,7 +148,7 @@ export async function getCandidateFunds(investorId: string) {
   // Select only fields needed for scoring
   const candidates = await prisma.fund.findMany({
     where: {
-      status: 'APPROVED',
+      status: "APPROVED",
       id: { notIn: investedFundIds },
     },
     select: {
@@ -160,6 +163,10 @@ export async function getCandidateFunds(investorId: string) {
       price: true,
       description: true,
       status: true,
+      // include additional metadata used by the recommendation route
+      targetAmount: true,
+      totalIssued: true,
+      maxSupply: true,
     },
   });
 
@@ -170,10 +177,13 @@ export async function getCandidateFunds(investorId: string) {
  * Função de score simples baseada no perfil + metadados do fundo
  * Simple scoring function based on profile + fund metadata
  */
-function scoreFund(fund: Fund, profile: any) {
+function scoreFund(fund: Partial<Fund>, profile: any) {
   let score = 0;
 
-  if (profile?.preferredFundType && fund.fundType === profile.preferredFundType) {
+  if (
+    profile?.preferredFundType &&
+    fund.fundType === profile.preferredFundType
+  ) {
     score += 3;
   }
 
@@ -205,7 +215,10 @@ function scoreFund(fund: Fund, profile: any) {
   }
 
   // bonus if it has some positive performance (future field)
-  if (typeof (fund as any).return12m === 'number' && (fund as any).return12m > 0) {
+  if (
+    typeof (fund as any).return12m === "number" &&
+    (fund as any).return12m > 0
+  ) {
     score += 1;
   }
 
@@ -222,15 +235,12 @@ export async function getRecommendedFunds(investorId: string, limit = 10) {
   // Cold start → no profile yet
   if (!profile) {
     return candidates
-      .sort(
-        (a, b) =>
-          ((b as any).return12m || 0) - ((a as any).return12m || 0),
-      )
+      .sort((a, b) => ((b as any).return12m || 0) - ((a as any).return12m || 0))
       .slice(0, limit)
       .map((fund) => ({
         fund,
         score: 0,
-        reason: 'Funds with recent performance and active on the platform.',
+        reason: "Funds with recent performance and active on the platform.",
       }));
   }
 
@@ -254,15 +264,22 @@ export async function getRecommendedFunds(investorId: string, limit = 10) {
  * Gera um "motivo" legível pro usuário ver na UI
  * Builds a readable reason for the UI
  */
-function buildReason(fund: Fund, profile: any, score: number): string {
+function buildReason(fund: Partial<Fund>, profile: any, score: number): string {
   const reasons: string[] = [];
 
-  if (profile?.preferredFundType && fund.fundType === profile.preferredFundType) {
-    reasons.push(`same fund type you usually analyze or invest in (${fund.fundType})`);
+  if (
+    profile?.preferredFundType &&
+    fund.fundType === profile.preferredFundType
+  ) {
+    reasons.push(
+      `same fund type you usually analyze or invest in (${fund.fundType})`
+    );
   }
 
   if (profile?.preferredSector && fund.sector === profile.preferredSector) {
-    reasons.push(`focus on the same sector (${fund.sector}) as the funds you prefer`);
+    reasons.push(
+      `focus on the same sector (${fund.sector}) as the funds you prefer`
+    );
   }
 
   if (
@@ -273,8 +290,8 @@ function buildReason(fund: Fund, profile: any, score: number): string {
   }
 
   if (reasons.length === 0) {
-    return 'Selected based on similarity to funds you have already analyzed or invested in.';
+    return "Selected based on similarity to funds you have already analyzed or invested in.";
   }
 
-  return 'Recommended because: ' + reasons.join(', ') + '.';
+  return "Recommended because: " + reasons.join(", ") + ".";
 }
