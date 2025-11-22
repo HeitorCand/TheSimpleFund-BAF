@@ -63,6 +63,10 @@ export const fundService = {
     const response = await api.post('/funds', data);
     return response.data;
   },
+  getById: async (id: string) => {
+    const response = await api.get(`/funds/${id}`);
+    return response.data;
+  },
   approve: async (id: string, status: 'APPROVED' | 'REJECTED', fundWalletPublicKey?: string) => {
     const response = await api.patch(`/funds/${id}/approval`, { 
       status,

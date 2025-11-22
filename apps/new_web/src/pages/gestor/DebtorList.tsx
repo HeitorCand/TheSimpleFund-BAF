@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { sacadoService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { useAuth } from '../../contexts/useAuth';
+import { Link, Navigate } from 'react-router-dom';
 
 interface Debtor {
   id: string;
@@ -17,6 +19,15 @@ interface Debtor {
 const DebtorList: React.FC = () => {
     const [debtors, setDebtors] = useState<Debtor[]>([]);
     const [loading, setLoading] = useState(false);
+    const { user } = useAuth();
+    const role = user?.role as string | undefined;
+
+    if (role === 'CONSULTOR') {
+        return <Navigate to="/dashboard" replace />;
+    }
+    if (role && role !== 'GESTOR') {
+        return <p className="p-6 text-gray-600">Access restricted.</p>;
+    }
 
     const loadData = useCallback(async () => {
         setLoading(true);
@@ -52,7 +63,17 @@ const DebtorList: React.FC = () => {
 
     return (
         <div className="bg-white p-6 rounded-lg shadow-soft">
-            <h2 className="text-xl font-semibold mb-4">Manage Debtors</h2>
+            <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Manage Debtors</h2>
+                {user?.role === 'CONSULTOR' && (
+                    <Link
+                        to="/dashboard/debtors/new"
+                        className="px-3 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary/90 transition-colors"
+                    >
+                        + Create Debtor
+                    </Link>
+                )}
+            </div>
             <div className="space-y-4">
                 {debtors.length === 0 ? (
                     <p className="text-center text-gray-500 py-8">No debtors found.</p>

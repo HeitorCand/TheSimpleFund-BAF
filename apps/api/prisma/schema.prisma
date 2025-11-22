@@ -31,7 +31,25 @@ model Cedente {
   id        String   @id @default(cuid())
   name      String
   document  String   // CNPJ/CPF
+  fantasyName String? @map("fantasy_name")
+  cnae      String?
+  email     String?
+  phone     String?
+  website   String?
   address   String?
+  city      String?
+  state     String?
+  country   String? @default("BR")
+  postalCode String? @map("postal_code")
+  beneficialOwners String? @map("beneficial_owners")
+  isPep     Boolean? @map("is_pep")
+  revenueLast12m Float? @map("revenue_last_12m")
+  totalDebt Float? @map("total_debt")
+  mainBanks String? @map("main_banks")
+  riskRating String? @map("risk_rating")
+  operationDescription String? @map("operation_description")
+  creditPolicy String? @map("credit_policy")
+  guarantees String?
   publicKey String?  @map("public_key")
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt DateTime @default(now()) @map("created_at")
@@ -50,7 +68,24 @@ model Sacado {
   id        String   @id @default(cuid())
   name      String
   document  String   // CNPJ/CPF
+  personType String? @map("person_type")
+  email     String?
+  phone     String?
   address   String?
+  city      String?
+  state     String?
+  country   String? @default("BR")
+  postalCode String? @map("postal_code")
+  sector    String?
+  size      String?
+  rating    String?
+  paymentHistory String? @map("payment_history")
+  exposure  Float?
+  creditLimitFund Float? @map("credit_limit_fund")
+  concentrationPercent Float? @map("concentration_percent")
+  defaultRate30d Float? @map("default_rate_30d")
+  defaultRate60d Float? @map("default_rate_60d")
+  defaultRate90d Float? @map("default_rate_90d")
   publicKey String?  @map("public_key")
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt DateTime @default(now()) @map("created_at")
@@ -70,6 +105,36 @@ model Fund {
   id              String   @id @default(cuid())
   name            String
   symbol          String   @unique
+  cnpj            String?
+  fundType        String?   @map("fund_type")
+  investorProfile String?   @map("investor_profile")
+  cvmCode         String?   @map("cvm_code")
+  administratorName String? @map("administrator_name")
+  administratorCnpj String? @map("administrator_cnpj")
+  managerName     String?   @map("manager_name")
+  managerCnpj     String?   @map("manager_cnpj")
+  custodianName   String?   @map("custodian_name")
+  auditorName     String?   @map("auditor_name")
+  fiduciaryAgentName String? @map("fiduciary_agent_name")
+  sectorFocus     String?   @map("sector_focus")
+  eligibilityCriteria String? @map("eligibility_criteria")
+  maxCedenteConcentrationPercent Float? @map("max_cedente_concentration_pct")
+  maxSacadoConcentrationPercent Float? @map("max_sacado_concentration_pct")
+  sectorConcentrationPercent Float? @map("sector_concentration_pct")
+  targetPmt       Float?    @map("target_pmt")
+  keyRisks        String?   @map("key_risks")
+  administrationFee Float?  @map("administration_fee")
+  managementFee   Float?    @map("management_fee")
+  performanceFee  Float?    @map("performance_fee")
+  otherFees       String?   @map("other_fees")
+  liquidityType   String?   @map("liquidity_type")
+  lockupDays      Int?      @map("lockup_days")
+  redemptionTerms String?   @map("redemption_terms")
+  navPerShare     Float?    @map("nav_per_share")
+  aum             Float?
+  return12m       Float?    @map("return_12m")
+  returnYtd       Float?    @map("return_ytd")
+  returnSinceInception Float? @map("return_since_inception")
   contractAddress String?  @map("contract_address")
   tokenContractId String?  @map("token_contract_id")
   vaultContractId String?  @map("vault_contract_id")
