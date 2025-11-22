@@ -74,7 +74,7 @@ const InvestmentList: React.FC = () => {
     if (loading) return <div className="text-center p-8 text-white">Loading investments...</div>;
 
     return (
-        <div className="p-4 md:p-6 rounded-lg shadow-lg">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             <h2 className="text-xl font-semibold mb-4 text-white">Manage Investments</h2>
             
             <FilterBar
@@ -101,7 +101,7 @@ const InvestmentList: React.FC = () => {
                     {/* Desktop Table View */}
                     <div className="hidden md:block overflow-x-auto">
                         <table className="min-w-full">
-                            <thead className="bg-dark-200">
+                            <thead className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                 <tr>
                                     <th className="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase">Investor</th>
                                     <th className="py-3 px-4 text-left text-xs font-medium text-gray-400 uppercase">Fund</th>
@@ -114,7 +114,7 @@ const InvestmentList: React.FC = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-700">
                                 {filteredInvestments.map((item) => (
-                                    <tr key={item.id} className="hover:bg-dark-200">
+                                    <tr key={item.id} className="hover:bg-white/[0.08]">
                                         <td className="py-3 px-4">
                                             <p className="font-medium text-sm text-white">{item.investor.email}</p>
                                         </td>
@@ -210,7 +210,7 @@ const InvestmentList: React.FC = () => {
                     {/* Mobile Card View */}
                     <div className="md:hidden space-y-4">
                         {filteredInvestments.map((item) => (
-                            <div key={item.id} className="border border-gray-700 rounded-lg p-4 space-y-3 bg-dark-200">
+                            <div key={item.id} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                 <div className="flex justify-between items-start">
                                     <div>
                                         <p className="font-semibold text-white">{item.investor.email}</p>

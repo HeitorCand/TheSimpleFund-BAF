@@ -22,7 +22,7 @@ const PageLoader = () => (
 // Lazy load dashboard pages
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 
-// Consultant Pages - Lazy loaded
+// Manager Pages - Lazy loaded
 const ConsultorList = lazy(() => import('./pages/gestor/ConsultorList'));
 const InvestorList = lazy(() => import('./pages/gestor/InvestorList'));
 const FundList = lazy(() => import('./pages/gestor/FundList'));

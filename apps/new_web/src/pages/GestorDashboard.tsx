@@ -98,9 +98,9 @@ const GestorDashboard: React.FC = () => {
 
       {/* Pending Approvals Alert */}
       {totalPending > 0 && (
-        <div className="bg-dark-200 p-6 rounded-lg">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
           <div className="flex items-start">
-            <FiAlertCircle className="text-yellow-400 text-2xl mr-4 flex-shrink-0 mt-1" />
+            <FiAlertCircle className="text-[#F8FBA2] text-2xl mr-4 flex-shrink-0 mt-1" />
             <div>
               <h3 className="font-bold text-white text-lg">Pending Approvals</h3>
               <p className="text-gray-300 mt-1">
@@ -129,7 +129,7 @@ const GestorDashboard: React.FC = () => {
       )}
 
       {/* Quick Actions */}
-      <div className="bg-dark p-6 rounded-lg shadow-lg">
+      <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
         <h2 className="text-xl font-semibold mb-4 text-white">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <QuickActionButton to="/consultores" label="Review Consultants" />
@@ -150,11 +150,11 @@ const StatCard: React.FC<{
   value: number;
   pending?: number;
 }> = ({ icon, title, value, pending }) => (
-  <div className="bg-dark-200 p-6 rounded-lg shadow-lg">
+  <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
     <div className="flex items-center justify-between">
       <div className="text-3xl">{icon}</div>
       {pending !== undefined && pending > 0 && (
-        <span className="px-2 py-1 text-xs font-bold text-white bg-red-500 rounded-full">
+        <span className="px-2 py-1 text-xs font-bold text-white bg-[#FA7F7F] rounded-full">
           {pending}
         </span>
       )}
@@ -162,7 +162,7 @@ const StatCard: React.FC<{
     <h3 className="text-gray-300 text-sm font-medium mt-4">{title}</h3>
     <p className="text-3xl font-bold text-white mt-2">{value}</p>
     {pending !== undefined && pending > 0 && (
-      <p className="text-xs text-red-600 mt-1">{pending} pending approval</p>
+      <p className="text-xs text-[#FA7F7F] mt-1">{pending} pending approval</p>
     )}
   </div>
 );
@@ -170,7 +170,7 @@ const StatCard: React.FC<{
 const QuickActionButton: React.FC<{ to: string; label: string }> = ({ to, label }) => (
   <a
     href={to}
-    className="block px-4 py-3 text-center text-sm font-medium text-gray-300 bg-dark-200 rounded-lg hover:bg-gray-700 transition-colors"
+    className="block px-4 py-3 text-center text-sm font-medium text-gray-300 bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl shadow-[0_18px_60px_rgba(0,0,0,0.45)] hover:bg-white/[0.08] transition-colors"
   >
     {label}
   </a>

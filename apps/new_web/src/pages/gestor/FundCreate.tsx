@@ -185,77 +185,94 @@ const FundCreate: React.FC = () => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return (
-    <div className="bg-white p-6 rounded-lg shadow-soft">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Create Fund</h2>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handleMockFill}
-            className="text-sm text-primary border border-primary px-3 py-2 rounded-lg hover:bg-primary/10"
-          >
-            Fill with mock
-          </button>
-          <button onClick={() => navigate('/fundos')} className="text-sm text-primary hover:underline">
-            Back to funds
-          </button>
-        </div>
-      </div>
+  const inputBase =
+    'w-full rounded-lg px-3 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition';
+  const labelBase = 'block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase';
+  const sectionTitle = 'text-sm font-semibold text-emerald-300';
+  const sectionSubtitle = 'text-xs text-white/60';
 
-      <form onSubmit={handleSubmit} className="space-y-10">
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-800">1) Identification & strategy</h3>
-          <p className="text-sm text-gray-500">Fill in basic fund info and strategy focus.</p>
-        </div>
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Name *</label>
+  return (
+    <div className="min-h-screen bg-[#00000] text-white">
+      <div className="max-w-5xl mx-auto px-4 py-10">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white">
+                Create Fund
+              </h2>
+              <p className="text-xs md:text-sm text-white/70 mt-1">
+                Register a new fund with identification, risk and operational details.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={handleMockFill}
+                className="text-xs md:text-sm px-3 py-2 rounded-lg border border-white/30 text-white/80 hover:bg-white/10 transition"
+              >
+                Fill with mock
+              </button>
+              <button
+                onClick={() => navigate('/fundos')}
+                className="text-xs md:text-sm text-white/70 hover:text-white underline-offset-4 hover:underline transition"
+              >
+                Back to funds
+              </button>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-10">
+            <div className="space-y-2">
+              <h3 className={sectionTitle}>1) Identification & strategy</h3>
+              <p className={sectionSubtitle}>Fill in basic fund info and strategy focus.</p>
+            </div>
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={labelBase}>Name *</label>
             <input
               type="text"
               value={form.name}
               onChange={(e) => handleChange('name', e.target.value)}
               required
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Symbol *</label>
+            <label className={labelBase}>Symbol *</label>
             <input
               type="text"
               value={form.symbol}
               onChange={(e) => handleChange('symbol', e.target.value.toUpperCase())}
               required
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Max supply *</label>
+            <label className={labelBase}>Max supply *</label>
             <input
               type="number"
               value={form.maxSupply}
               onChange={(e) => handleChange('maxSupply', e.target.value)}
               required
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               min={1}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
+            <label className={labelBase}>
               Price (USD) *
-              <span className="block text-xs text-gray-500">Enter the quota price in USD. XLM equivalent will be estimated.</span>
-            </label>
+                                <span className={sectionSubtitle}>Enter the quota price in USD. XLM equivalent will be estimated.</span>            </label>
             <input
               type="number"
               step="0.01"
               value={form.price}
               onChange={(e) => handleChange('price', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               required
               placeholder="Enter price in USD"
             />
-            <p className="text-xs text-gray-600 mt-1">
-              {form.price
+                            <p className={sectionSubtitle}>              {form.price
                 ? xlmLoading
                   ? 'Loading XLM price...'
                   : xlmError || !xlmPrice
@@ -265,32 +282,32 @@ const FundCreate: React.FC = () => {
             </p>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">CNPJ</label>
+            <label className={labelBase}>CNPJ</label>
             <input
               type="text"
               value={form.cnpj}
               onChange={(e) => handleChange('cnpj', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               placeholder="00.000.000/0000-00"
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Type *</label>
+            <label className={labelBase}>Type *</label>
             <select
               value={form.type}
               onChange={(e) => handleChange('type', e.target.value as FundForm['type'])}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             >
               <option value="FIDC">FIDC</option>
               <option value="FIDC_NP">FIDC-NP</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Target Investor *</label>
+            <label className={labelBase}>Target Investor *</label>
             <select
               value={form.targetInvestor}
               onChange={(e) => handleChange('targetInvestor', e.target.value as FundForm['targetInvestor'])}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             >
               <option value="GERAL">General</option>
               <option value="QUALIFICADO">Qualified</option>
@@ -298,225 +315,225 @@ const FundCreate: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">CVM Code</label>
+            <label className={labelBase}>CVM Code</label>
             <input
               type="text"
               value={form.cvmCode}
               onChange={(e) => handleChange('cvmCode', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Strategy / Sector Focus *</label>
+            <label className={labelBase}>Strategy / Sector Focus *</label>
             <input
               type="text"
               value={form.strategy}
               onChange={(e) => handleChange('strategy', e.target.value)}
               required
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               placeholder="e.g., Multisector receivables"
             />
           </div>
         </section>
 
         <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-800">2) Service providers</h3>
-          <p className="text-sm text-gray-500">Administrator, manager, custodian, auditor, fiduciary agent.</p>
-        </div>
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Administrator (name)</label>
+          <h3 className={sectionTitle}>2) Service providers</h3>
+              <p className={sectionSubtitle}>Administrator, manager, custodian, auditor, fiduciary agent.</p>
+            </div>
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+            <label className={labelBase}>Administrator (name)</label>
             <input
               type="text"
               value={form.administratorName}
               onChange={(e) => handleChange('administratorName', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Administrator CNPJ</label>
+            <label className={labelBase}>Administrator CNPJ</label>
             <input
               type="text"
               value={form.administratorCnpj}
               onChange={(e) => handleChange('administratorCnpj', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Manager (name)</label>
+            <label className={labelBase}>Manager (name)</label>
             <input
               type="text"
               value={form.managerName}
               onChange={(e) => handleChange('managerName', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Manager CNPJ</label>
+            <label className={labelBase}>Manager CNPJ</label>
             <input
               type="text"
               value={form.managerCnpj}
               onChange={(e) => handleChange('managerCnpj', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Custodian</label>
+            <label className={labelBase}>Custodian</label>
             <input
               type="text"
               value={form.custodianName}
               onChange={(e) => handleChange('custodianName', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Auditor</label>
+            <label className={labelBase}>Auditor</label>
             <input
               type="text"
               value={form.auditorName}
               onChange={(e) => handleChange('auditorName', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Fiduciary Agent</label>
+            <label className={labelBase}>Fiduciary Agent</label>
             <input
               type="text"
               value={form.fiduciaryAgentName}
               onChange={(e) => handleChange('fiduciaryAgentName', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-800">3) Eligibility & risks</h3>
-          <p className="text-sm text-gray-500">Credit eligibility and key risks for investors.</p>
-        </div>
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Eligibility criteria (cedente/sacado/credit)</label>
+            <div className="space-y-2">
+              <h3 className={sectionTitle}>3) Eligibility & risks</h3>
+              <p className={sectionSubtitle}>Credit eligibility and key risks for investors.</p>
+            </div>
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+            <label className={labelBase}>Eligibility criteria (cedente/sacado/credit)</label>
             <textarea
               value={form.eligibility}
               onChange={(e) => handleChange('eligibility', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               rows={3}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Key risks (credit/liquidity/concentration)</label>
+            <label className={labelBase}>Key risks (credit/liquidity/concentration)</label>
             <textarea
               value={form.risks}
               onChange={(e) => handleChange('risks', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               rows={3}
             />
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-800">4) Concentration limits & tenor</h3>
-          <p className="text-sm text-gray-500">Limits per assignor/debtor/sector and PMT/PMH.</p>
-        </div>
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">% Limit per Cedente</label>
+            <div className="space-y-2">
+              <h3 className={sectionTitle}>4) Concentration limits & tenor</h3>
+              <p className={sectionSubtitle}>Limits per assignor/debtor/sector and PMT/PMH.</p>
+            </div>
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+            <label className={labelBase}>% Limit per Cedente</label>
             <input
               type="number"
               value={form.limitCedente}
               onChange={(e) => handleChange('limitCedente', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               placeholder="e.g., 20"
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">% Limit per Sacado</label>
+            <label className={labelBase}>% Limit per Sacado</label>
             <input
               type="number"
               value={form.limitSacado}
               onChange={(e) => handleChange('limitSacado', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">% Limit per Sector</label>
+            <label className={labelBase}>% Limit per Sector</label>
             <input
               type="number"
               value={form.limitSector}
               onChange={(e) => handleChange('limitSector', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">PMT/PMH (days)</label>
+            <label className={labelBase}>PMT/PMH (days)</label>
             <input
               type="number"
               value={form.pmt}
               onChange={(e) => handleChange('pmt', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               placeholder="e.g., 60"
             />
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-800">5) Fees</h3>
-          <p className="text-sm text-gray-500">Mandatory fees and other relevant charges.</p>
-        </div>
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Admin fee (% a.a.)</label>
+            <div className="space-y-2">
+              <h3 className={sectionTitle}>5) Fees</h3>
+              <p className={sectionSubtitle}>Mandatory fees and other relevant charges.</p>
+            </div>
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+            <label className={labelBase}>Admin fee (% a.a.)</label>
             <input
               type="number"
               step="0.01"
               value={form.adminFee}
               onChange={(e) => handleChange('adminFee', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Management fee (% a.a.)</label>
+            <label className={labelBase}>Management fee (% a.a.)</label>
             <input
               type="number"
               step="0.01"
               value={form.managementFee}
               onChange={(e) => handleChange('managementFee', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Performance fee (% over benchmark)</label>
+            <label className={labelBase}>Performance fee (% over benchmark)</label>
             <input
               type="number"
               step="0.01"
               value={form.performanceFee}
               onChange={(e) => handleChange('performanceFee', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div className="md:col-span-3">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Other fees</label>
+            <label className={labelBase}>Other fees</label>
             <input
               type="text"
               value={form.otherFees}
               onChange={(e) => handleChange('otherFees', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               placeholder="Custody, registry, audit..."
             />
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-800">6) Liquidity</h3>
-          <p className="text-sm text-gray-500">Liquidity type, lockup, and redemption terms.</p>
-        </div>
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Liquidity type</label>
+            <div className="space-y-2">
+              <h3 className={sectionTitle}>6) Liquidity</h3>
+              <p className={sectionSubtitle}>Liquidity type, lockup, and redemption terms.</p>
+            </div>
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+            <label className={labelBase}>Liquidity type</label>
             <select
               value={form.liquidityType}
               onChange={(e) => handleChange('liquidityType', e.target.value as FundForm['liquidityType'])}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             >
               <option value="ABERTO">Open</option>
               <option value="FECHADO">Closed</option>
@@ -524,104 +541,106 @@ const FundCreate: React.FC = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Lockup (days)</label>
+            <label className={labelBase}>Lockup (days)</label>
             <input
               type="number"
               value={form.lockupDays}
               onChange={(e) => handleChange('lockupDays', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Redemption terms</label>
+            <label className={labelBase}>Redemption terms</label>
             <input
               type="text"
               value={form.redemptionTerms}
               onChange={(e) => handleChange('redemptionTerms', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
               placeholder="Ex.: D+30, sem resgate"
             />
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold text-gray-800">7) Indicators</h3>
-          <p className="text-sm text-gray-500">NAV, AUM, and returns for investor exposure.</p>
-        </div>
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">NAV (per share)</label>
+            <div className="space-y-2">
+              <h3 className={sectionTitle}>7) Indicators</h3>
+              <p className={sectionSubtitle}>NAV, AUM, and returns for investor exposure.</p>
+            </div>
+            <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+            <label className={labelBase}>NAV (per share)</label>
             <input
               type="number"
               step="0.01"
               value={form.nav}
               onChange={(e) => handleChange('nav', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">AUM / PL</label>
+            <label className={labelBase}>AUM / PL</label>
             <input
               type="number"
               step="0.01"
               value={form.aum}
               onChange={(e) => handleChange('aum', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Return 12m (%)</label>
+            <label className={labelBase}>Return 12m (%)</label>
             <input
               type="number"
               step="0.01"
               value={form.return12m}
               onChange={(e) => handleChange('return12m', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Return YTD (%)</label>
+            <label className={labelBase}>Return YTD (%)</label>
             <input
               type="number"
               step="0.01"
               value={form.returnYtd}
               onChange={(e) => handleChange('returnYtd', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Return since inception (%)</label>
+            <label className={labelBase}>Return since inception (%)</label>
             <input
               type="number"
               step="0.01"
               value={form.returnSinceInception}
               onChange={(e) => handleChange('returnSinceInception', e.target.value)}
-              className="w-full border rounded-lg px-3 py-2"
+              className={inputBase}
             />
-          </div>
-        </section>
+              </div>
+            </section>
 
-        <section>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">Short description</label>
+            <section>
+              <label className={labelBase}>Short description</label>
           <textarea
             value={form.description}
             onChange={(e) => handleChange('description', e.target.value)}
-            className="w-full border rounded-lg px-3 py-2"
+            className={inputBase}
             rows={3}
             placeholder="Fund focus, risk highlights, track record summary"
-          />
-        </section>
+              />
+            </section>
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-3 text-white bg-primary rounded-lg hover:bg-primary/90 disabled:opacity-60"
-          >
-            {loading ? 'Creating...' : 'Create Fund'}
-          </button>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-6 py-3 text-sm font-medium rounded-2xl bg-white text-black hover:opacity-90 hover:scale-[1.02] shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Saving…' : 'Create Fund'}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
   );
 };

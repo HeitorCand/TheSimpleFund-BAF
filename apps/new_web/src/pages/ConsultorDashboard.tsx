@@ -77,7 +77,7 @@ const ConsultorDashboard: React.FC = () => {
         </div>
 
         {/* Funds List */}
-        <div className="bg-dark p-6 rounded-lg shadow-lg">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             <h2 className="text-xl font-semibold mb-4 text-white">Fund Details</h2>
             {loading ? (
                 <div className="text-center p-8">Loading funds...</div>
@@ -98,7 +98,7 @@ const ConsultorDashboard: React.FC = () => {
 
 // --- Sub-components ---
 const StatCard: React.FC<{ icon: React.ReactNode; title: string; value: number | string; color: string }> = ({ icon, title, value, color }) => (
-    <div className="p-6 bg-dark rounded-lg shadow-lg flex items-center space-x-4">
+    <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] flex items-center space-x-4">
       <div className={`p-3 rounded-full bg-primary-100 text-primary-600`}>
         {icon}
       </div>
@@ -119,7 +119,7 @@ const FundCard: React.FC<{ fund: Fund; onManage: () => void; }> = ({ fund, onMan
         }
     }
     return (
-        <div className="border border-gray-700 rounded-lg p-4 flex flex-col justify-between space-y-4 bg-dark-200">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             <div>
                 <div className="flex justify-between items-start">
                     <h3 className="text-lg font-bold text-white">{fund.name} ({fund.symbol})</h3>

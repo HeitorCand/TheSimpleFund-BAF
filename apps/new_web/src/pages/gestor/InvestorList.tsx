@@ -41,14 +41,14 @@ const InvestorList: React.FC = () => {
     if (loading) return <div className="text-center p-8 text-white">Loading investors...</div>;
 
     return (
-        <div className="p-6 rounded-lg shadow-lg bg-dark-200">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             <h2 className="text-xl font-semibold mb-4 text-white">Manage Investors</h2>
             <div className="space-y-4">
                 {investidores.length === 0 ? (
                     <p className="text-center text-gray-400 py-8">No investors found.</p>
                 ) : (
                     investidores.map((item) => (
-                        <div key={item.id} className="bg-dark-200 border-b border-gray-700 last:border-b-0 pb-4 last:pb-0 flex flex-col sm:flex-row justify-between sm:items-center rounded-lg p-4">
+                        <div key={item.id} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                             <div>
                                 <p className="font-semibold text-white">{item.email}</p>
                                 <p className="text-sm text-gray-300">Status: {item.status}</p>

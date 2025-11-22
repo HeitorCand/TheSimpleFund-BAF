@@ -82,7 +82,7 @@ const FundList: React.FC = () => {
                 />
             )}
             
-            <div className="p-6 rounded-lg shadow-lg bg-dark-200">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold text-white">Manage Funds</h2>
                     {role === 'CONSULTOR' && (
@@ -99,7 +99,7 @@ const FundList: React.FC = () => {
                         <p className="text-center text-gray-400 py-8">No funds found.</p>
                     ) : (
                         funds.map((item) => (
-                            <div key={item.id} className="border border-gray-700 rounded-lg p-4 hover:shadow-xl transition-shadow bg-dark-200">
+                            <div key={item.id} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                 <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-4">
                                     <div className="flex-1">
                                         <p className="font-semibold text-lg text-white">{item.name} ({item.symbol})</p>
@@ -201,7 +201,7 @@ const IssueQuotasModal: React.FC<{
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-dark-200 rounded-lg shadow-xl w-full max-w-md p-6 m-4">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-md p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <h2 className="text-xl font-bold mb-4 text-white">Issue Quotas - {fund.name}</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>

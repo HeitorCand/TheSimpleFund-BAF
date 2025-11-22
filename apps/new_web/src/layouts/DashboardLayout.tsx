@@ -68,7 +68,7 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
     <aside
       onMouseEnter={() => setIsCollapsed(false)}
       onMouseLeave={() => setIsCollapsed(true)}
-      className={`fixed top-0 left-0 h-full bg-dark shadow-lg transition-all duration-300 ease-in-out z-40 ${
+      className={`fixed top-0 left-0 h-full transition-all duration-300 ease-in-out z-40 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       } md:relative md:translate-x-0 ${sidebarWidth} flex flex-col`}
     >
@@ -101,14 +101,14 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
                 <div className="relative flex items-center justify-center text-lg">
                   <span className="text-lg">{item.icon}</span>
                   {showBadge && !isExpanded && (
-                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-red-500 rounded-full">
+                    <span className="absolute -top-1 -right-1 flex items-center justify-center w-4 h-4 text-[10px] font-bold text-white bg-[#FA7F7F] rounded-full">
                       {count}
                     </span>
                   )}
                 </div>
                 {showLabels && <span className="ml-4 font-medium">{item.name}</span>}
                 {showBadge && showLabels && (
-                  <span className="ml-auto flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full">
+                  <span className="ml-auto flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-[#FA7F7F] rounded-full">
                     {count}
                   </span>
                 )}
@@ -129,7 +129,7 @@ const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () =>
   const { publicKey, isConnected, connect, disconnect } = shouldShowWallet ? useWallet() : { publicKey: null, isConnected: false, connect: async () => {}, disconnect: () => {} };
   
   return (
-    <header className="flex items-center justify-between h-20 px-6 bg-dark border-b border-gray-700 md:justify-end">
+    <header className="flex items-center justify-between h-20 px-6 border-b border-gray-700 md:justify-end">
       <button onClick={onMenuClick} className="text-gray-300 md:hidden">
         <FiMenu className="w-6 h-6" />
       </button>
@@ -159,7 +159,7 @@ const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () =>
           </>
         )}
         <span className="font-medium text-gray-200 text-sm">{userEmail}</span>
-        <button onClick={onLogout} className="flex items-center p-2 text-gray-300 transition-colors duration-200 rounded-lg hover:bg-red-500/10 hover:text-red-500">
+        <button onClick={onLogout} className="flex items-center p-2 text-gray-300 transition-colors duration-200 rounded-lg hover:bg-[#FA7F7F] hover:text-red-500">
           <FiLogOut />
         </button>
       </div>
@@ -208,7 +208,7 @@ const DashboardLayout: React.FC = () => {
   if (!user) return null; // Should be handled by ProtectedRoute, but good practice
 
   return (
-    <div className="flex h-screen bg-dark">
+    <div className="flex h-screen">
       <Sidebar isOpen={isSidebarOpen} role={user.role} pendingCounts={pendingCounts} />
       <div className="flex flex-col flex-1">
         {isSidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 z-30 bg-black opacity-50 md:hidden"></div>}

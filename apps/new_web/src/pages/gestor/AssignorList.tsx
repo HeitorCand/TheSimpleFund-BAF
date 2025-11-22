@@ -83,7 +83,7 @@ const AssignorList: React.FC = () => {
 
     return (
         <>
-            <div className="p-6 rounded-lg shadow-lg bg-dark-200">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-semibold text-white">Manage Assignors</h2>
                     {user?.role === 'CONSULTOR' && (
@@ -100,7 +100,7 @@ const AssignorList: React.FC = () => {
                         <p className="text-center text-gray-400 py-8">No assignors found.</p>
                     ) : (
                         assignors.map((item) => (
-                            <div key={item.id} className="border border-gray-700 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-dark-200">
+                            <div key={item.id} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                 <div>
                                     <p className="font-semibold text-lg text-white">{item.name}</p>
                                     <p className="text-sm text-gray-300">Fund: {item.fund?.name || 'N/A'}</p>
@@ -128,7 +128,7 @@ const AssignorList: React.FC = () => {
 
             {selected && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-dark-200 rounded-lg shadow-xl w-full max-w-3xl p-6 m-4">
+                    <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-3xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                         <div className="flex items-start justify-between gap-3">
                             <div>
                                 <h3 className="text-xl font-semibold text-white">{selected.name}</h3>
