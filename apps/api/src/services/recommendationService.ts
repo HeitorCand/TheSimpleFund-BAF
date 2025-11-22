@@ -123,7 +123,7 @@ export async function getCandidateFunds(investorId: string) {
 
   const candidates = await prisma.fund.findMany({
     where: {
-      status: 'ACTIVE',
+      status: 'APPROVED',
       id: { notIn: investedFundIds },
     },
   });

@@ -164,11 +164,9 @@ export async function badgeRoutes(fastify: FastifyInstance) {
   fastify.get('/info/tiers', async (request, reply) => {
     try {
       const badges = [
-        InvestorBadge.NONE,
         InvestorBadge.BRONZE,
         InvestorBadge.SILVER,
         InvestorBadge.GOLD,
-        InvestorBadge.DIAMOND,
       ];
 
       const tiers = badges.map(badge => getBadgeInfo(badge));
@@ -220,7 +218,7 @@ export async function badgeRoutes(fastify: FastifyInstance) {
           // Não revelar valor exato, apenas range
           investmentRange: {
             min: badgeInfo.minAmount,
-            max: badgeInfo.badge === InvestorBadge.DIAMOND ? null : undefined,
+            max: badgeInfo.badge === InvestorBadge.GOLD ? null : undefined,
           },
           lastUpdate: investor.lastBadgeUpdate,
         };

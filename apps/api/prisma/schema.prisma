@@ -115,7 +115,6 @@ model Fund {
   name            String
   symbol          String   @unique
   cnpj            String?
-  fundType        String?   @map("fund_type")
   investorProfile String?   @map("investor_profile")
   cvmCode         String?   @map("cvm_code")
   administratorName String? @map("administrator_name")
@@ -157,7 +156,7 @@ model Fund {
   description     String?
   
   // Metadados para recomendação
-  fundType        String        @default("FIDC")        // tipo do fundo (FIDC, FII, AGRO, VAREJO, OUTROS)
+  fundType        String        @default("FIDC") @map("fund_type")       // tipo do fundo (FIDC, FII, AGRO, VAREJO, OUTROS)
   riskLevel       String?       @map("risk_level")      // nível de risco (BAIXO, MEDIO, ALTO)
   sector          String?       @map("sector")          // setor principal (AGRO, VAREJO, etc.)
   durationMonths  Int?          @map("duration_months") // prazo médio da carteira
