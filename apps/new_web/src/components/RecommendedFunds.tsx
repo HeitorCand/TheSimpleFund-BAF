@@ -196,7 +196,10 @@ const RecommendedFunds: React.FC = () => {
                                 <span className="text-gray-500">Quota price: </span>
                                 <span className="font-semibold text-gray-800">R${fund.price.toFixed(2)}</span>
                             </div>
-                            <button className="inline-flex items-center space-x-1 text-sm font-medium text-primary group-hover:text-primary-dark transition-colors">
+                            <button
+                                onClick={() => window.location.href = `/marketplace/${fund.id}`}
+                                className="inline-flex items-center space-x-1 text-sm font-medium text-primary group-hover:text-primary-dark transition-colors"
+                            >
                                 <span>View Details</span>
                                 <FiChevronRight className="group-hover:translate-x-1 transition-transform" />
                             </button>
