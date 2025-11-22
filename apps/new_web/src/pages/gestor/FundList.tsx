@@ -5,6 +5,7 @@ import { getErrorMessage } from '../../utils/errorHandler';
 import { useWallet } from '../../contexts/WalletContext';
 import { useAuth } from '../../contexts/useAuth';
 import { Link, Navigate } from 'react-router-dom';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Fund {
   id: string;
@@ -168,7 +169,8 @@ const FundList: React.FC = () => {
                                                 <span className="font-medium">Issued:</span> {item.totalIssued.toLocaleString()} / {item.maxSupply.toLocaleString()}
                                             </p>
                                             <p className="text-gray-600">
-                                                <span className="font-medium">Price:</span> ${item.price.toLocaleString()}
+                                                <span className="font-medium">Price:</span>{' '}
+                                                <FiatWithXlmValue amountUsd={item.price} />
                                             </p>
                                             <p className="text-gray-600">
                                                 <span className="font-medium">Available:</span> {(item.maxSupply - item.totalIssued).toLocaleString()}

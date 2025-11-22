@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { fundService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { useAuth } from '../../contexts/useAuth';
+import { useXlmPrice } from '../../hooks/useXlmPrice';
 
 type FundForm = {
   name: string;
@@ -46,6 +47,7 @@ type FundForm = {
 const FundCreate: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { price: xlmPrice, loading: xlmLoading, error: xlmError } = useXlmPrice();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<FundForm>({
     name: '',
@@ -239,14 +241,28 @@ const FundCreate: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">Price (optional)</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Price (USD) *
+              <span className="block text-xs text-gray-500">Enter the quota price in USD. XLM equivalent will be estimated.</span>
+            </label>
             <input
               type="number"
               step="0.01"
               value={form.price}
               onChange={(e) => handleChange('price', e.target.value)}
               className="w-full border rounded-lg px-3 py-2"
+              required
+              placeholder="Enter price in USD"
             />
+            <p className="text-xs text-gray-600 mt-1">
+              {form.price
+                ? xlmLoading
+                  ? 'Loading XLM price...'
+                  : xlmError || !xlmPrice
+                    ? 'XLM price unavailable now'
+                    : `$${Number(form.price).toLocaleString()} (~ ${(Number(form.price) / xlmPrice).toFixed(4)} XLM)`
+                : 'Enter a USD amount to see XLM estimate'}
+            </p>
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">CNPJ</label>

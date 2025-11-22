@@ -6,6 +6,7 @@ import { getErrorMessage } from '../../utils/errorHandler';
 import InvestmentModal from '../../components/InvestmentModal';
 import { useAuth } from '../../contexts/useAuth';
 import { useWallet } from '../../contexts/WalletContext';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Fund {
   id: string;
@@ -245,9 +246,9 @@ const FundDetail: React.FC = () => {
         <Field label="Target investor" value={fund.investorProfile} />
         <Field label="CVM code" value={fund.cvmCode} />
         <Field label="Status" value={fund.status} />
-        <Field label="Price" value={fund.price ? `$${fund.price.toLocaleString()}` : undefined} />
-        <Field label="NAV (per share)" value={fund.navPerShare ? `$${fund.navPerShare}` : undefined} />
-        <Field label="AUM / PL" value={fund.aum ? `$${fund.aum.toLocaleString()}` : undefined} />
+        <Field label="Price" value={fund.price ? <FiatWithXlmValue amountUsd={fund.price} /> : undefined} />
+        <Field label="NAV (per share)" value={fund.navPerShare ? <FiatWithXlmValue amountUsd={fund.navPerShare} /> : undefined} />
+        <Field label="AUM / PL" value={fund.aum ? <FiatWithXlmValue amountUsd={fund.aum} /> : undefined} />
         <Field label="Return 12m" value={fund.return12m ? `${fund.return12m}%` : undefined} />
         <Field label="Return YTD" value={fund.returnYtd ? `${fund.returnYtd}%` : undefined} />
         <Field label="Return since inception" value={fund.returnSinceInception ? `${fund.returnSinceInception}%` : undefined} />
