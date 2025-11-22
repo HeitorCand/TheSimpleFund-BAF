@@ -44,7 +44,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50 text-gray-900">
+    <div className="min-h-screen flex bg-dark text-gray-200">
       <div
         className="hidden lg:flex flex-[0.65] bg-cover bg-left"
         style={{
@@ -56,41 +56,41 @@ const LoginPage: React.FC = () => {
         <div className="w-full max-w-2xl px-3 sm:px-6">
           <form onSubmit={handleSubmit} className="space-y-8 px-2 sm:px-3">
             <div>
-              <h2 className="text-4xl sm:text-5xl font-semibold text-gray-900">Login</h2>
+              <h2 className="text-4xl sm:text-5xl font-semibold text-white">Login</h2>
             </div>
 
             {error && <p className="text-red-500 text-base">{error}</p>}
 
             <div className="space-y-6">
               <div>
-                <label className="block text-base font-semibold text-gray-700 mb-2">Email</label>
+                <label className="block text-base font-semibold text-gray-300 mb-2">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  className="w-full bg-dark-200 border border-gray-600 rounded-lg px-3 py-3 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   placeholder="you@example.com"
                 />
               </div>
 
               <div>
-                <label className="block text-base font-semibold text-gray-700 mb-2">Password</label>
+                <label className="block text-base font-semibold text-gray-300 mb-2">Password</label>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                  className="w-full bg-dark-200 border border-gray-600 rounded-lg px-3 py-3 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end text-sm text-gray-500">
+            <div className="flex items-center justify-end text-sm text-gray-400">
               <div className="flex items-center gap-1">
                 <span>Don&apos;t have an account?</span>
-                <Link to="/register" className="text-purple-700 font-semibold hover:underline">
+                <Link to="/register" className="text-primary font-semibold hover:underline">
                   Create one
                 </Link>
               </div>
@@ -99,19 +99,19 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 text-white rounded-lg bg-gradient-to-r from-purple-700 to-indigo-600 hover:shadow-lg transition-all disabled:opacity-60"
+              className="w-full py-4 text-white rounded-lg bg-primary hover:shadow-lg transition-all disabled:opacity-60"
             >
               {loading ? 'Logging in...' : 'Sign in'}
             </button>
 
-            <div className="pt-6 border-t border-gray-200 space-y-3">
-              <p className="text-sm text-gray-500">Quick access to test profiles</p>
+            <div className="pt-6 border-t border-gray-700 space-y-3">
+              <p className="text-sm text-gray-400">Quick access to test profiles</p>
               <div className="space-y-5">
                 <button
                   type="button"
                   onClick={() => handleTestLogin('gestor@vero.com', '123456')}
                   disabled={loading}
-                  className="w-full py-2 text-sm text-purple-800 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100 disabled:opacity-50 transition-colors"
+                  className="w-full py-2 text-sm text-primary-700 bg-primary-100 border border-primary-200 rounded-lg hover:bg-primary-200 disabled:opacity-50 transition-colors"
                 >
                   Login as <strong>MANAGER</strong>
                 </button>
@@ -119,7 +119,7 @@ const LoginPage: React.FC = () => {
                   type="button"
                   onClick={() => handleTestLogin('consultor@vero.com', '123456')}
                   disabled={loading}
-                  className="w-full py-2 text-sm text-blue-800 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 disabled:opacity-50 transition-colors"
+                  className="w-full py-2 text-sm text-primary-700 bg-primary-100 border border-primary-200 rounded-lg hover:bg-primary-200 disabled:opacity-50 transition-colors"
                 >
                   Login as <strong>CONSULTANT</strong>
                 </button>
@@ -127,7 +127,7 @@ const LoginPage: React.FC = () => {
                   type="button"
                   onClick={() => handleTestLogin('investidor@vero.com', '123456')}
                   disabled={loading}
-                  className="w-full py-2 text-sm text-green-800 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 disabled:opacity-50 transition-colors"
+                  className="w-full py-2 text-sm text-primary-700 bg-primary-100 border border-primary-200 rounded-lg hover:bg-primary-200 disabled:opacity-50 transition-colors"
                 >
                   Login as <strong>INVESTOR</strong>
                 </button>

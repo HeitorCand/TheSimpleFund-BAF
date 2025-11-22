@@ -27,7 +27,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50 text-gray-900">
+    <div className="min-h-screen flex bg-dark text-gray-200">
       <div
         className="hidden lg:flex flex-[0.65] bg-cover bg-left"
         style={{
@@ -39,56 +39,56 @@ const RegisterPage: React.FC = () => {
         <div className="w-full max-w-2xl px-3 sm:px-6">
           {success ? (
             <div className="space-y-6">
-              <h2 className="text-4xl font-semibold text-gray-900">Registration Successful!</h2>
-              <p className="text-gray-600 text-base">
+              <h2 className="text-4xl font-semibold text-white">Registration Successful!</h2>
+              <p className="text-gray-300 text-base">
                 Your account has been created and is now awaiting approval from an administrator.
               </p>
-              <p className="text-gray-600 text-base">
+              <p className="text-gray-300 text-base">
                 You will be notified by email once your account is approved.
               </p>
-              <Link to="/login" className="text-purple-700 font-semibold hover:underline">
+              <Link to="/login" className="text-primary font-semibold hover:underline">
                 Back to Login
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8 px-2 sm:px-3">
               <div>
-                <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900">Create Account</h2>
+                <h2 className="text-3xl sm:text-4xl font-semibold text-white">Create Account</h2>
               </div>
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
 
               <div className="space-y-5">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Email</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                    className="w-full bg-dark-200 border border-gray-600 rounded-lg px-3 py-3 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                     placeholder="you@example.com"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">Password</label>
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                    className="w-full bg-dark-200 border border-gray-600 rounded-lg px-3 py-3 text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                     placeholder="Create a password"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">I am a...</label>
+                  <label className="block text-sm font-semibold text-gray-300 mb-2">I am a...</label>
                   <select
                     value={role}
                     onChange={(e) => setRole(e.target.value as any)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
+                    className="w-full bg-dark-200 border border-gray-600 rounded-lg px-3 py-3 text-base focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   >
                     <option value="INVESTIDOR">Investor</option>
                     <option value="CONSULTOR">Consultant</option>
@@ -100,14 +100,14 @@ const RegisterPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 text-white rounded-lg bg-gradient-to-r from-purple-700 to-indigo-600 hover:shadow-lg transition-all disabled:opacity-60"
+                className="w-full py-4 text-white rounded-lg bg-primary hover:shadow-lg transition-all disabled:opacity-60"
               >
                 {loading ? 'Creating Account...' : 'Register'}
               </button>
 
-              <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center justify-between text-xs text-gray-400">
                 <span>Already have an account?</span>
-                <Link to="/login" className="text-purple-700 font-semibold hover:underline">
+                <Link to="/login" className="text-primary font-semibold hover:underline">
                   Log in
                 </Link>
               </div>

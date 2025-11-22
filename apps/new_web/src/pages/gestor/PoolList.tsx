@@ -106,7 +106,7 @@ const PoolList: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-8 py-8 bg-dark-200 rounded-lg">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Yield Pools</h2>
           <button
@@ -133,7 +133,7 @@ const PoolList: React.FC = () => {
             {pools.map((pool) => (
               <div
                 key={pool.id}
-                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                className="bg-dark-200 border border-gray-700 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
@@ -446,7 +446,7 @@ const DepositModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+      <div className="bg-dark-200 rounded-lg shadow-xl w-full max-w-md p-8 m-4">
         <h2 className="text-2xl font-bold mb-4">Deposit to Pool</h2>
         <div className="mb-6">
           <p className="text-sm text-gray-600">Pool: {pool.name}</p>

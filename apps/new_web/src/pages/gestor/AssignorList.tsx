@@ -4,7 +4,6 @@ import { cedenteService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { useAuth } from '../../contexts/useAuth';
 import { Link, Navigate } from 'react-router-dom';
-
 interface Assignor {
   id: string;
   name: string;
@@ -46,7 +45,7 @@ const AssignorList: React.FC = () => {
         return <Navigate to="/dashboard" replace />;
     }
     if (role && role !== 'GESTOR') {
-        return <p className="p-6 text-gray-600">Access restricted.</p>;
+        return <p className="p-6 text-gray-300">Access restricted.</p>;
     }
 
     const loadData = useCallback(async () => {
@@ -80,16 +79,16 @@ const AssignorList: React.FC = () => {
         }
     };
 
-    if (loading) return <div className="text-center p-8">Loading assignors...</div>;
+    if (loading) return <div className="text-center p-8 text-white">Loading assignors...</div>;
 
     return (
         <>
-            <div className="bg-white p-6 rounded-lg shadow-soft">
+            <div className="p-6 rounded-lg shadow-lg bg-dark-200">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold">Manage Assignors</h2>
+                    <h2 className="text-xl font-semibold text-white">Manage Assignors</h2>
                     {user?.role === 'CONSULTOR' && (
                         <Link
-                            to="/dashboard/assignors/new"
+                            to="/assignors/new"
                             className="px-3 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary/90 transition-colors"
                         >
                             + Create Assignor
@@ -98,17 +97,17 @@ const AssignorList: React.FC = () => {
                 </div>
                 <div className="space-y-4">
                     {assignors.length === 0 ? (
-                        <p className="text-center text-gray-500 py-8">No assignors found.</p>
+                        <p className="text-center text-gray-400 py-8">No assignors found.</p>
                     ) : (
                         assignors.map((item) => (
-                            <div key={item.id} className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div key={item.id} className="border border-gray-700 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-dark-200">
                                 <div>
-                                    <p className="font-semibold text-lg text-gray-900">{item.name}</p>
-                                    <p className="text-sm text-gray-600">Fund: {item.fund?.name || 'N/A'}</p>
+                                    <p className="font-semibold text-lg text-white">{item.name}</p>
+                                    <p className="text-sm text-gray-300">Fund: {item.fund?.name || 'N/A'}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                        item.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                                        item.status === 'APPROVED' ? 'bg-primary-100 text-primary-800' :
                                         item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
                                         'bg-red-100 text-red-800'
                                     }`}>
@@ -129,16 +128,16 @@ const AssignorList: React.FC = () => {
 
             {selected && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6 m-4">
+                    <div className="bg-dark-200 rounded-lg shadow-xl w-full max-w-3xl p-6 m-4">
                         <div className="flex items-start justify-between gap-3">
                             <div>
-                                <h3 className="text-xl font-semibold text-gray-900">{selected.name}</h3>
-                                <p className="text-sm text-gray-600">Document: {selected.document}</p>
-                                <p className="text-sm text-gray-600">Fund: {selected.fund?.name || 'N/A'}</p>
+                                <h3 className="text-xl font-semibold text-white">{selected.name}</h3>
+                                <p className="text-sm text-gray-300">Document: {selected.document}</p>
+                                <p className="text-sm text-gray-300">Fund: {selected.fund?.name || 'N/A'}</p>
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                    selected.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                                    selected.status === 'APPROVED' ? 'bg-primary-100 text-primary-800' :
                                     selected.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
                                     'bg-red-100 text-red-800'
                                 }`}>
@@ -146,14 +145,14 @@ const AssignorList: React.FC = () => {
                                 </span>
                                 <button
                                     onClick={() => setSelected(null)}
-                                    className="text-sm text-gray-600 hover:underline"
+                                    className="text-sm text-gray-300 hover:underline"
                                 >
                                     Close
                                 </button>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm text-gray-700">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm text-gray-200">
                             <Info label="Trade name" value={selected.fantasyName} />
                             <Info label="CNAE" value={selected.cnae} />
                             <Info label="Email" value={selected.email} />
@@ -179,7 +178,7 @@ const AssignorList: React.FC = () => {
                             <div className="flex gap-2 justify-end mt-4">
                                 <button
                                     onClick={() => selected && handleApprove(selected.id, 'approve')}
-                                    className="px-4 py-2 text-sm text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors"
+                                    className="px-4 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary/90 transition-colors"
                                 >
                                     Approve
                                 </button>
@@ -200,8 +199,8 @@ const AssignorList: React.FC = () => {
 
 const Info: React.FC<{ label: string; value?: string | number }> = ({ label, value }) => (
     <div>
-        <p className="text-xs uppercase text-gray-500 font-semibold">{label}</p>
-        <p className="text-sm text-gray-800">{value ?? 'N/A'}</p>
+        <p className="text-xs uppercase text-gray-400 font-semibold">{label}</p>
+        <p className="text-sm text-white">{value ?? 'N/A'}</p>
     </div>
 );
 

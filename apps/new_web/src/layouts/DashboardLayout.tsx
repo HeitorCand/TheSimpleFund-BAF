@@ -68,11 +68,11 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
     <aside
       onMouseEnter={() => setIsCollapsed(false)}
       onMouseLeave={() => setIsCollapsed(true)}
-      className={`fixed top-0 left-0 h-full bg-white shadow-lg transition-all duration-300 ease-in-out z-40 ${
+      className={`fixed top-0 left-0 h-full bg-dark shadow-lg transition-all duration-300 ease-in-out z-40 ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       } md:relative md:translate-x-0 ${sidebarWidth} flex flex-col`}
     >
-      <div className="flex items-center justify-center h-20 border-b px-3">
+      <div className="flex items-center justify-center h-20 border-b border-gray-700 px-3">
         <Link to="/dashboard" className="flex items-center">
           <img src="/TSF.svg" alt="TheSimpleFund logo" className="h-10 w-auto" />
         </Link>
@@ -93,7 +93,7 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
               to={item.to}
               className={() =>
                 `flex items-center ${isExpanded ? 'px-4 gap-3' : 'justify-center px-3'} py-3 transition-colors duration-200 rounded-lg ${
-                  isActive ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 hover:bg-primary/5'
+                  isActive ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-300 hover:bg-primary/5'
                 }`
               }
             >
@@ -117,7 +117,7 @@ const Sidebar: React.FC<{ isOpen: boolean; role: string; pendingCounts: PendingC
           );
         })}
       </nav>
-      <div className="px-4 py-6 border-t">
+      <div className="px-4 py-6 border-t border-gray-700">
         {/* Logout button moved to Header */}
       </div>
     </aside>
@@ -129,8 +129,8 @@ const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () =>
   const { publicKey, isConnected, connect, disconnect } = shouldShowWallet ? useWallet() : { publicKey: null, isConnected: false, connect: async () => {}, disconnect: () => {} };
   
   return (
-    <header className="flex items-center justify-between h-20 px-6 bg-white border-b md:justify-end">
-      <button onClick={onMenuClick} className="text-gray-500 md:hidden">
+    <header className="flex items-center justify-between h-20 px-6 bg-dark border-b border-gray-700 md:justify-end">
+      <button onClick={onMenuClick} className="text-gray-300 md:hidden">
         <FiMenu className="w-6 h-6" />
       </button>
       <div className="flex items-center space-x-4">
@@ -138,7 +138,7 @@ const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () =>
           <>
             {isConnected && publicKey ? (
               <div className="flex items-center space-x-2">
-                <span className="px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg">
+                <span className="px-3 py-1.5 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-200 rounded-lg">
                   {publicKey.slice(0, 4)}...{publicKey.slice(-4)}
                 </span>
                 <button
@@ -158,8 +158,8 @@ const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () =>
             )}
           </>
         )}
-        <span className="font-medium text-gray-700 text-sm">{userEmail}</span>
-        <button onClick={onLogout} className="flex items-center p-2 text-gray-600 transition-colors duration-200 rounded-lg hover:bg-red-500/10 hover:text-red-500">
+        <span className="font-medium text-gray-200 text-sm">{userEmail}</span>
+        <button onClick={onLogout} className="flex items-center p-2 text-gray-300 transition-colors duration-200 rounded-lg hover:bg-red-500/10 hover:text-red-500">
           <FiLogOut />
         </button>
       </div>
@@ -208,7 +208,7 @@ const DashboardLayout: React.FC = () => {
   if (!user) return null; // Should be handled by ProtectedRoute, but good practice
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-dark">
       <Sidebar isOpen={isSidebarOpen} role={user.role} pendingCounts={pendingCounts} />
       <div className="flex flex-col flex-1">
         {isSidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 z-30 bg-black opacity-50 md:hidden"></div>}

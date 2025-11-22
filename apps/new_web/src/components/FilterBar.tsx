@@ -24,7 +24,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
 }) => {
   return (
     <div className="mb-6 space-y-4">
-      <div className="flex items-center gap-2 text-sm text-gray-700 mb-3">
+      <div className="flex items-center gap-2 text-sm text-gray-300 mb-3">
         <FiFilter className="text-primary" />
         <span className="font-medium">Filters</span>
       </div>
@@ -34,12 +34,12 @@ const FilterBar: React.FC<FilterBarProps> = ({
           placeholder={searchPlaceholder}
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="px-4 py-2 bg-dark-200 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-white"
         />
         <select
           value={filterStatus}
           onChange={(e) => onStatusChange(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="px-4 py-2 bg-dark-200 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-white"
         >
           <option value="all">All Payment Status</option>
           <option value="PENDING">Pending</option>
@@ -49,7 +49,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         <select
           value={filterApproval}
           onChange={(e) => onApprovalChange(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="px-4 py-2 bg-dark-200 border border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-white"
         >
           <option value="all">All Approval Status</option>
           <option value="PENDING_APPROVAL">Awaiting Approval</option>
@@ -58,7 +58,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
         </select>
         <button
           onClick={onClearFilters}
-          className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+          className="px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 transition-colors"
         >
           Clear Filters
         </button>

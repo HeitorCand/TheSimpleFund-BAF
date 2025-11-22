@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom';
 const AuthLayout: React.FC = () => {
   // Full-height container so the child page can control its own split layout
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-dark">
       <Outlet />
     </div>
   );

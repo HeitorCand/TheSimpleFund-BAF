@@ -59,18 +59,18 @@ const InvestidorDashboard: React.FC = () => {
 
     if (user?.status !== 'APPROVED') {
         return (
-            <div className="bg-white p-8 rounded-lg shadow-soft text-center">
+            <div className="bg-dark p-8 rounded-lg shadow-lg text-center">
                 <h2 className="text-2xl font-bold mb-2">Awaiting Approval</h2>
-                <p className="text-gray-600">Your account is currently {user?.status}. You'll get access once approved.</p>
+                <p className="text-gray-300">Your account is currently {user?.status}. You'll get access once approved.</p>
             </div>
         );
     }
     
     return (
         <div className="space-y-8">
-            <div className="bg-white p-6 rounded-lg shadow-soft">
-                <h1 className="text-3xl font-bold text-gray-800">Welcome, Investor!</h1>
-                <p className="mt-2 text-gray-600">Here is a summary of your investment activity.</p>
+            <div className="bg-dark p-6 rounded-lg shadow-lg">
+                <h1 className="text-3xl font-bold text-white">Welcome, Investor!</h1>
+                <p className="mt-2 text-gray-300">Here is a summary of your investment activity.</p>
             </div>
 
             {loading ? (
@@ -84,38 +84,38 @@ const InvestidorDashboard: React.FC = () => {
                             icon={<FiDollarSign />} 
                             title="Total Invested" 
                             value={`$${totalInvested.toLocaleString()}`} 
-                            color="green" 
+                            color="primary" 
                         />
                         <StatCard 
                             icon={<FiCheckCircle />} 
                             title="Completed Orders" 
                             value={completedOrders.length} 
-                            color="blue" 
+                            color="primary" 
                         />
                         <StatCard 
                             icon={<FiClock />} 
                             title="Pending Orders" 
                             value={pendingOrders.length}
                             subtitle={totalPendingValue > 0 ? `$${totalPendingValue.toLocaleString()}` : undefined}
-                            color="yellow" 
+                            color="primary" 
                         />
                         <StatCard 
                             icon={<FiTrendingUp />} 
                             title="Total Quotas" 
                             value={totalQuotas} 
-                            color="purple" 
+                            color="primary" 
                         />
                         <StatCard 
                             icon={<FiBox />} 
                             title="Available Funds" 
                             value={availableFunds} 
-                            color="indigo" 
+                            color="primary" 
                         />
                         <StatCard 
                             icon={<FiList />} 
                             title="Total Orders" 
                             value={orders.length} 
-                            color="gray" 
+                            color="primary" 
                         />
                     </div>
 
@@ -134,22 +134,22 @@ const InvestidorDashboard: React.FC = () => {
                     )}
 
                     {pendingOrders.length > 0 && (
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                        <div className="bg-primary-900 border border-primary-700 rounded-lg p-6">
                             <div className="flex items-start space-x-3">
-                                <FiClock className="text-yellow-600 text-xl mt-0.5" />
+                                <FiClock className="text-primary-400 text-xl mt-0.5" />
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-semibold text-yellow-800 mb-2">Pending Orders</h3>
-                                    <p className="text-yellow-700 text-sm mb-3">
+                                    <h3 className="text-lg font-semibold text-primary-200 mb-2">Pending Orders</h3>
+                                    <p className="text-primary-300 text-sm mb-3">
                                         You have {pendingOrders.length} order{pendingOrders.length > 1 ? 's' : ''} awaiting approval with a total value of ${totalPendingValue.toLocaleString()}.
                                     </p>
                                     <div className="space-y-2">
                                         {pendingOrders.map(order => (
-                                            <div key={order.id} className="bg-white rounded p-3 text-sm">
+                                            <div key={order.id} className="bg-dark-200 rounded p-3 text-sm">
                                                 <div className="flex justify-between items-center">
-                                                    <span className="font-medium text-gray-800">
+                                                    <span className="font-medium text-white">
                                                         {order.fund?.name || 'Fund'}
                                                     </span>
-                                                    <span className="text-gray-600">
+                                                    <span className="text-gray-300">
                                                         {order.quantity} quotas × ${order.fund?.quotaPrice || 0} = ${order.total.toLocaleString()}
                                                     </span>
                                                 </div>
@@ -168,23 +168,18 @@ const InvestidorDashboard: React.FC = () => {
 
 const StatCard: React.FC<{ icon: React.ReactNode; title: string; value: number | string; color: string; subtitle?: string }> = ({ icon, title, value, color, subtitle }) => {
     const colorClasses = {
-        green: 'bg-green-100 text-green-600',
-        blue: 'bg-blue-100 text-blue-600',
-        yellow: 'bg-yellow-100 text-yellow-600',
-        purple: 'bg-purple-100 text-purple-600',
-        indigo: 'bg-indigo-100 text-indigo-600',
-        gray: 'bg-gray-100 text-gray-600',
+        primary: 'bg-primary-100 text-primary-600',
     };
 
     return (
-        <div className="p-6 bg-white rounded-lg shadow-soft flex items-center space-x-4">
+        <div className="p-6 bg-dark rounded-lg shadow-lg flex items-center space-x-4">
             <div className={`p-3 rounded-full text-2xl ${colorClasses[color as keyof typeof colorClasses]}`}>
                 {icon}
             </div>
             <div>
-                <p className="text-sm font-medium text-gray-500">{title}</p>
-                <p className="text-2xl font-bold text-gray-800">{value}</p>
-                {subtitle && <p className="text-xs text-gray-500 mt-1">{subtitle}</p>}
+                <p className="text-sm font-medium text-gray-400">{title}</p>
+                <p className="text-2xl font-bold text-white">{value}</p>
+                {subtitle && <p className="text-xs text-gray-400 mt-1">{subtitle}</p>}
             </div>
         </div>
     );

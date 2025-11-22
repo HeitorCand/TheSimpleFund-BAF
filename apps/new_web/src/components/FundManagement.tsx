@@ -110,14 +110,14 @@ const FundManagement: React.FC<FundManagementProps> = ({ fund, onBack }) => {
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex items-center space-x-4">
-                    <button onClick={onBack} className="p-2 rounded-full hover:bg-gray-200">
+                    <button onClick={onBack} className="p-2 rounded-full hover:bg-gray-700">
                         <FiArrowLeft />
                     </button>
-                    <h1 className="text-2xl font-bold text-gray-800">Manage: {fund.name}</h1>
+                    <h1 className="text-2xl font-bold text-white">Manage: {fund.name}</h1>
                 </div>
 
                 {/* Tabs & Add Button */}
-                <div className="flex justify-between items-center border-b">
+                <div className="flex justify-between items-center border-b border-gray-700">
                     <nav className="flex space-x-4">
                         <TabButton name="Assignors" active={activeTab === 'assignors'} onClick={() => setActiveTab('assignors')} />
                         <TabButton name="Debtors" active={activeTab === 'debtors'} onClick={() => setActiveTab('debtors')} />
@@ -160,25 +160,25 @@ const FundManagement: React.FC<FundManagementProps> = ({ fund, onBack }) => {
 // --- Sub-components ---
 
 const TabButton: React.FC<{ name: string, active: boolean, onClick: () => void }> = ({ name, active, onClick }) => (
-    <button onClick={onClick} className={`py-3 px-1 border-b-2 font-medium text-sm ${active ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'}`}>
+    <button onClick={onClick} className={`py-3 px-1 border-b-2 font-medium text-sm ${active ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-gray-200'}`}>
         {name}
     </button>
 );
 
 const PartyList: React.FC<{ items: (Cedente | Sacado)[]; onSelect: (item: Cedente | Sacado) => void }> = ({ items, onSelect }) => {
-    if (items.length === 0) return <p className="text-center text-gray-500 py-8">No items found.</p>;
+    if (items.length === 0) return <p className="text-center text-gray-400 py-8">No items found.</p>;
     return (
         <div className="space-y-3">
             {items.map((item) => (
-                <div key={item.id} className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div key={item.id} className="border border-gray-700 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-dark-200">
                     <div>
-                        <p className="font-semibold text-lg text-gray-900">{item.name}</p>
-                        <p className="text-sm text-gray-600">Fund: {item.fund?.name || 'N/A'}</p>
+                        <p className="font-semibold text-lg text-white">{item.name}</p>
+                        <p className="text-sm text-gray-300">Fund: {item.fund?.name || 'N/A'}</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                             item.status === 'APPROVED'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-primary-100 text-primary-800'
                                 : item.status === 'PENDING'
                                     ? 'bg-yellow-100 text-yellow-800'
                                     : 'bg-red-100 text-red-800'
@@ -200,8 +200,8 @@ const PartyList: React.FC<{ items: (Cedente | Sacado)[]; onSelect: (item: Cedent
 
 const Info: React.FC<{ label: string; value?: string | number }> = ({ label, value }) => (
     <div>
-        <p className="text-xs uppercase text-gray-500 font-semibold">{label}</p>
-        <p className="text-sm text-gray-800">{value ?? 'N/A'}</p>
+        <p className="text-xs uppercase text-gray-400 font-semibold">{label}</p>
+        <p className="text-sm text-white">{value ?? 'N/A'}</p>
     </div>
 );
 
@@ -213,17 +213,17 @@ const DetailModal: React.FC<{
 }> = ({ item, onClose }) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6 m-4">
+            <div className="bg-dark rounded-lg shadow-xl w-full max-w-3xl p-6 m-4">
                 <div className="flex items-start justify-between gap-3">
                     <div>
-                        <h3 className="text-xl font-semibold text-gray-900">{item.name}</h3>
-                        <p className="text-sm text-gray-600">Document: {item.document}</p>
-                        <p className="text-sm text-gray-600">Fund: {item.fund?.name || 'N/A'}</p>
+                        <h3 className="text-xl font-semibold text-white">{item.name}</h3>
+                        <p className="text-sm text-gray-300">Document: {item.document}</p>
+                        <p className="text-sm text-gray-300">Fund: {item.fund?.name || 'N/A'}</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                             item.status === 'APPROVED'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-primary-100 text-primary-800'
                                 : item.status === 'PENDING'
                                     ? 'bg-yellow-100 text-yellow-800'
                                     : 'bg-red-100 text-red-800'
@@ -232,14 +232,14 @@ const DetailModal: React.FC<{
                         </span>
                         <button
                             onClick={onClose}
-                            className="text-sm text-gray-600 hover:underline"
+                            className="text-sm text-gray-300 hover:underline"
                         >
                             Close
                         </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm text-gray-700">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm text-gray-200">
                     {isCedente(item) ? (
                         <>
                             <Info label="Trade name" value={item.fantasyName} />
