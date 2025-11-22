@@ -265,8 +265,45 @@ export async function orderRoutes(fastify: FastifyInstance) {
           fastify.log.warn(`⚠️ Pool não encontrada para o fundo ${order.fund.id}, investimento não depositado automaticamente`);
         }
       } catch (poolError) {
-        fastify.log.error('Erro ao depositar na pool:', poolError);
+        fastify.log.error('Erro ao depositar na pool:');
+        fastify.log.error(poolError);
         // Não falhar o completion da order por causa do erro da pool
+      }
+
+      // 🎖️ ATUALIZAR BADGE DO INVESTIDOR
+      try {
+        const { calculateBadge, generateBadgeProof } = await import('../services/zkBadge.js');
+        
+        // Calcular total investido pelo usuário
+        const userOrders = await fastify.prisma.order.findMany({
+          where: {
+            investorId: order.investorId,
+            status: 'COMPLETED'
+          }
+        });
+
+        const totalInvested = userOrders.reduce((sum, o) => sum + o.total, 0);
+        
+        // Calcular novo badge
+        const newBadge = calculateBadge(totalInvested);
+        const badgeProof = generateBadgeProof(order.investorId, newBadge, totalInvested);
+
+        // Atualizar badge do investidor
+        await fastify.prisma.user.update({
+          where: { id: order.investorId },
+          data: {
+            totalInvested,
+            investorBadge: newBadge,
+            badgeProofHash: badgeProof,
+            lastBadgeUpdate: new Date(),
+          }
+        });
+
+        fastify.log.info(`🎖️ Badge do investidor ${order.investorId} atualizado para ${newBadge}`);
+      } catch (badgeError) {
+        fastify.log.error('Erro ao atualizar badge:');
+        fastify.log.error(badgeError);
+        // Não falhar o completion da order por causa do erro do badge
       }
 
       return { order };

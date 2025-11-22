@@ -15,6 +15,13 @@ model User {
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED (for CONSULTOR approval)
   publicKey String?  @map("public_key")
   secretKey String?  @map("secret_key")
+  
+  // Investor Badge System with ZK Proof
+  totalInvested Float @default(0) @map("total_invested") // Total investido na plataforma
+  investorBadge String @default("NONE") @map("investor_badge") // NONE, BRONZE, SILVER, GOLD, DIAMOND
+  badgeProofHash String? @map("badge_proof_hash") // ZK proof hash para verificação
+  lastBadgeUpdate DateTime? @map("last_badge_update")
+  
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

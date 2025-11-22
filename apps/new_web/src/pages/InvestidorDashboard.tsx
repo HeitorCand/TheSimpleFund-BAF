@@ -4,6 +4,7 @@ import { orderService, fundService } from '../services/api';
 import { FiDollarSign, FiList, FiClock, FiCheckCircle, FiBox, FiTrendingUp } from 'react-icons/fi';
 import { useAuth } from '../contexts/useAuth';
 import { getErrorMessage } from '../utils/errorHandler';
+import InvestorBadge from '../components/InvestorBadge';
 
 interface Order {
     id: string;
@@ -116,6 +117,13 @@ const InvestidorDashboard: React.FC = () => {
                             color="gray" 
                         />
                     </div>
+
+                    {/* Investor Badge */}
+                    {user?.id && (
+                        <div className="mt-6">
+                            <InvestorBadge userId={user.id} />
+                        </div>
+                    )}
 
                     {pendingOrders.length > 0 && (
                         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
