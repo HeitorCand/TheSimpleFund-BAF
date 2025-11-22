@@ -13,20 +13,43 @@ type FundInteractionType = 'VIEW' | 'CLICK' | 'FAVORITE' | 'START_ORDER';
  * com base nos fundos em que ele já investiu ou interagiu.
  */
 export async function buildInvestorProfile(investorId: string) {
-  // 1) Ordens concluídas
-  const orders = await prisma.order.findMany({
-    where: {
-      investorId,
-      status: 'COMPLETED',
-    },
-    include: { fund: true },
-  });
-
-  // 2) Interações (VIEW, FAVORITE, START_ORDER, etc.)
-  const interactions = await prisma.fundInteraction.findMany({
-    where: { investorId },
-    include: { fund: true },
-  });
+  // Executa as queries em paralelo para melhor performance
+  const [orders, interactions] = await Promise.all([
+    // 1) Ordens concluídas - select apenas os campos necessários
+    prisma.order.findMany({
+      where: {
+        investorId,
+        status: 'COMPLETED',
+      },
+      select: {
+        fund: {
+          select: {
+            fundType: true,
+            sector: true,
+            riskLevel: true,
+            durationMonths: true,
+            minTicket: true,
+          }
+        }
+      },
+    }),
+    // 2) Interações - select apenas os campos necessários
+    prisma.fundInteraction.findMany({
+      where: { investorId },
+      select: {
+        type: true,
+        fund: {
+          select: {
+            fundType: true,
+            sector: true,
+            riskLevel: true,
+            durationMonths: true,
+            minTicket: true,
+          }
+        }
+      },
+    })
+  ]);
 
   const touchedFunds: { fund: Fund; weight: number }[] = [
     // investimento pesa mais
@@ -108,23 +131,36 @@ export async function buildInvestorProfile(investorId: string) {
  * - que o investidor ainda não investiu
  */
 export async function getCandidateFunds(investorId: string) {
-  // fundos em que ele já investiu
+  // fundos em que ele já investiu - query otimizada
   const investedOrders = await prisma.order.findMany({
     where: {
       investorId,
       status: 'COMPLETED',
     },
     select: { fundId: true },
+    distinct: ['fundId'], // Remove duplicatas no banco
   });
 
-  const investedFundIds = Array.from(
-    new Set(investedOrders.map((o) => o.fundId)),
-  );
+  const investedFundIds = investedOrders.map((o) => o.fundId);
 
+  // Select apenas os campos necessários para scoring
   const candidates = await prisma.fund.findMany({
     where: {
       status: 'APPROVED',
       id: { notIn: investedFundIds },
+    },
+    select: {
+      id: true,
+      name: true,
+      symbol: true,
+      fundType: true,
+      riskLevel: true,
+      sector: true,
+      durationMonths: true,
+      minTicket: true,
+      price: true,
+      description: true,
+      status: true,
     },
   });
 

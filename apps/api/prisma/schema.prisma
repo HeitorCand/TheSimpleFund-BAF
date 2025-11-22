@@ -34,6 +34,13 @@ model User {
   funds     Fund[]   @relation("ConsultorFunds")
   fundInteractions FundInteraction[]
 
+  @@index([email])
+  @@index([role])
+  @@index([status])
+  @@index([investorBadge])
+  @@index([role, status])
+  @@index([totalInvested])
+  @@index([createdAt])
   @@map("users")
 }
 
@@ -71,6 +78,13 @@ model Cedente {
   fundId      String @map("fund_id")
   fund        Fund   @relation(fields: [fundId], references: [id])
 
+  @@index([consultorId])
+  @@index([fundId])
+  @@index([status])
+  @@index([consultorId, status])
+  @@index([fundId, status])
+  @@index([document])
+  @@index([createdAt])
   @@map("cedentes")
 }
 
@@ -108,6 +122,13 @@ model Sacado {
   fund        Fund         @relation(fields: [fundId], references: [id])
   receivables Receivable[]
 
+  @@index([consultorId])
+  @@index([fundId])
+  @@index([status])
+  @@index([consultorId, status])
+  @@index([fundId, status])
+  @@index([document])
+  @@index([createdAt])
   @@map("sacados")
 }
 
@@ -176,6 +197,19 @@ model Fund {
   pools       Pool[]
   fundInteractions FundInteraction[]
 
+  @@index([symbol])
+  @@index([status])
+  @@index([consultorId])
+  @@index([fundType])
+  @@index([riskLevel])
+  @@index([sector])
+  @@index([status, fundType])
+  @@index([status, riskLevel])
+  @@index([status, sector])
+  @@index([fundType, riskLevel, sector])
+  @@index([consultorId, status])
+  @@index([createdAt])
+  @@index([price])
   @@map("funds")
 }
 
@@ -199,6 +233,11 @@ model Pool {
   fundId String @map("fund_id")
   fund   Fund   @relation(fields: [fundId], references: [id])
 
+  @@index([fundId])
+  @@index([status])
+  @@index([fundId, status])
+  @@index([lastYieldUpdate])
+  @@index([createdAt])
   @@map("pools")
 }
 
@@ -218,6 +257,14 @@ model Receivable {
   sacadoId String @map("sacado_id")
   sacado  Sacado @relation(fields: [sacadoId], references: [id])
 
+  @@index([fundId])
+  @@index([sacadoId])
+  @@index([status])
+  @@index([dueDate])
+  @@index([fundId, status])
+  @@index([sacadoId, status])
+  @@index([status, dueDate])
+  @@index([createdAt])
   @@map("receivables")
 }
 
@@ -240,6 +287,17 @@ model Order {
   fundId     String @map("fund_id")
   fund       Fund   @relation(fields: [fundId], references: [id])
 
+  @@index([investorId])
+  @@index([fundId])
+  @@index([status])
+  @@index([approvalStatus])
+  @@index([createdAt])
+  @@index([investorId, status])
+  @@index([fundId, status])
+  @@index([investorId, createdAt])
+  @@index([status, approvalStatus])
+  @@index([status, createdAt])
+  @@index([updatedAt])
   @@map("orders")
 }
 
@@ -255,5 +313,13 @@ model FundInteraction {
   type       String              // tipo de interação (VIEW, CLICK, FAVORITE, START_ORDER)
   createdAt  DateTime            @default(now()) @map("created_at")
 
+  @@index([investorId])
+  @@index([fundId])
+  @@index([type])
+  @@index([investorId, fundId])
+  @@index([investorId, type])
+  @@index([fundId, type])
+  @@index([investorId, createdAt])
+  @@index([createdAt])
   @@map("fund_interactions")
 }

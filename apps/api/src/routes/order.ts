@@ -187,17 +187,37 @@ export async function orderRoutes(fastify: FastifyInstance) {
         ? { investorId: payload.id }
         : {};
 
+      // Otimizado: select apenas os campos necessários
       const orders = await fastify.prisma.order.findMany({
         where,
-        include: {
+        select: {
+          id: true,
+          quantity: true,
+          price: true,
+          total: true,
+          status: true,
+          approvalStatus: true,
+          txHash: true,
+          createdAt: true,
+          updatedAt: true,
           fund: {
-            select: { name: true, symbol: true }
+            select: { 
+              id: true,
+              name: true, 
+              symbol: true,
+              price: true
+            }
           },
           investor: {
-            select: { email: true, publicKey: true }
+            select: { 
+              id: true,
+              email: true, 
+              publicKey: true 
+            }
           }
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        take: 100 // Limita a 100 orders mais recentes
       });
 
       return { orders };
