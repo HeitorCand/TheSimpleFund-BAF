@@ -106,20 +106,20 @@ const FundCreate: React.FC = () => {
       custodianName: 'Custódia Segura',
       auditorName: 'Auditoria Audit',
       fiduciaryAgentName: 'Agente Fiduciário',
-      strategy: 'Multissetorial com foco agro',
-      eligibility: 'Cedentes aprovados; sacados com rating interno mínimo B; duplicatas/NF registradas.',
+      strategy: 'Multisector focus in agro',
+      eligibility: 'Approved assignors; debtors with internal rating min B; registered invoices/receivables.',
       limitCedente: '20',
       limitSacado: '15',
       limitSector: '30',
       pmt: '60',
-      risks: 'Crédito, concentração, liquidez; mitigação via registro e limites.',
+      risks: 'Credit, concentration, liquidity; mitigated via registration and limits.',
       adminFee: '1.5',
       managementFee: '1.0',
       performanceFee: '10',
-      otherFees: 'Custódia/registro/auditoria conforme regulamento',
-      liquidityType: 'FECHADO',
+      otherFees: 'Custody/registry/audit per regulation',
+      liquidityType: 'FECHADO', // value kept for backend
       lockupDays: '0',
-      redemptionTerms: 'Sem resgate; quotas negociadas secundariamente.',
+      redemptionTerms: 'No redemption; secondary trading only.',
       nav: '1.05',
       aum: '5000000',
       return12m: '12.5',
@@ -276,9 +276,9 @@ const FundCreate: React.FC = () => {
               onChange={(e) => handleChange('targetInvestor', e.target.value as FundForm['targetInvestor'])}
               className="w-full border rounded-lg px-3 py-2"
             >
-              <option value="GERAL">Geral</option>
-              <option value="QUALIFICADO">Qualificado</option>
-              <option value="PROFISSIONAL">Profissional</option>
+              <option value="GERAL">General</option>
+              <option value="QUALIFICADO">Qualified</option>
+              <option value="PROFISSIONAL">Professional</option>
             </select>
           </div>
           <div>
@@ -502,9 +502,9 @@ const FundCreate: React.FC = () => {
               onChange={(e) => handleChange('liquidityType', e.target.value as FundForm['liquidityType'])}
               className="w-full border rounded-lg px-3 py-2"
             >
-              <option value="ABERTO">Aberto</option>
-              <option value="FECHADO">Fechado</option>
-              <option value="RESTRITO">Restrito</option>
+              <option value="ABERTO">Open</option>
+              <option value="FECHADO">Closed</option>
+              <option value="RESTRITO">Restricted</option>
             </select>
           </div>
           <div>
