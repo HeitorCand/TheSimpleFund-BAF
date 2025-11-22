@@ -1,15 +1,15 @@
 // src/routes/recommendation.ts
-import { FastifyInstance } from 'fastify';
-import { getRecommendedFunds } from '../services/recommendationService';
+import { FastifyInstance } from "fastify";
+import { getRecommendedFunds } from "../services/recommendationService.js";
 
 export default async function recommendationRoutes(fastify: FastifyInstance) {
   // GET /api/recommended-funds?investorId=abc123
-  fastify.get('/recommended-funds', async (request, reply) => {
+  fastify.get("/recommended-funds", async (request, reply) => {
     try {
       const { investorId } = request.query as { investorId?: string };
 
       if (!investorId) {
-        return reply.status(400).send({ error: 'investorId é obrigatório' });
+        return reply.status(400).send({ error: "investorId é obrigatório" });
       }
 
       const recommendations = await getRecommendedFunds(investorId);
@@ -37,26 +37,31 @@ export default async function recommendationRoutes(fastify: FastifyInstance) {
       return reply.send(response);
     } catch (err) {
       console.error(err);
-      return reply.status(500).send({ error: 'Erro ao buscar fundos recomendados' });
+      return reply
+        .status(500)
+        .send({ error: "Erro ao buscar fundos recomendados" });
     }
   });
 
   // GET /api/investor-profile?investorId=abc123
   // Endpoint adicional para ver o perfil do investidor
-  fastify.get('/investor-profile', async (request, reply) => {
+  fastify.get("/investor-profile", async (request, reply) => {
     try {
       const { investorId } = request.query as { investorId?: string };
 
       if (!investorId) {
-        return reply.status(400).send({ error: 'investorId é obrigatório' });
+        return reply.status(400).send({ error: "investorId é obrigatório" });
       }
 
-      const { buildInvestorProfile } = await import('../services/recommendationService');
+      const { buildInvestorProfile } = await import(
+        "../services/recommendationService.js"
+      );
       const profile = await buildInvestorProfile(investorId);
 
       if (!profile) {
         return reply.send({
-          message: 'Perfil ainda não disponível. Interaja com fundos para construir seu perfil.',
+          message:
+            "Perfil ainda não disponível. Interaja com fundos para construir seu perfil.",
           profile: null,
         });
       }
@@ -64,7 +69,9 @@ export default async function recommendationRoutes(fastify: FastifyInstance) {
       return reply.send({ profile });
     } catch (err) {
       console.error(err);
-      return reply.status(500).send({ error: 'Erro ao buscar perfil do investidor' });
+      return reply
+        .status(500)
+        .send({ error: "Erro ao buscar perfil do investidor" });
     }
   });
 }
