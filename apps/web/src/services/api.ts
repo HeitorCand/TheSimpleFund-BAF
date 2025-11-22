@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://thesimplefund.onrender.com/api';
+// Use localhost em desenvolvimento, Render em produção
+const API_BASE_URL = import.meta.env.VITE_API_URL || 
+  (window.location.hostname === 'localhost' 
+    ? 'http://localhost:3001/api' 
+    : 'https://thesimplefund.onrender.com/api');
 
 const api = axios.create({
   baseURL: API_BASE_URL,

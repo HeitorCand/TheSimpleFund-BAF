@@ -6,8 +6,26 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 const createCedenteSchema = z.object({
   name: z.string().min(1),
+  fantasyName: z.string().optional(),
   document: z.string().min(11),
+  cnae: z.string().optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  website: z.string().optional(),
   address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  postalCode: z.string().optional(),
+  beneficialOwners: z.string().optional(),
+  isPep: z.boolean().optional(),
+  revenueLast12m: z.number().optional(),
+  totalDebt: z.number().optional(),
+  mainBanks: z.string().optional(),
+  riskRating: z.string().optional(),
+  operationDescription: z.string().optional(),
+  creditPolicy: z.string().optional(),
+  guarantees: z.string().optional(),
   publicKey: z.string().optional(),
   fundId: z.string()
 });
@@ -55,8 +73,26 @@ export async function cedenteRoutes(fastify: FastifyInstance) {
       const cedente = await fastify.prisma.cedente.create({
         data: {
           name: body.name,
+          fantasyName: body.fantasyName,
           document: body.document,
+          cnae: body.cnae,
+          email: body.email,
+          phone: body.phone,
+          website: body.website,
           address: body.address,
+          city: body.city,
+          state: body.state,
+          country: body.country,
+          postalCode: body.postalCode,
+          beneficialOwners: body.beneficialOwners,
+          isPep: body.isPep,
+          revenueLast12m: body.revenueLast12m,
+          totalDebt: body.totalDebt,
+          mainBanks: body.mainBanks,
+          riskRating: body.riskRating,
+          operationDescription: body.operationDescription,
+          creditPolicy: body.creditPolicy,
+          guarantees: body.guarantees,
           publicKey: body.publicKey,
           consultorId: payload.id,
           fundId: body.fundId
@@ -130,25 +166,48 @@ export async function cedenteRoutes(fastify: FastifyInstance) {
       }
 
       const payload = verifyToken(token);
+      const { page = '1', limit = '50' } = request.query as { page?: string; limit?: string };
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const take = parseInt(limit);
 
       const where = payload.role === 'CONSULTOR' 
         ? { consultorId: payload.id }
         : {};
 
-      const cedentes = await fastify.prisma.cedente.findMany({
-        where,
-        include: {
-          consultor: {
-            select: { email: true, role: true }
+      const [cedentes, total] = await Promise.all([
+        fastify.prisma.cedente.findMany({
+          where,
+          select: {
+            id: true,
+            name: true,
+            fantasyName: true,
+            document: true,
+            email: true,
+            status: true,
+            createdAt: true,
+            consultor: {
+              select: { email: true, role: true }
+            },
+            fund: {
+              select: { name: true, id: true }
+            }
           },
-          fund: {
-            select: { name: true, id: true }
-          }
-        },
-        orderBy: { createdAt: 'desc' }
-      });
+          skip,
+          take,
+          orderBy: { createdAt: 'desc' }
+        }),
+        fastify.prisma.cedente.count({ where })
+      ]);
 
-      return { cedentes };
+      return { 
+        cedentes,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          totalPages: Math.ceil(total / parseInt(limit))
+        }
+      };
     } catch (error) {
       fastify.log.error(error);
       return reply.status(500).send({ error: 'Internal server error' });

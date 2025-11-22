@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { cedenteService, sacadoService } from '../services/api';
 import { FiArrowLeft, FiPlus } from 'react-icons/fi';
 import { getErrorMessage } from '../utils/errorHandler';
+import { useNavigate } from 'react-router-dom';
 
 // --- Type Definitions ---
 interface Fund {
@@ -13,6 +14,25 @@ interface Cedente {
     id: string;
     name: string;
     document: string;
+    fantasyName?: string;
+    cnae?: string;
+    email?: string;
+    phone?: string;
+    website?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    postalCode?: string;
+    beneficialOwners?: string;
+    isPep?: boolean | null;
+    revenueLast12m?: number | null;
+    totalDebt?: number | null;
+    mainBanks?: string;
+    riskRating?: string;
+    operationDescription?: string;
+    creditPolicy?: string;
+    guarantees?: string;
     status: string;
     fund?: {
         id: string;
@@ -23,6 +43,24 @@ interface Sacado {
     id: string;
     name: string;
     document: string;
+    personType?: string;
+    email?: string;
+    phone?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    postalCode?: string;
+    sector?: string;
+    size?: string;
+    rating?: string;
+    paymentHistory?: string;
+    exposure?: number | null;
+    creditLimitFund?: number | null;
+    concentrationPercent?: number | null;
+    defaultRate30d?: number | null;
+    defaultRate60d?: number | null;
+    defaultRate90d?: number | null;
     status: string;
     fund?: {
         id: string;
@@ -42,7 +80,8 @@ const FundManagement: React.FC<FundManagementProps> = ({ fund, onBack }) => {
     const [cedentes, setCedentes] = useState<Cedente[]>([]);
     const [sacados, setSacados] = useState<Sacado[]>([]);
     const [loading, setLoading] = useState(false);
-    const [isFormOpen, setFormOpen] = useState(false);
+    const [selected, setSelected] = useState<Cedente | Sacado | null>(null);
+    const navigate = useNavigate();
 
     // Data Loading
     const loadData = useCallback(async () => {
@@ -66,21 +105,8 @@ const FundManagement: React.FC<FundManagementProps> = ({ fund, onBack }) => {
         loadData();
     }, [loadData]);
 
-    const handleCreation = () => {
-        setFormOpen(false);
-        loadData();
-    }
-
     return (
         <>
-            {isFormOpen && (
-                <CreationForm 
-                    fundId={fund.id}
-                    type={activeTab}
-                    onClose={() => setFormOpen(false)}
-                    onCreated={handleCreation}
-                />
-            )}
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex items-center space-x-4">
@@ -96,15 +122,36 @@ const FundManagement: React.FC<FundManagementProps> = ({ fund, onBack }) => {
                         <TabButton name="Assignors" active={activeTab === 'assignors'} onClick={() => setActiveTab('assignors')} />
                         <TabButton name="Debtors" active={activeTab === 'debtors'} onClick={() => setActiveTab('debtors')} />
                     </nav>
-                    <button onClick={() => setFormOpen(true)} className="flex items-center px-4 py-2 text-sm text-white bg-primary rounded-lg hover:bg-primary/90">
+                    <button
+                        onClick={() =>
+                            activeTab === 'assignors'
+                                ? navigate(`/assignors/new?fundId=${fund.id}`)
+                                : navigate(`/debtors/new?fundId=${fund.id}`)
+                        }
+                        className="flex items-center px-4 py-2 text-sm text-white bg-primary rounded-lg hover:bg-primary/90"
+                    >
                         <FiPlus className="mr-2" />
                         Add {activeTab === 'assignors' ? 'Assignor' : 'Debtor'}
                     </button>
                 </div>
 
-                {/* Table */}
-                {loading ? <p>Loading...</p> : <DataTable data={activeTab === 'assignors' ? cedentes : sacados} />}
+                {/* List */}
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <PartyList
+                        items={activeTab === 'assignors' ? cedentes : sacados}
+                        onSelect={setSelected}
+                    />
+                )}
             </div>
+
+            {selected && (
+                <DetailModal
+                    item={selected}
+                    onClose={() => setSelected(null)}
+                />
+            )}
         </>
     );
 };
@@ -118,76 +165,126 @@ const TabButton: React.FC<{ name: string, active: boolean, onClick: () => void }
     </button>
 );
 
-const DataTable: React.FC<{ data: (Cedente | Sacado)[] }> = ({ data }) => {
-    if (data.length === 0) return <p className="text-center text-gray-500 py-8">No items found.</p>;
+const PartyList: React.FC<{ items: (Cedente | Sacado)[]; onSelect: (item: Cedente | Sacado) => void }> = ({ items, onSelect }) => {
+    if (items.length === 0) return <p className="text-center text-gray-500 py-8">No items found.</p>;
     return (
-        <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
-                <thead className="bg-gray-50">
-                    <tr>
-                        <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                        <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Document</th>
-                        <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Fund</th>
-                        <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.map(item => (
-                        <tr key={item.id} className="border-b hover:bg-gray-50">
-                            <td className="py-4 px-6">{item.name}</td>
-                            <td className="py-4 px-6">{item.document}</td>
-                            <td className="py-4 px-6">
-                                <span className="text-sm font-medium text-gray-700">
-                                    {item.fund?.name || 'N/A'}
-                                </span>
-                            </td>
-                            <td className="py-4 px-6">
-                                <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.status === 'APPROVED' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                                    {item.status}
-                                </span>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="space-y-3">
+            {items.map((item) => (
+                <div key={item.id} className="border rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div>
+                        <p className="font-semibold text-lg text-gray-900">{item.name}</p>
+                        <p className="text-sm text-gray-600">Fund: {item.fund?.name || 'N/A'}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                            item.status === 'APPROVED'
+                                ? 'bg-green-100 text-green-800'
+                                : item.status === 'PENDING'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                        }`}>
+                            {item.status}
+                        </span>
+                        <button
+                            onClick={() => onSelect(item)}
+                            className="px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary/10 transition-colors"
+                        >
+                            More info
+                        </button>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };
 
-const CreationForm: React.FC<{ fundId: string, type: Tab, onClose: () => void, onCreated: () => void }> = ({ fundId, type, onClose, onCreated }) => {
-    const [name, setName] = useState('');
-    const [document, setDocument] = useState('');
-    const [loading, setLoading] = useState(false);
+const Info: React.FC<{ label: string; value?: string | number }> = ({ label, value }) => (
+    <div>
+        <p className="text-xs uppercase text-gray-500 font-semibold">{label}</p>
+        <p className="text-sm text-gray-800">{value ?? 'N/A'}</p>
+    </div>
+);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const service = type === 'assignors' ? cedenteService : sacadoService;
-            await service.create({ name, document, fundId });
-            toast.success(`${type === 'assignors' ? 'Assignor' : 'Debtor'} created successfully!`);
-            onCreated();
-        } catch (error) {
-            toast.error(getErrorMessage(error));
-        } finally {
-            setLoading(false);
-        }
-    };
+const isCedente = (item: Cedente | Sacado): item is Cedente => 'fantasyName' in item;
 
+const DetailModal: React.FC<{
+    item: Cedente | Sacado;
+    onClose: () => void;
+}> = ({ item, onClose }) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 m-4">
-                <h2 className="text-xl font-bold mb-4">Add New {type === 'assignors' ? 'Assignor' : 'Debtor'}</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Name" required className="w-full p-2 border rounded-lg" />
-                    <input type="text" value={document} onChange={e => setDocument(e.target.value)} placeholder="Document (CPF/CNPJ)" required className="w-full p-2 border rounded-lg" />
-                    <div className="flex justify-end space-x-2 pt-2">
-                        <button type="button" onClick={onClose} className="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg">Cancel</button>
-                        <button type="submit" disabled={loading} className="px-4 py-2 text-white bg-primary rounded-lg disabled:bg-primary/50">
-                            {loading ? 'Saving...' : 'Save'}
+            <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl p-6 m-4">
+                <div className="flex items-start justify-between gap-3">
+                    <div>
+                        <h3 className="text-xl font-semibold text-gray-900">{item.name}</h3>
+                        <p className="text-sm text-gray-600">Document: {item.document}</p>
+                        <p className="text-sm text-gray-600">Fund: {item.fund?.name || 'N/A'}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                            item.status === 'APPROVED'
+                                ? 'bg-green-100 text-green-800'
+                                : item.status === 'PENDING'
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : 'bg-red-100 text-red-800'
+                        }`}>
+                            {item.status}
+                        </span>
+                        <button
+                            onClick={onClose}
+                            className="text-sm text-gray-600 hover:underline"
+                        >
+                            Close
                         </button>
                     </div>
-                </form>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 text-sm text-gray-700">
+                    {isCedente(item) ? (
+                        <>
+                            <Info label="Trade name" value={item.fantasyName} />
+                            <Info label="CNAE" value={item.cnae} />
+                            <Info label="Email" value={item.email} />
+                            <Info label="Phone" value={item.phone} />
+                            <Info label="Website" value={item.website} />
+                            <Info label="Address" value={item.address} />
+                            <Info label="City" value={item.city} />
+                            <Info label="State" value={item.state} />
+                            <Info label="Country" value={item.country} />
+                            <Info label="Postal code" value={item.postalCode} />
+                            <Info label="Beneficial owners" value={item.beneficialOwners} />
+                            <Info label="PEP" value={item.isPep !== null && item.isPep !== undefined ? (item.isPep ? 'Yes' : 'No') : undefined} />
+                            <Info label="Revenue last 12m" value={item.revenueLast12m ? `$${item.revenueLast12m.toLocaleString()}` : undefined} />
+                            <Info label="Total debt" value={item.totalDebt ? `$${item.totalDebt.toLocaleString()}` : undefined} />
+                            <Info label="Main banks" value={item.mainBanks} />
+                            <Info label="Risk rating" value={item.riskRating} />
+                            <Info label="Operation description" value={item.operationDescription} />
+                            <Info label="Credit policy" value={item.creditPolicy} />
+                            <Info label="Guarantees" value={item.guarantees} />
+                        </>
+                    ) : (
+                        <>
+                            <Info label="Type" value={item.personType} />
+                            <Info label="Email" value={item.email} />
+                            <Info label="Phone" value={item.phone} />
+                            <Info label="Address" value={item.address} />
+                            <Info label="City" value={item.city} />
+                            <Info label="State" value={item.state} />
+                            <Info label="Country" value={item.country} />
+                            <Info label="Postal code" value={item.postalCode} />
+                            <Info label="Sector" value={item.sector} />
+                            <Info label="Size" value={item.size} />
+                            <Info label="Rating" value={item.rating} />
+                            <Info label="Payment history" value={item.paymentHistory} />
+                            <Info label="Exposure" value={item.exposure ? `$${item.exposure.toLocaleString()}` : undefined} />
+                            <Info label="Credit limit (fund)" value={item.creditLimitFund ? `$${item.creditLimitFund.toLocaleString()}` : undefined} />
+                            <Info label="Concentration (%)" value={item.concentrationPercent ?? undefined} />
+                            <Info label="Default 30d (%)" value={item.defaultRate30d ?? undefined} />
+                            <Info label="Default 60d (%)" value={item.defaultRate60d ?? undefined} />
+                            <Info label="Default 90d (%)" value={item.defaultRate90d ?? undefined} />
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

@@ -3,8 +3,8 @@ import toast from 'react-hot-toast';
 import { FiBox, FiPlus, FiGrid } from 'react-icons/fi';
 import { fundService } from '../services/api';
 import { getErrorMessage } from '../utils/errorHandler';
-import FundCreationModal from '../components/FundCreationModal';
-import FundManagement from '../components/FundManagement'; // Import FundManagement
+import FundManagement from '../components/FundManagement';
+import { useNavigate } from 'react-router-dom';
 
 // Type Definitions
 interface Fund {
@@ -20,9 +20,9 @@ interface Fund {
 
 // Main Component
 const ConsultorDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [funds, setFunds] = useState<Fund[]>([]);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFund, setSelectedFund] = useState<Fund | null>(null); // State for selected fund
 
   // Data Loading
@@ -54,16 +54,17 @@ const ConsultorDashboard: React.FC = () => {
 
   return (
     <>
-      <FundCreationModal 
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onFundCreated={handleFundCreated}
-      />
       <div className="space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-800">My Funds</h1>
-            <button onClick={() => setIsModalOpen(true)} className="flex items-center px-4 py-2 text-white bg-primary rounded-lg shadow-sm hover:bg-primary/90">
+            <button
+              onClick={() => {
+                navigate('/fundos/new');
+                handleFundCreated();
+              }}
+              className="flex items-center px-4 py-2 text-white bg-primary rounded-lg shadow-sm hover:bg-primary/90"
+            >
                 <FiPlus className="mr-2" />
                 Create Fund
             </button>

@@ -6,6 +6,7 @@ import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import Modal from '../components/common/Modal';
 import Input from '../components/common/Input';
+import InvestorBadge from '../components/badge/InvestorBadge';
 import toast from 'react-hot-toast';
 
 interface Fund {
@@ -419,6 +420,13 @@ This is a necessary step to ensure the security of your transactions.
               </div>
             </Card>
           </div>
+
+          {/* Investor Badge Card */}
+          {user?.id && (
+            <div className="tsf-mb-2xl">
+              <InvestorBadge userId={user.id} />
+            </div>
+          )}
 
           
 

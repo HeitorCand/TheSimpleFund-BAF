@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { fundService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
-import { useWallet } from '../../contexts/WalletContext';
+import { useAuth } from '../../contexts/useAuth';
+import { Link, Navigate } from 'react-router-dom';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Fund {
   id: string;
@@ -15,7 +17,8 @@ interface Fund {
 }
 
 const FundList: React.FC = () => {
-    const { publicKey, isConnected, connect } = useWallet();
+    const { user } = useAuth();
+    const role = user?.role as string | undefined;
     const [funds, setFunds] = useState<Fund[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedFund, setSelectedFund] = useState<Fund | null>(null);
@@ -37,49 +40,12 @@ const FundList: React.FC = () => {
         loadData();
     }, [loadData]);
 
-    const handleApprove = async (id: string, action: 'approve' | 'reject') => {
-        if (action === 'approve') {
-            // Check if wallet is connected
-            if (!isConnected || !publicKey) {
-                toast.error('Please connect your wallet first to approve the fund');
-                try {
-                    await connect();
-                    // After connection, the user can try again
-                    toast.success('Wallet connected! Click Approve again to use this wallet for the fund.');
-                } catch (error) {
-                    toast.error('Failed to connect wallet');
-                }
-                return;
-            }
-
-            // Use the connected wallet as the fund wallet
-            const fundWalletPublicKey = publicKey;
-            
-            toast.loading('Processing...');
-            try {
-                const status = 'APPROVED';
-                await fundService.approve(id, status, fundWalletPublicKey);
-                toast.dismiss();
-                toast.success(`Fund approved with wallet: ${fundWalletPublicKey.slice(0, 4)}...${fundWalletPublicKey.slice(-4)}`);
-                loadData();
-            } catch (error) {
-                toast.dismiss();
-                toast.error(getErrorMessage(error));
-            }
-        } else {
-            toast.loading('Processing...');
-            try {
-                const status = 'REJECTED';
-                await fundService.approve(id, status);
-                toast.dismiss();
-                toast.success('Fund rejected successfully!');
-                loadData();
-            } catch (error) {
-                toast.dismiss();
-                toast.error(getErrorMessage(error));
-            }
-        }
-    };
+    if (user?.role === 'CONSULTOR') {
+        return <Navigate to="/dashboard" replace />;
+    }
+    if (user && user.role !== 'GESTOR') {
+        return <p className="p-6 text-gray-600">Access restricted.</p>;
+    }
 
     const handleDeactivate = async (id: string) => {
         if (!confirm('Are you sure you want to deactivate this fund?')) return;
@@ -117,7 +83,17 @@ const FundList: React.FC = () => {
             )}
             
             <div className="bg-white p-6 rounded-lg shadow-soft">
-                <h2 className="text-xl font-semibold mb-4">Manage Funds</h2>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">Manage Funds</h2>
+                    {role === 'CONSULTOR' && (
+                        <Link
+                            to="/dashboard/fundos/new"
+                            className="px-3 py-2 text-sm text-white bg-primary rounded-md hover:bg-primary/90 transition-colors"
+                        >
+                            + Create Fund
+                        </Link>
+                    )}
+                </div>
                 <div className="space-y-4">
                     {funds.length === 0 ? (
                         <p className="text-center text-gray-500 py-8">No funds found.</p>
@@ -143,29 +119,25 @@ const FundList: React.FC = () => {
                                                 <span className="font-medium">Issued:</span> {item.totalIssued.toLocaleString()} / {item.maxSupply.toLocaleString()}
                                             </p>
                                             <p className="text-gray-600">
-                                                <span className="font-medium">Price:</span> ${item.price.toLocaleString()}
+                                                <span className="font-medium">Price:</span>{' '}
+                                                <FiatWithXlmValue amountUsd={item.price} />
                                             </p>
                                             <p className="text-gray-600">
                                                 <span className="font-medium">Available:</span> {(item.maxSupply - item.totalIssued).toLocaleString()}
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-2">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <Link
+                                            to={`/fundos/${item.id}`}
+                                            className="px-3 py-1.5 text-sm text-primary border border-primary rounded-md hover:bg-primary/10 transition-colors"
+                                        >
+                                            More info
+                                        </Link>
                                         {item.status === 'PENDING' && (
-                                            <>
-                                                <button 
-                                                    onClick={() => handleApprove(item.id, 'approve')} 
-                                                    className="px-3 py-1.5 text-sm text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors"
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleApprove(item.id, 'reject')} 
-                                                    className="px-3 py-1.5 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
-                                                >
-                                                    Reject
-                                                </button>
-                                            </>
+                                            <span className="px-3 py-1.5 text-sm rounded-md bg-yellow-100 text-yellow-800 border border-yellow-200">
+                                                Pending approval
+                                            </span>
                                         )}
                                         {item.status === 'APPROVED' && (
                                             <>

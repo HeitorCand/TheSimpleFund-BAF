@@ -8,8 +8,10 @@ async function createTestData() {
     console.log('🗃️  Limpando dados existentes...');
     
     // Limpar dados existentes na ordem correta devido às foreign keys
+    // Ordem: dependências primeiro, depois as tabelas principais
     await prisma.order.deleteMany();
     await prisma.receivable.deleteMany();
+    await prisma.pool.deleteMany(); // Pools devem ser deletados antes de Funds
     await prisma.cedente.deleteMany();
     await prisma.sacado.deleteMany();
     await prisma.fund.deleteMany();

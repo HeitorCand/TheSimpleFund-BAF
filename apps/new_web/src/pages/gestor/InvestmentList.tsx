@@ -4,6 +4,7 @@ import { orderService } from '../../services/api';
 import { getErrorMessage } from '../../utils/errorHandler';
 import { useOrderApproval } from '../../hooks/useOrderApproval';
 import FilterBar from '../../components/FilterBar';
+import FiatWithXlmValue from '../../components/FiatWithXlmValue';
 
 interface Investment {
   id: string;
@@ -122,7 +123,9 @@ const InvestmentList: React.FC = () => {
                                             <p className="text-xs text-gray-500">{item.fund.symbol}</p>
                                         </td>
                                         <td className="py-3 px-4 text-sm">{item.quantity.toLocaleString()}</td>
-                                        <td className="py-3 px-4 text-sm font-medium">${item.total.toLocaleString()}</td>
+                                        <td className="py-3 px-4 text-sm font-medium">
+                                            <FiatWithXlmValue amountUsd={item.total} />
+                                        </td>
                                         <td className="py-3 px-4 text-xs text-gray-500">
                                             {new Date(item.createdAt).toLocaleDateString()}
                                         </td>
@@ -240,7 +243,9 @@ const InvestmentList: React.FC = () => {
                                     </div>
                                     <div>
                                         <span className="text-gray-500">Total:</span>
-                                        <p className="font-medium">${item.total.toLocaleString()}</p>
+                                        <p className="font-medium">
+                                            <FiatWithXlmValue amountUsd={item.total} />
+                                        </p>
                                     </div>
                                     <div className="col-span-2">
                                         <span className="text-gray-500">Date:</span>

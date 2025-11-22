@@ -52,16 +52,16 @@ const LoginPage: React.FC = () => {
         }}
       />
 
-      <div className="flex-1 lg:flex-[0.35] flex items-center justify-center px-10 lg:px-14 xl:px-20">
-        <div className="w-full max-w-2xl px-4 sm:px-8">
-          <form onSubmit={handleSubmit} className="space-y-10 px-2 sm:px-4">
+      <div className="flex-1 lg:flex-[0.35] flex items-center justify-center px-6 lg:px-10 xl:px-14">
+        <div className="w-full max-w-2xl px-3 sm:px-6">
+          <form onSubmit={handleSubmit} className="space-y-8 px-2 sm:px-3">
             <div>
-              <h2 className="text-5xl font-semibold text-gray-900">Login</h2>
+              <h2 className="text-4xl sm:text-5xl font-semibold text-gray-900">Login</h2>
             </div>
 
             {error && <p className="text-red-500 text-base">{error}</p>}
 
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div>
                 <label className="block text-base font-semibold text-gray-700 mb-2">Email</label>
                 <input
@@ -69,7 +69,7 @@ const LoginPage: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 py-2 pb-3 text-lg placeholder-gray-400"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   placeholder="you@example.com"
                 />
               </div>
@@ -81,20 +81,13 @@ const LoginPage: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 py-2 pb-3 text-lg placeholder-gray-400"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <button
-                type="button"
-                className="hover:text-purple-700 transition-colors"
-                onClick={() => alert('Please contact support to reset your password.')}
-              >
-                Forgot your password?
-              </button>
+            <div className="flex items-center justify-end text-sm text-gray-500">
               <div className="flex items-center gap-1">
                 <span>Don&apos;t have an account?</span>
                 <Link to="/register" className="text-purple-700 font-semibold hover:underline">

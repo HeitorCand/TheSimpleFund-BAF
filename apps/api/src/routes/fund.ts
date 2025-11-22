@@ -8,7 +8,38 @@ const createFundSchema = z.object({
   name: z.string().min(1),
   symbol: z.string().min(1),
   maxSupply: z.number().positive(),
-  price: z.number().positive().optional()
+  price: z.number().positive().optional(),
+  cnpj: z.string().min(1).optional(),
+  fundType: z.enum(['FIDC', 'FIDC_NP']).optional(),
+  investorProfile: z.enum(['GERAL', 'QUALIFICADO', 'PROFISSIONAL']).optional(),
+  cvmCode: z.string().optional(),
+  administratorName: z.string().optional(),
+  administratorCnpj: z.string().optional(),
+  managerName: z.string().optional(),
+  managerCnpj: z.string().optional(),
+  custodianName: z.string().optional(),
+  auditorName: z.string().optional(),
+  fiduciaryAgentName: z.string().optional(),
+  sectorFocus: z.string().optional(),
+  eligibilityCriteria: z.string().optional(),
+  maxCedenteConcentrationPercent: z.number().optional(),
+  maxSacadoConcentrationPercent: z.number().optional(),
+  sectorConcentrationPercent: z.number().optional(),
+  targetPmt: z.number().optional(),
+  keyRisks: z.string().optional(),
+  administrationFee: z.number().optional(),
+  managementFee: z.number().optional(),
+  performanceFee: z.number().optional(),
+  otherFees: z.string().optional(),
+  liquidityType: z.enum(['ABERTO', 'FECHADO', 'RESTRITO']).optional(),
+  lockupDays: z.number().int().optional(),
+  redemptionTerms: z.string().optional(),
+  navPerShare: z.number().optional(),
+  aum: z.number().optional(),
+  return12m: z.number().optional(),
+  returnYtd: z.number().optional(),
+  returnSinceInception: z.number().optional(),
+  description: z.string().optional(),
 });
 
 const approvalSchema = z.object({
@@ -67,7 +98,41 @@ export async function fundRoutes(fastify: FastifyInstance) {
 
       // Prepare fund data
       const fundData = {
-        ...body,
+        name: body.name,
+        symbol: body.symbol,
+        maxSupply: body.maxSupply,
+        price: body.price ?? undefined,
+        cnpj: body.cnpj,
+        fundType: body.fundType,
+        investorProfile: body.investorProfile,
+        cvmCode: body.cvmCode,
+        administratorName: body.administratorName,
+        administratorCnpj: body.administratorCnpj,
+        managerName: body.managerName,
+        managerCnpj: body.managerCnpj,
+        custodianName: body.custodianName,
+        auditorName: body.auditorName,
+        fiduciaryAgentName: body.fiduciaryAgentName,
+        sectorFocus: body.sectorFocus,
+        eligibilityCriteria: body.eligibilityCriteria,
+        maxCedenteConcentrationPercent: body.maxCedenteConcentrationPercent,
+        maxSacadoConcentrationPercent: body.maxSacadoConcentrationPercent,
+        sectorConcentrationPercent: body.sectorConcentrationPercent,
+        targetPmt: body.targetPmt,
+        keyRisks: body.keyRisks,
+        administrationFee: body.administrationFee,
+        managementFee: body.managementFee,
+        performanceFee: body.performanceFee,
+        otherFees: body.otherFees,
+        liquidityType: body.liquidityType,
+        lockupDays: body.lockupDays,
+        redemptionTerms: body.redemptionTerms,
+        navPerShare: body.navPerShare,
+        aum: body.aum,
+        return12m: body.return12m,
+        returnYtd: body.returnYtd,
+        returnSinceInception: body.returnSinceInception,
+        description: body.description,
         // Funds created by consultors start as PENDING, by gestors as APPROVED
         status: payload.role === 'CONSULTOR' ? 'PENDING' : 'APPROVED',
         // Associate consultor if applicable
@@ -91,34 +156,59 @@ export async function fundRoutes(fastify: FastifyInstance) {
   // List funds
   fastify.get('/', async (request, reply) => {
     try {
-      const funds = await fastify.prisma.fund.findMany({
-        include: {
-          consultor: {
-            select: {
-              email: true,
-              publicKey: true
+      const { page = '1', limit = '50' } = request.query as { page?: string; limit?: string };
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const take = parseInt(limit);
+
+      const [funds, total] = await Promise.all([
+        fastify.prisma.fund.findMany({
+          select: {
+            id: true,
+            name: true,
+            symbol: true,
+            status: true,
+            maxSupply: true,
+            totalIssued: true,
+            price: true,
+            fundType: true,
+            description: true,
+            cvmCode: true,
+            createdAt: true,
+            consultor: {
+              select: {
+                email: true,
+                publicKey: true
+              }
             }
           },
-          receivables: {
-            select: {
-              id: true,
-              faceValue: true,
-              status: true
-            }
-          },
-          orders: {
-            where: { status: 'COMPLETED' },
-            select: {
-              quantity: true
-            }
-          }
-        },
-        orderBy: { createdAt: 'desc' }
-      });
+          skip,
+          take,
+          orderBy: { createdAt: 'desc' }
+        }),
+        fastify.prisma.fund.count()
+      ]);
+
+      // Buscar métricas apenas para os fundos da página atual
+      const fundIds = funds.map(f => f.id);
+      const [receivablesData, ordersData] = await Promise.all([
+        fastify.prisma.receivable.groupBy({
+          by: ['fundId'],
+          where: { fundId: { in: fundIds } },
+          _sum: { faceValue: true }
+        }),
+        fastify.prisma.order.groupBy({
+          by: ['fundId'],
+          where: { fundId: { in: fundIds }, status: 'COMPLETED' },
+          _sum: { quantity: true }
+        })
+      ]);
+
+      const receivablesMap = new Map(receivablesData.map(r => [r.fundId, r._sum.faceValue || 0]));
+      const ordersMap = new Map(ordersData.map(o => [o.fundId, o._sum.quantity || 0]));
 
       const fundsWithMetrics = funds.map(fund => {
-        const totalSold = fund.orders.reduce((sum, order) => sum + order.quantity, 0);
-        const totalReceivables = fund.receivables.reduce((sum, rec) => sum + rec.faceValue, 0);
+        const totalSold = ordersMap.get(fund.id) || 0;
+        const totalReceivables = receivablesMap.get(fund.id) || 0;
         
         return {
           ...fund,
@@ -128,7 +218,15 @@ export async function fundRoutes(fastify: FastifyInstance) {
         };
       });
 
-      return { funds: fundsWithMetrics };
+      return { 
+        funds: fundsWithMetrics, 
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          totalPages: Math.ceil(total / parseInt(limit))
+        }
+      };
     } catch (error) {
       fastify.log.error(error);
       return reply.status(500).send({ error: 'Internal server error' });
@@ -140,37 +238,52 @@ export async function fundRoutes(fastify: FastifyInstance) {
     try {
       const { id } = request.params as { id: string };
 
-      const fund = await fastify.prisma.fund.findUnique({
-        where: { id },
-        include: {
-          receivables: {
-            include: {
-              sacado: {
-                select: { name: true, document: true }
-              }
+      const [fund, receivables, orders] = await Promise.all([
+        fastify.prisma.fund.findUnique({
+          where: { id }
+        }),
+        fastify.prisma.receivable.findMany({
+          where: { fundId: id },
+          select: {
+            id: true,
+            faceValue: true,
+            status: true,
+            dueDate: true,
+            sacado: {
+              select: { name: true, document: true }
             }
           },
-          orders: {
-            where: { status: 'COMPLETED' },
-            include: {
-              investor: {
-                select: { email: true, publicKey: true }
-              }
+          take: 100,
+          orderBy: { createdAt: 'desc' }
+        }),
+        fastify.prisma.order.findMany({
+          where: { fundId: id, status: 'COMPLETED' },
+          select: {
+            id: true,
+            quantity: true,
+            total: true,
+            createdAt: true,
+            investor: {
+              select: { email: true, publicKey: true }
             }
-          }
-        }
-      });
+          },
+          take: 100,
+          orderBy: { createdAt: 'desc' }
+        })
+      ]);
 
       if (!fund) {
         return reply.status(404).send({ error: 'Fund not found' });
       }
 
-      const totalSold = fund.orders.reduce((sum, order) => sum + order.quantity, 0);
-      const totalReceivables = fund.receivables.reduce((sum, rec) => sum + rec.faceValue, 0);
+      const totalSold = orders.reduce((sum, order) => sum + order.quantity, 0);
+      const totalReceivables = receivables.reduce((sum, rec) => sum + rec.faceValue, 0);
 
       return {
         fund: {
           ...fund,
+          receivables,
+          orders,
           totalSold,
           totalReceivables,
           availableQuotas: fund.totalIssued - totalSold
@@ -299,6 +412,41 @@ export async function fundRoutes(fastify: FastifyInstance) {
           }
         }
       });
+
+      // 🚀 CRIAR POOL BLEND AUTOMATICAMENTE quando aprovar o fundo
+      if (body.status === 'APPROVED') {
+        try {
+          // Importar configurações do Blend
+          const { BLEND_CONTRACTS } = await import('../config/blend.js');
+          
+          // Verificar se já existe uma pool para este fundo
+          const existingPool = await fastify.prisma.pool.findFirst({
+            where: { fundId: params.id }
+          });
+
+          if (!existingPool) {
+            // Criar pool automaticamente
+            const pool = await fastify.prisma.pool.create({
+              data: {
+                name: `${fund.name} - Yield Pool`,
+                fundId: params.id,
+                blendPoolAddress: BLEND_CONTRACTS.USDC_POOL,
+                assetAddress: BLEND_CONTRACTS.USDC,
+                totalDeposited: 0,
+                currentBalance: 0,
+                yieldEarned: 0,
+                status: 'ACTIVE',
+              }
+            });
+
+            fastify.log.info(`✅ Pool criado automaticamente para o fundo ${fund.name}: ${pool.id}`);
+          }
+        } catch (poolError) {
+          fastify.log.error(poolError);
+          fastify.log.error('Erro ao criar pool automaticamente');
+          // Não falhar a aprovação por causa do erro da pool
+        }
+      }
 
       return { fund: updatedFund };
     } catch (error) {

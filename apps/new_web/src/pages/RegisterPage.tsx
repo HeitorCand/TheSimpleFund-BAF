@@ -35,8 +35,8 @@ const RegisterPage: React.FC = () => {
         }}
       />
 
-      <div className="flex-1 lg:flex-[0.35] flex items-center justify-center px-10 lg:px-14 xl:px-20">
-        <div className="w-full max-w-2xl px-4 sm:px-8">
+      <div className="flex-1 lg:flex-[0.35] flex items-center justify-center px-6 lg:px-10 xl:px-14">
+        <div className="w-full max-w-2xl px-3 sm:px-6">
           {success ? (
             <div className="space-y-6">
               <h2 className="text-4xl font-semibold text-gray-900">Registration Successful!</h2>
@@ -51,14 +51,14 @@ const RegisterPage: React.FC = () => {
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-10 px-2 sm:px-4">
+            <form onSubmit={handleSubmit} className="space-y-8 px-2 sm:px-3">
               <div>
-                <h2 className="text-4xl font-semibold text-gray-900">Create Account</h2>
+                <h2 className="text-3xl sm:text-4xl font-semibold text-gray-900">Create Account</h2>
               </div>
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Email</label>
                   <input
@@ -66,7 +66,7 @@ const RegisterPage: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 py-2 pb-3 text-base placeholder-gray-400"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -78,7 +78,7 @@ const RegisterPage: React.FC = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 py-2 pb-3 text-base placeholder-gray-400"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                     placeholder="Create a password"
                   />
                 </div>
@@ -88,7 +88,7 @@ const RegisterPage: React.FC = () => {
                   <select
                     value={role}
                     onChange={(e) => setRole(e.target.value as any)}
-                    className="w-full border-0 border-b border-gray-300 focus:border-purple-700 focus:ring-0 px-3 pb-3 text-base bg-transparent"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base bg-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary"
                   >
                     <option value="INVESTIDOR">Investor</option>
                     <option value="CONSULTOR">Consultant</option>

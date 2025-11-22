@@ -187,17 +187,37 @@ export async function orderRoutes(fastify: FastifyInstance) {
         ? { investorId: payload.id }
         : {};
 
+      // Otimizado: select apenas os campos necessários
       const orders = await fastify.prisma.order.findMany({
         where,
-        include: {
+        select: {
+          id: true,
+          quantity: true,
+          price: true,
+          total: true,
+          status: true,
+          approvalStatus: true,
+          txHash: true,
+          createdAt: true,
+          updatedAt: true,
           fund: {
-            select: { name: true, symbol: true }
+            select: { 
+              id: true,
+              name: true, 
+              symbol: true,
+              price: true
+            }
           },
           investor: {
-            select: { email: true, publicKey: true }
+            select: { 
+              id: true,
+              email: true, 
+              publicKey: true 
+            }
           }
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
+        take: 100 // Limita a 100 orders mais recentes
       });
 
       return { orders };
@@ -226,13 +246,85 @@ export async function orderRoutes(fastify: FastifyInstance) {
         },
         include: {
           fund: {
-            select: { name: true, symbol: true }
+            select: { 
+              name: true, 
+              symbol: true,
+              id: true
+            }
           },
           investor: {
             select: { email: true, publicKey: true }
           }
         }
       });
+
+      // 🚀 DEPOSITAR AUTOMATICAMENTE NA POOL BLEND
+      try {
+        // Buscar a pool do fundo
+        const pool = await fastify.prisma.pool.findFirst({
+          where: { 
+            fundId: order.fund.id,
+            status: 'ACTIVE'
+          }
+        });
+
+        if (pool) {
+          // Atualizar saldo da pool
+          await fastify.prisma.pool.update({
+            where: { id: pool.id },
+            data: {
+              totalDeposited: pool.totalDeposited + order.total,
+              currentBalance: pool.currentBalance + order.total,
+              depositTxHash: txHash,
+              lastYieldUpdate: new Date(),
+            }
+          });
+
+          fastify.log.info(`✅ Investimento de ${order.total} USDC depositado automaticamente na pool ${pool.id}`);
+        } else {
+          fastify.log.warn(`⚠️ Pool não encontrada para o fundo ${order.fund.id}, investimento não depositado automaticamente`);
+        }
+      } catch (poolError) {
+        fastify.log.error('Erro ao depositar na pool:');
+        fastify.log.error(poolError);
+        // Não falhar o completion da order por causa do erro da pool
+      }
+
+      // 🎖️ ATUALIZAR BADGE DO INVESTIDOR
+      try {
+        const { calculateBadge, generateBadgeProof } = await import('../services/zkBadge.js');
+        
+        // Calcular total investido pelo usuário
+        const userOrders = await fastify.prisma.order.findMany({
+          where: {
+            investorId: order.investorId,
+            status: 'COMPLETED'
+          }
+        });
+
+        const totalInvested = userOrders.reduce((sum, o) => sum + o.total, 0);
+        
+        // Calcular novo badge
+        const newBadge = calculateBadge(totalInvested);
+        const badgeProof = generateBadgeProof(order.investorId, newBadge, totalInvested);
+
+        // Atualizar badge do investidor
+        await fastify.prisma.user.update({
+          where: { id: order.investorId },
+          data: {
+            totalInvested,
+            investorBadge: newBadge,
+            badgeProofHash: badgeProof,
+            lastBadgeUpdate: new Date(),
+          }
+        });
+
+        fastify.log.info(`🎖️ Badge do investidor ${order.investorId} atualizado para ${newBadge}`);
+      } catch (badgeError) {
+        fastify.log.error('Erro ao atualizar badge:');
+        fastify.log.error(badgeError);
+        // Não falhar o completion da order por causa do erro do badge
+      }
 
       return { order };
     } catch (error) {

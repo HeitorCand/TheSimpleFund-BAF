@@ -7,7 +7,24 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const createSacadoSchema = z.object({
   name: z.string().min(1),
   document: z.string().min(11),
+  personType: z.enum(['PF', 'PJ']).optional(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
   address: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  postalCode: z.string().optional(),
+  sector: z.string().optional(),
+  size: z.string().optional(),
+  rating: z.string().optional(),
+  paymentHistory: z.string().optional(),
+  exposure: z.number().optional(),
+  creditLimitFund: z.number().optional(),
+  concentrationPercent: z.number().optional(),
+  defaultRate30d: z.number().optional(),
+  defaultRate60d: z.number().optional(),
+  defaultRate90d: z.number().optional(),
   publicKey: z.string().optional(),
   fundId: z.string()
 });
@@ -55,8 +72,25 @@ export async function sacadoRoutes(fastify: FastifyInstance) {
       const sacado = await fastify.prisma.sacado.create({
         data: {
           name: body.name,
+          personType: body.personType,
           document: body.document,
           address: body.address,
+          city: body.city,
+          state: body.state,
+          country: body.country,
+          postalCode: body.postalCode,
+          email: body.email,
+          phone: body.phone,
+          sector: body.sector,
+          size: body.size,
+          rating: body.rating,
+          paymentHistory: body.paymentHistory,
+          exposure: body.exposure,
+          creditLimitFund: body.creditLimitFund,
+          concentrationPercent: body.concentrationPercent,
+          defaultRate30d: body.defaultRate30d,
+          defaultRate60d: body.defaultRate60d,
+          defaultRate90d: body.defaultRate90d,
           publicKey: body.publicKey,
           consultorId: payload.id,
           fundId: body.fundId
@@ -130,25 +164,49 @@ export async function sacadoRoutes(fastify: FastifyInstance) {
       }
 
       const payload = verifyToken(token);
+      const { page = '1', limit = '50' } = request.query as { page?: string; limit?: string };
+      const skip = (parseInt(page) - 1) * parseInt(limit);
+      const take = parseInt(limit);
 
       const where = payload.role === 'CONSULTOR' 
         ? { consultorId: payload.id }
         : {};
 
-      const sacados = await fastify.prisma.sacado.findMany({
-        where,
-        include: {
-          consultor: {
-            select: { email: true, role: true }
+      const [sacados, total] = await Promise.all([
+        fastify.prisma.sacado.findMany({
+          where,
+          select: {
+            id: true,
+            name: true,
+            document: true,
+            personType: true,
+            email: true,
+            status: true,
+            rating: true,
+            createdAt: true,
+            consultor: {
+              select: { email: true, role: true }
+            },
+            fund: {
+              select: { name: true, id: true }
+            }
           },
-          fund: {
-            select: { name: true, id: true }
-          }
-        },
-        orderBy: { createdAt: 'desc' }
-      });
+          skip,
+          take,
+          orderBy: { createdAt: 'desc' }
+        }),
+        fastify.prisma.sacado.count({ where })
+      ]);
 
-      return { sacados };
+      return { 
+        sacados,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          totalPages: Math.ceil(total / parseInt(limit))
+        }
+      };
     } catch (error) {
       fastify.log.error(error);
       return reply.status(500).send({ error: 'Internal server error' });
