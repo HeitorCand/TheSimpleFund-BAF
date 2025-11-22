@@ -12,6 +12,115 @@ function verifyToken(token: string) {
 }
 
 export async function dashboardRoutes(fastify: FastifyInstance) {
+  // Get investor dashboard with badge info
+  fastify.get('/investor', async (request, reply) => {
+    try {
+      const token = request.headers.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return reply.status(401).send({ error: 'No token provided' });
+      }
+
+      const userData = verifyToken(token);
+      
+      if (userData.role !== 'INVESTIDOR') {
+        return reply.status(403).send({ error: 'Access denied' });
+      }
+
+      // Get user with badge info
+      const user = await fastify.prisma.user.findUnique({
+        where: { id: userData.userId },
+        select: {
+          id: true,
+          email: true,
+          totalInvested: true,
+          investorBadge: true,
+          badgeProofHash: true,
+          lastBadgeUpdate: true,
+        }
+      });
+
+      if (!user) {
+        return reply.status(404).send({ error: 'User not found' });
+      }
+
+      // Import badge service
+      const { getBadgeInfo, getBadgeProgress, InvestorBadge } = await import('../services/zkBadge.js');
+      
+      const currentBadge = user.investorBadge as typeof InvestorBadge[keyof typeof InvestorBadge];
+      const badgeInfo = getBadgeInfo(currentBadge);
+      const progress = getBadgeProgress(user.totalInvested);
+
+      // Get investment statistics
+      const completedOrders = await fastify.prisma.order.findMany({
+        where: {
+          investorId: user.id,
+          status: 'COMPLETED'
+        },
+        include: {
+          fund: {
+            select: {
+              name: true,
+              symbol: true
+            }
+          }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+
+      const pendingOrders = await fastify.prisma.order.count({
+        where: {
+          investorId: user.id,
+          status: 'PENDING'
+        }
+      });
+
+      // Calculate portfolio distribution
+      const portfolioByFund = completedOrders.reduce((acc, order) => {
+        const fundName = order.fund.name;
+        if (!acc[fundName]) {
+          acc[fundName] = 0;
+        }
+        acc[fundName] += order.total;
+        return acc;
+      }, {} as Record<string, number>);
+
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          totalInvested: user.totalInvested,
+          lastBadgeUpdate: user.lastBadgeUpdate,
+        },
+        badge: {
+          ...badgeInfo,
+          hasProof: !!user.badgeProofHash,
+        },
+        progress,
+        statistics: {
+          totalInvestments: completedOrders.length,
+          pendingOrders,
+          averageInvestment: completedOrders.length > 0 
+            ? user.totalInvested / completedOrders.length 
+            : 0,
+          portfolioDistribution: portfolioByFund,
+        },
+        recentInvestments: completedOrders.slice(0, 5).map(order => ({
+          id: order.id,
+          fundName: order.fund.name,
+          fundSymbol: order.fund.symbol,
+          amount: order.total,
+          date: order.createdAt,
+          txHash: order.txHash,
+        }))
+      };
+    } catch (error) {
+      fastify.log.error(error);
+      return reply.status(500).send({ error: 'Internal server error' });
+    }
+  });
+
   // Get pending counts for approval (Gestor only)
   fastify.get('/pending-counts', async (request, reply) => {
     try {

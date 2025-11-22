@@ -11,6 +11,9 @@ import { orderRoutes } from './routes/order.js';
 import { stellarRoutes } from './routes/stellar.js';
 import { dashboardRoutes } from './routes/dashboard.js';
 import { poolRoutes } from './routes/pool.js';
+import { badgeRoutes } from './routes/badge.js';
+import recommendationRoutes from './routes/recommendation.js';
+import fundInteractionRoutes from './routes/fundInteraction.js';
 
 const prisma = new PrismaClient();
 
@@ -38,6 +41,9 @@ await fastify.register(orderRoutes, { prefix: '/api/orders' });
 await fastify.register(stellarRoutes, { prefix: '/api/stellar' });
 await fastify.register(dashboardRoutes, { prefix: '/api/dashboard' });
 await fastify.register(poolRoutes, { prefix: '/api' });
+await fastify.register(badgeRoutes, { prefix: '/api/badges' });
+await fastify.register(recommendationRoutes, { prefix: '/api' });
+await fastify.register(fundInteractionRoutes, { prefix: '/api' });
 
 // Health check
 fastify.get('/health', async () => {

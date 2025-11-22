@@ -7,6 +7,7 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -15,6 +16,13 @@ model User {
   status    String   @default("PENDING") // PENDING, APPROVED, REJECTED (for CONSULTOR approval)
   publicKey String?  @map("public_key")
   secretKey String?  @map("secret_key")
+  
+  // Investor Badge System with ZK Proof
+  totalInvested Float @default(0) @map("total_invested") // Total investido na plataforma
+  investorBadge String @default("NONE") @map("investor_badge") // NONE, BRONZE, SILVER, GOLD, DIAMOND
+  badgeProofHash String? @map("badge_proof_hash") // ZK proof hash para verificação
+  lastBadgeUpdate DateTime? @map("last_badge_update")
+  
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -23,6 +31,7 @@ model User {
   cedentes  Cedente[]
   sacados   Sacado[]
   funds     Fund[]   @relation("ConsultorFunds")
+  fundInteractions FundInteraction[]
 
   @@map("users")
 }
@@ -106,7 +115,6 @@ model Fund {
   name            String
   symbol          String   @unique
   cnpj            String?
-  fundType        String?   @map("fund_type")
   investorProfile String?   @map("investor_profile")
   cvmCode         String?   @map("cvm_code")
   administratorName String? @map("administrator_name")
@@ -146,6 +154,14 @@ model Fund {
   status          String   @default("PENDING") // PENDING, APPROVED, REJECTED, ACTIVE, CLOSED
   targetAmount    Float?   @map("target_amount")
   description     String?
+  
+  // Metadados para recomendação
+  fundType        String        @default("FIDC") @map("fund_type")       // tipo do fundo (FIDC, FII, AGRO, VAREJO, OUTROS)
+  riskLevel       String?       @map("risk_level")      // nível de risco (BAIXO, MEDIO, ALTO)
+  sector          String?       @map("sector")          // setor principal (AGRO, VAREJO, etc.)
+  durationMonths  Int?          @map("duration_months") // prazo médio da carteira
+  minTicket       Float?        @map("min_ticket")      // ticket mínimo recomendado
+  
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
@@ -157,6 +173,7 @@ model Fund {
   cedentes    Cedente[]
   sacados     Sacado[]
   pools       Pool[]
+  fundInteractions FundInteraction[]
 
   @@map("funds")
 }
@@ -223,4 +240,19 @@ model Order {
   fund       Fund   @relation(fields: [fundId], references: [id])
 
   @@map("orders")
+}
+
+model FundInteraction {
+  id         String              @id @default(cuid())
+
+  investorId String              @map("investor_id")
+  investor   User                @relation(fields: [investorId], references: [id])
+
+  fundId     String              @map("fund_id")
+  fund       Fund                @relation(fields: [fundId], references: [id])
+
+  type       String              // tipo de interação (VIEW, CLICK, FAVORITE, START_ORDER)
+  createdAt  DateTime            @default(now()) @map("created_at")
+
+  @@map("fund_interactions")
 }
