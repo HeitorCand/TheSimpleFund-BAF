@@ -85,7 +85,7 @@ const OrderList: React.FC = () => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-soft">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             <h2 className="text-xl font-semibold mb-4">My Investment Orders</h2>
             
             <FilterBar
@@ -106,7 +106,7 @@ const OrderList: React.FC = () => {
             {/* Desktop Table */}
             <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-transparent">
                         <tr>
                             <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Fund</th>
                             <th className="py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
@@ -119,7 +119,7 @@ const OrderList: React.FC = () => {
                     </thead>
                     <tbody>
                         {filteredOrders.map(order => (
-                            <tr key={order.id} className="border-b hover:bg-gray-50">
+                            <tr key={order.id} className="border-b border-gray-700 hover:bg-white/[0.08]">
                                 <td className="py-4 px-6">
                                     <div>
                                         <p className="font-medium">{order.fund.name}</p>
@@ -163,7 +163,7 @@ const OrderList: React.FC = () => {
             {/* Mobile Cards */}
             <div className="md:hidden space-y-4">
                 {filteredOrders.map((order) => (
-                    <div key={order.id} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                    <div key={order.id} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] space-y-3">
                         <div className="flex justify-between items-start">
                             <div>
                                 <p className="font-semibold text-lg">{order.fund.name}</p>
@@ -206,7 +206,7 @@ const OrderList: React.FC = () => {
             </div>
 
             {filteredOrders.length === 0 && !loading && (
-                <div className="text-center text-gray-500 py-12">
+                <div className="text-center text-gray-400 py-12">
                     {orders.length === 0 ? (
                         <>
                             <p className="text-lg">You have no investment orders yet.</p>

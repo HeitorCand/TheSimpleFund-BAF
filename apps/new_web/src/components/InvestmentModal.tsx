@@ -160,51 +160,36 @@ const InvestmentModal: React.FC<{
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
-        <h2 className="text-2xl font-bold mb-4">Invest in {fund.name}</h2>
-        <div className="space-y-4">
-          <p>
-            Price per token: <FiatWithXlmValue amountUsd={fund.price} />
-          </p>
-          <input
-            type="number"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            placeholder="Amount to invest (USD)"
-            className="w-full p-3 border rounded-lg"
-          />
-          {amount && (
-            <div className="text-sm space-y-1">
-              <p>
-                You will receive approx.{' '}
-                {Math.floor(parseFloat(amount) / fund.price)}{' '}
-                {fund.symbol || 'TOKEN'} tokens.
-              </p>
-              <p className="text-gray-600">
-                Investment: <FiatWithXlmValue amountUsd={parseFloat(amount)} />
-              </p>
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] w-full max-w-md m-4">
+                <h2 className="text-2xl font-bold mb-4">Invest in {fund.name}</h2>
+                <div className="space-y-4">
+                    <p>Price per token: <FiatWithXlmValue amountUsd={fund.price} /></p>
+                    <input 
+                        type="number" 
+                        value={amount} 
+                        onChange={e => setAmount(e.target.value)} 
+                        placeholder="Amount to invest (USD)" 
+                        className="w-full p-3 bg-dark-200 border border-gray-600 rounded-lg"
+                    />
+                    {amount && (
+                        <div className="text-sm space-y-1">
+                            <p>You will receive approx. {Math.floor(parseFloat(amount) / fund.price)} {fund.symbol || 'TOKEN'} tokens.</p>
+                            <p className="text-gray-600">
+                                Investment: <FiatWithXlmValue amountUsd={parseFloat(amount)} />
+                            </p>
+                        </div>
+                    )}
+                </div>
+                <div className="flex justify-end space-x-4 mt-6">
+                    <button onClick={onClose} className="px-6 py-2 text-gray-200 bg-gray-700 rounded-lg hover:bg-gray-600">Cancel</button>
+                    <button onClick={handleInvest} disabled={loading || !amount} className="px-6 py-2 text-white bg-primary rounded-lg hover:bg-primary/90 disabled:bg-primary/50">
+                        {loading ? 'Processing...' : 'Confirm Investment'}
+                    </button>
+                </div>
             </div>
-          )}
         </div>
-        <div className="flex justify-end space-x-4 mt-6">
-          <button
-            onClick={onClose}
-            className="px-6 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleInvest}
-            disabled={loading || !amount}
-            className="px-6 py-2 text-white bg-primary rounded-lg hover:bg-primary/90 disabled:bg-primary/50"
-          >
-            {loading ? 'Processing...' : 'Confirm Investment'}
-          </button>
-        </div>
-      </div>
-    </div>
   )
 }
 

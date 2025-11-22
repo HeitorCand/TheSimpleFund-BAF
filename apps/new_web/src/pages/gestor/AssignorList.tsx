@@ -107,9 +107,9 @@ const AssignorList: React.FC = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                        item.status === 'APPROVED' ? 'bg-primary-100 text-primary-800' :
-                                        item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                        'bg-red-100 text-red-800'
+                                        item.status === 'APPROVED' ? 'bg-[#A0E4B0] text-primary-800' :
+                                        item.status === 'PENDING' ? 'bg-[#F8FBA2] text-yellow-800' :
+                                        'bg-[#fa7f7f]-100 text-red-800'
                                     }`}>
                                         {item.status}
                                     </span>
@@ -137,9 +137,9 @@ const AssignorList: React.FC = () => {
                             </div>
                             <div className="flex items-center gap-2">
                                 <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                    selected.status === 'APPROVED' ? 'bg-primary-100 text-primary-800' :
-                                    selected.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-red-100 text-red-800'
+                                    selected.status === 'APPROVED' ? 'bg-[#A0E4B0] text-primary-800' :
+                                    selected.status === 'PENDING' ? 'bg-[#F8FBA2] text-yellow-800' :
+                                    'bg-[#fa7f7f]-100 text-red-800'
                                 }`}>
                                     {selected.status}
                                 </span>
@@ -184,7 +184,7 @@ const AssignorList: React.FC = () => {
                                 </button>
                                 <button
                                     onClick={() => selected && handleApprove(selected.id, 'reject')}
-                                    className="px-4 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
+                                    className="px-4 py-2 text-sm text-white bg-[#fa7f7f]-500 rounded-md hover:bg-[#fa7f7f]-600 transition-colors"
                                 >
                                     Reject
                                 </button>

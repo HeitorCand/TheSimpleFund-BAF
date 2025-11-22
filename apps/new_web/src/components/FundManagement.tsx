@@ -181,7 +181,7 @@ const PartyList: React.FC<{ items: (Cedente | Sacado)[]; onSelect: (item: Cedent
                                 ? 'bg-primary-100 text-primary-800'
                                 : item.status === 'PENDING'
                                     ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-red-100 text-red-800'
+                                    : 'bg-[#fa7f7f]-100 text-red-800'
                         }`}>
                             {item.status}
                         </span>
@@ -226,7 +226,7 @@ const DetailModal: React.FC<{
                                 ? 'bg-primary-100 text-primary-800'
                                 : item.status === 'PENDING'
                                     ? 'bg-yellow-100 text-yellow-800'
-                                    : 'bg-red-100 text-red-800'
+                                    : 'bg-[#fa7f7f]-100 text-red-800'
                         }`}>
                             {item.status}
                         </span>

@@ -58,22 +58,22 @@ const RecommendedFunds: React.FC = React.memo(() => {
     const getRiskColor = (risk: string) => {
         switch (risk?.toUpperCase()) {
             case 'BAIXO':
-                return 'text-green-600 bg-green-100';
+                return 'text-green-300 bg-green-900/50';
             case 'MEDIO':
-                return 'text-yellow-600 bg-yellow-100';
+                return 'text-yellow-300 bg-yellow-900/50';
             case 'ALTO':
-                return 'text-red-600 bg-red-100';
+                return 'text-red-300 bg-red-900/50';
             default:
-                return 'text-gray-600 bg-gray-100';
+                return 'text-gray-300 bg-gray-700/50';
         }
     };
 
     if (loading) {
         return (
-            <div className="bg-white p-6 rounded-lg shadow-soft">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <div className="flex items-center space-x-2 mb-4">
                     <FiStar className="text-primary text-xl" />
-                    <h2 className="text-xl font-bold text-gray-800">Recommended for You</h2>
+                    <h2 className="text-xl font-bold text-white">Recommended for You</h2>
                 </div>
                 <div className="flex items-center justify-center py-8">
                     <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-primary"></div>
@@ -84,13 +84,13 @@ const RecommendedFunds: React.FC = React.memo(() => {
 
     if (error) {
         return (
-            <div className="bg-white p-6 rounded-lg shadow-soft">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <div className="flex items-center space-x-2 mb-4">
                     <FiStar className="text-primary text-xl" />
-                    <h2 className="text-xl font-bold text-gray-800">Recommended for You</h2>
+                    <h2 className="text-xl font-bold text-white">Recommended for You</h2>
                 </div>
                 <div className="text-center py-6">
-                    <p className="text-gray-600">Unable to load recommendations at this time.</p>
+                    <p className="text-gray-300">Unable to load recommendations at this time.</p>
                 </div>
             </div>
         );
@@ -98,15 +98,15 @@ const RecommendedFunds: React.FC = React.memo(() => {
 
     if (recommendations.length === 0) {
         return (
-            <div className="bg-white p-6 rounded-lg shadow-soft">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <div className="flex items-center space-x-2 mb-4">
                     <FiStar className="text-primary text-xl" />
-                    <h2 className="text-xl font-bold text-gray-800">Recommended for You</h2>
+                    <h2 className="text-xl font-bold text-white">Recommended for You</h2>
                 </div>
                 <div className="text-center py-8">
                     <FiTrendingUp className="mx-auto text-5xl text-gray-300 mb-3" />
-                    <p className="text-gray-600 mb-2">No recommendations available yet.</p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-gray-300 mb-2">No recommendations available yet.</p>
+                    <p className="text-sm text-gray-300">
                         Start exploring funds to get personalized recommendations based on your preferences.
                     </p>
                 </div>
@@ -115,13 +115,13 @@ const RecommendedFunds: React.FC = React.memo(() => {
     }
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-soft">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-2">
                     <FiStar className="text-primary text-xl" />
-                    <h2 className="text-xl font-bold text-gray-800">Recommended for You</h2>
+                    <h2 className="text-xl font-bold text-white">Recommended for You</h2>
                 </div>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-300">
                     {recommendations.length} {recommendations.length === 1 ? 'fund' : 'funds'}
                 </span>
             </div>
@@ -131,19 +131,19 @@ const RecommendedFunds: React.FC = React.memo(() => {
                     <div
                         key={fund.id}
                         onClick={() => handleFundClick(fund.id)}
-                        className="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all cursor-pointer group"
+                        className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] transition-all cursor-pointer group"
                     >
                         <div className="flex justify-between items-start mb-3">
                             <div className="flex-1">
                                 <div className="flex items-center space-x-2 mb-1">
-                                    <h3 className="text-lg font-semibold text-gray-800 group-hover:text-primary transition-colors">
+                                    <h3 className="text-lg font-semibold text-white group-hover:text-primary transition-colors">
                                         {fund.name}
                                     </h3>
                                     <span className="text-xs font-mono text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
                                         {fund.symbol}
                                     </span>
                                 </div>
-                                <p className="text-sm text-gray-600 line-clamp-2">{fund.description}</p>
+                                <p className="text-sm text-gray-300 line-clamp-2">{fund.description}</p>
                             </div>
                             <div className="ml-4 flex-shrink-0">
                                 <div className="flex items-center space-x-1 text-yellow-500">
@@ -155,7 +155,7 @@ const RecommendedFunds: React.FC = React.memo(() => {
 
                         <div className="flex flex-wrap gap-2 mb-3">
                             {fund.fundType && (
-                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-primary-300 bg-primary-900/50 px-2 py-1 rounded">
                                     <FiTrendingUp className="text-xs" />
                                     <span>{fund.fundType}</span>
                                 </span>
@@ -167,34 +167,34 @@ const RecommendedFunds: React.FC = React.memo(() => {
                                 </span>
                             )}
                             {fund.sector && (
-                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded">
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-primary-300 bg-primary-900/50 px-2 py-1 rounded">
                                     <span>{fund.sector}</span>
                                 </span>
                             )}
                             {fund.durationMonths && (
-                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-gray-300 bg-gray-700/50 px-2 py-1 rounded">
                                     <FiClock className="text-xs" />
                                     <span>{fund.durationMonths}m</span>
                                 </span>
                             )}
                             {fund.minTicket && (
-                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded">
+                                <span className="inline-flex items-center space-x-1 text-xs font-medium text-green-300 bg-green-900/50 px-2 py-1 rounded">
                                     <FiDollarSign className="text-xs" />
                                     <span>Min: R${fund.minTicket.toLocaleString()}</span>
                                 </span>
                             )}
                         </div>
 
-                        <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-3">
-                            <p className="text-sm text-blue-800">
+                        <div className="bg-primary/10 border-l-4 border-primary p-3 mb-3">
+                            <p className="text-sm text-primary-200">
                                 <span className="font-medium">Why recommended:</span> {fund.reason}
                             </p>
                         </div>
 
-                        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-700">
                             <div className="text-sm">
-                                <span className="text-gray-500">Quota price: </span>
-                                <span className="font-semibold text-gray-800">R${fund.price.toFixed(2)}</span>
+                                <span className="text-gray-400">Quota price: </span>
+                                <span className="font-semibold text-white">R${fund.price.toFixed(2)}</span>
                             </div>
                             <button
                                 onClick={() => window.location.href = `/marketplace/${fund.id}`}

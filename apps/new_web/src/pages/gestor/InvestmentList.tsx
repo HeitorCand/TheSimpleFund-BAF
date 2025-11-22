@@ -132,16 +132,16 @@ const InvestmentList: React.FC = () => {
                                         <td className="py-3 px-4">
                                             <div className="flex flex-col gap-1">
                                                 <span className={`px-2 py-1 text-xs font-semibold rounded-full text-center ${
-                                                    item.status === 'COMPLETED' ? 'bg-primary-100 text-primary-800' :
-                                                    item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-red-100 text-red-800'
+                                                    item.status === 'COMPLETED' ? 'bg-[#A0E4B0] text-primary-800' :
+                                                    item.status === 'PENDING' ? 'bg-[#F8FBA2] text-yellow-800' :
+                                                    'bg-[#fa7f7f]-100 text-red-800'
                                                 }`}>
                                                     {item.status}
                                                 </span>
                                                 {item.approvalStatus && (
                                                     <span className={`px-2 py-1 text-xs font-semibold rounded-full text-center ${
-                                                        item.approvalStatus === 'APPROVED' ? 'bg-blue-100 text-blue-800' :
-                                                        item.approvalStatus === 'PENDING_APPROVAL' ? 'bg-orange-100 text-orange-800' :
+                                                        item.approvalStatus === 'APPROVED' ? 'bg-[#7BD3EA] text-blue-800' :
+                                                        item.approvalStatus === 'PENDING_APPROVAL' ? 'bg-[#F6D6D6] text-orange-800' :
                                                         'bg-gray-700 text-gray-200'
                                                     }`}>
                                                         {item.approvalStatus.replace('_', ' ')}
@@ -163,7 +163,7 @@ const InvestmentList: React.FC = () => {
                                                         <button 
                                                             onClick={() => handleReject(item)} 
                                                             disabled={processingId === item.id}
-                                                            className="px-2.5 py-1 text-xs text-white bg-red-500 rounded hover:bg-red-600 disabled:bg-red-300 whitespace-nowrap"
+                                                            className="px-2.5 py-1 text-xs text-white bg-[#fa7f7f]-500 rounded hover:bg-[#fa7f7f]-600 disabled:bg-[#fa7f7f]-300 whitespace-nowrap"
                                                         >
                                                             {processingId === item.id ? 'Processing...' : 'Reject'}
                                                         </button>
@@ -220,7 +220,7 @@ const InvestmentList: React.FC = () => {
                                         <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                                             item.status === 'COMPLETED' ? 'bg-primary-100 text-primary-800' :
                                             item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                            'bg-red-100 text-red-800'
+                                            'bg-[#fa7f7f]-100 text-red-800'
                                         }`}>
                                             {item.status}
                                         </span>
@@ -266,7 +266,7 @@ const InvestmentList: React.FC = () => {
                                             <button 
                                                 onClick={() => handleReject(item)} 
                                                 disabled={processingId === item.id}
-                                                className="px-3 py-2 text-sm text-white bg-red-500 rounded-md hover:bg-red-600 disabled:bg-red-300"
+                                                className="px-3 py-2 text-sm text-white bg-[#fa7f7f]-500 rounded-md hover:bg-[#fa7f7f]-600 disabled:bg-[#fa7f7f]-300"
                                             >
                                                 {processingId === item.id ? 'Processing...' : 'Reject'}
                                             </button>

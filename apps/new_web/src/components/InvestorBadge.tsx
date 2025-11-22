@@ -72,7 +72,7 @@ const InvestorBadge: React.FC<{ userId: string }> = React.memo(({ userId }) => {
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-soft">
+      <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
         <div className="flex items-center justify-center py-8">
           <div className="w-8 h-8 border-4 border-dashed rounded-full animate-spin border-primary"></div>
         </div>
@@ -87,13 +87,13 @@ const InvestorBadge: React.FC<{ userId: string }> = React.memo(({ userId }) => {
   const { badge, progress } = badgeData;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-soft">
-      <h4 className="text-lg font-semibold text-gray-800 mb-3">
+    <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
+      <h4 className="text-lg font-semibold text-white mb-3">
         Investor Badge
       </h4>
       
       <div className="mb-4">
-        <p className="text-xs text-gray-500 mb-2">Current Level</p>
+        <p className="text-xs text-gray-300 mb-2">Current Level</p>
         <div 
           className="inline-block px-4 py-2 rounded-lg"
           style={{ 
@@ -110,10 +110,10 @@ const InvestorBadge: React.FC<{ userId: string }> = React.memo(({ userId }) => {
       {progress.nextBadge && (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-600">
+            <span className="text-xs text-gray-300">
               Progress to {progress.nextBadge}
             </span>
-            <span className="text-xs font-medium text-gray-700">
+            <span className="text-xs font-medium text-gray-200">
               {Math.round(progress.progressPercentage)}%
             </span>
           </div>
@@ -126,7 +126,7 @@ const InvestorBadge: React.FC<{ userId: string }> = React.memo(({ userId }) => {
               }}
             />
           </div>
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-gray-300 mt-2">
             {progress.amountToNext.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL'
@@ -136,11 +136,11 @@ const InvestorBadge: React.FC<{ userId: string }> = React.memo(({ userId }) => {
       )}
 
       <div>
-        <p className="text-xs font-semibold text-gray-600 mb-2">Benefits:</p>
+        <p className="text-xs font-semibold text-gray-300 mb-2">Benefits:</p>
         <ul className="space-y-1">
           {badge.benefits && badge.benefits.length > 0 ? (
             badge.benefits.map((benefit, index) => (
-              <li key={index} className="flex items-start gap-2 text-xs text-gray-600">
+              <li key={index} className="flex items-start gap-2 text-xs text-gray-300">
                 <svg 
                   width="12" 
                   height="12" 
@@ -157,7 +157,7 @@ const InvestorBadge: React.FC<{ userId: string }> = React.memo(({ userId }) => {
               </li>
             ))
           ) : (
-            <li className="text-xs text-gray-500">No benefits available</li>
+            <li className="text-xs text-gray-300">No benefits available</li>
           )}
         </ul>
       </div>

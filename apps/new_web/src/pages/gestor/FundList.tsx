@@ -107,10 +107,10 @@ const FundList: React.FC = () => {
                                             <p className="text-gray-300">
                                                 <span className="font-medium">Status:</span>{' '}
                                                 <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                                                    item.status === 'APPROVED' ? 'bg-primary-100 text-primary-800' :
+                                                    item.status === 'APPROVED' ? 'bg-[#A0E4B0] text-primary-800' :
                                                     item.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
                                                     item.status === 'CLOSED' ? 'bg-gray-700 text-gray-200' :
-                                                    'bg-red-100 text-red-800'
+                                                    'bg-[#fa7f7f]-100 text-red-800'
                                                 }`}>
                                                     {item.status}
                                                 </span>

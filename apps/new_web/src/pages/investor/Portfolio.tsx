@@ -68,7 +68,7 @@ const Portfolio: React.FC = () => {
 
     if (!isConnected) {
         return (
-            <div className="bg-white p-8 rounded-lg shadow-soft text-center">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] text-center">
                 <FiBriefcase className="mx-auto text-6xl text-gray-300 mb-4" />
                 <h2 className="text-2xl font-bold mb-2">Connect Your Wallet</h2>
                 <p className="text-gray-600 mb-6">Please connect your Stellar wallet to view your portfolio.</p>
@@ -84,7 +84,7 @@ const Portfolio: React.FC = () => {
 
     return (
         <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow-soft">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-semibold flex items-center">
                         <FiBriefcase className="mr-3" />
@@ -116,17 +116,17 @@ const Portfolio: React.FC = () => {
                 ) : (
                     <>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                            <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg">
+                            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                 <p className="text-sm text-green-700">Total Invested</p>
                                 <p className="text-2xl font-bold text-green-900">
                                     <FiatWithXlmValue amountUsd={totalInvested} />
                                 </p>
                             </div>
-                            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg">
+                            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                 <p className="text-sm text-blue-700">Total Quotas</p>
                                 <p className="text-2xl font-bold text-blue-900">{totalQuotas.toLocaleString()}</p>
                             </div>
-                            <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg">
+                            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                 <p className="text-sm text-purple-700">Funds Invested</p>
                                 <p className="text-2xl font-bold text-purple-900">{Object.keys(groupedOrders).length}</p>
                             </div>
@@ -136,7 +136,7 @@ const Portfolio: React.FC = () => {
                             <h3 className="text-lg font-semibold">Your Holdings</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {Object.values(groupedOrders).map((group: any) => (
-                                    <div key={group.symbol} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div key={group.symbol} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                         <div className="flex items-start justify-between mb-3">
                                             <div>
                                                 <h4 className="font-bold text-lg">{group.name}</h4>

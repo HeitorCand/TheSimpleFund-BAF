@@ -57,7 +57,7 @@ const ConsultorList: React.FC = () => {
                                 {item.status === 'PENDING' && (
                                     <>
                                         <button onClick={() => handleApprove(item.id, 'approve')} className="px-3 py-1 text-sm text-white bg-primary rounded-md hover:bg-primary/90">Approve</button>
-                                        <button onClick={() => handleApprove(item.id, 'reject')} className="px-3 py-1 text-sm text-white bg-red-500 rounded-md hover:bg-red-600">Reject</button>
+                                        <button onClick={() => handleApprove(item.id, 'reject')} className="px-3 py-1 text-sm text-white bg-[#fa7f7f]-500 rounded-md hover:bg-[#fa7f7f]-600">Reject</button>
                                     </>
                                 )}
                             </div>

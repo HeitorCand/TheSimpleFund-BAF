@@ -25,7 +25,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, type }) => {
         );
       case 'FAILED':
         return (
-          <span className="inline-flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+          <span className="inline-flex items-center space-x-1 px-3 py-1 text-xs font-semibold rounded-full bg-[#fa7f7f]-100 text-red-800">
             <FiXCircle />
             <span>Failed</span>
           </span>

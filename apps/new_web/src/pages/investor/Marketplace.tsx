@@ -61,9 +61,9 @@ const Marketplace: React.FC = () => {
       {selectedFund && (
         <InvestmentModal fund={selectedFund} onClose={() => setSelectedFund(null)} onConfirm={loadFunds} />
       )}
-      <div className="bg-white p-6 rounded-lg shadow-soft">
+      <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
         {!isConnected && (
-          <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="mb-6 bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
             <p className="text-yellow-800 text-sm">
               💡 <strong>Connect your wallet</strong> in the header to invest and make payments via Stellar Testnet.
             </p>
@@ -77,7 +77,7 @@ const Marketplace: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search funds..."
-              className="w-full pl-10 pr-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full rounded-lg px-3 pl-10 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition"
             />
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           </div>
@@ -86,7 +86,7 @@ const Marketplace: React.FC = () => {
           {filteredFunds.map((fund) => (
             <div
               key={fund.id}
-              className="border rounded-lg p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-lg hover:scale-105"
+              className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] flex flex-col justify-between"
             >
               <div>
                 <h3 className="text-xl font-bold">
@@ -120,7 +120,7 @@ const Marketplace: React.FC = () => {
           ))}
         </div>
         {filteredFunds.length === 0 && !loading && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-gray-400 py-8">
             <p>No funds available that match your search.</p>
           </div>
         )}

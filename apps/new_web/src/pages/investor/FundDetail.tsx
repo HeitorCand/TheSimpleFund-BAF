@@ -51,8 +51,8 @@ interface Fund {
 
 const Field: React.FC<{ label: string; value?: React.ReactNode }> = ({ label, value }) => (
   <div>
-    <p className="text-xs uppercase text-gray-500 font-semibold">{label}</p>
-    <p className="text-sm text-gray-900">{value ?? 'N/A'}</p>
+    <p className="text-xs uppercase text-gray-400 font-semibold">{label}</p>
+    <p className="text-sm text-white">{value ?? 'N/A'}</p>
   </div>
 );
 
@@ -172,14 +172,14 @@ const FundDetail: React.FC = () => {
   };
 
   if (loading) return <div className="p-8 text-center">Loading fund...</div>;
-  if (!fund) return <div className="p-8 text-center text-gray-600">Fund not found.</div>;
+  if (!fund) return <div className="p-8 text-center text-gray-300">Fund not found.</div>;
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-soft space-y-6 relative">
+    <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] space-y-6 relative">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold">{fund.name}</h1>
-          <p className="text-sm text-gray-600">{fund.description}</p>
+          <h1 className="text-2xl font-semibold text-white">{fund.name}</h1>
+          <p className="text-sm text-gray-300">{fund.description}</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -194,14 +194,14 @@ const FundDetail: React.FC = () => {
                 <button
                   onClick={() => handleApprove('approve')}
                   disabled={processing}
-                  className="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 disabled:bg-green-400"
+                  className="px-4 py-2 text-white bg-primary rounded-lg hover:bg-primary/90 disabled:bg-primary/50"
                 >
                   {processing ? 'Approving...' : 'Approve'}
                 </button>
                 <button
                   onClick={() => handleApprove('reject')}
                   disabled={processing}
-                  className="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 disabled:bg-red-400"
+                  className="px-4 py-2 text-white bg-[#fa7f7f]-500 rounded-lg hover:bg-[#fa7f7f]-600 disabled:bg-[#fa7f7f]-400"
                 >
                   {processing ? 'Rejecting...' : 'Reject'}
                 </button>
@@ -230,7 +230,7 @@ const FundDetail: React.FC = () => {
               </button>
               <button
                 onClick={handleDeactivate}
-                className="px-4 py-2 text-white bg-gray-500 rounded-lg hover:bg-gray-600"
+                className="px-4 py-2 text-white bg-gray-700 rounded-lg hover:bg-gray-600"
               >
                 Deactivate
               </button>
@@ -263,7 +263,7 @@ const FundDetail: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <h3 className="font-semibold text-gray-800">Service providers</h3>
+          <h3 className="font-semibold text-white">Service providers</h3>
           <Field label="Administrator" value={fund.administratorName} />
           <Field label="Administrator CNPJ" value={fund.administratorCnpj} />
           <Field label="Manager" value={fund.managerName} />
@@ -273,7 +273,7 @@ const FundDetail: React.FC = () => {
           <Field label="Fiduciary agent" value={fund.fiduciaryAgentName} />
         </div>
         <div className="space-y-2">
-          <h3 className="font-semibold text-gray-800">Policy & limits</h3>
+          <h3 className="font-semibold text-white">Policy & limits</h3>
           <Field label="Strategy / Sector focus" value={fund.sectorFocus} />
           <Field label="Eligibility" value={fund.eligibilityCriteria} />
           <Field label="% limit per cedente" value={fund.maxCedenteConcentrationPercent} />
@@ -286,14 +286,14 @@ const FundDetail: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <h3 className="font-semibold text-gray-800">Fees</h3>
+          <h3 className="font-semibold text-white">Fees</h3>
           <Field label="Admin fee (% a.a.)" value={fund.administrationFee} />
           <Field label="Management fee (% a.a.)" value={fund.managementFee} />
           <Field label="Performance fee (%)" value={fund.performanceFee} />
           <Field label="Other fees" value={fund.otherFees} />
         </div>
         <div className="space-y-2">
-          <h3 className="font-semibold text-gray-800">Liquidity</h3>
+          <h3 className="font-semibold text-white">Liquidity</h3>
           <Field label="Type" value={fund.liquidityType} />
           <Field label="Lockup (days)" value={fund.lockupDays} />
           <Field label="Redemption terms" value={fund.redemptionTerms} />
@@ -313,20 +313,20 @@ const FundDetail: React.FC = () => {
 
       {showIssueModal && fund && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 m-4">
-            <h2 className="text-xl font-bold mb-4">Issue Quotas - {fund.name}</h2>
+          <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] w-full max-w-md m-4">
+            <h2 className="text-xl font-bold mb-4 text-white">Issue Quotas - {fund.name}</h2>
             <form onSubmit={handleIssueSubmit} className="space-y-4">
               <div>
-                <p className="text-sm text-gray-600 mb-2">
+                <p className="text-sm text-gray-300 mb-2">
                   Current: <span className="font-semibold">{(fund.totalIssued ?? 0).toLocaleString()}</span> / {(fund.maxSupply ?? 0).toLocaleString()}
                 </p>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-300 mb-4">
                   Available to issue:{' '}
-                  <span className="font-semibold text-blue-600">
+                  <span className="font-semibold text-primary">
                     {((fund.maxSupply ?? 0) - (fund.totalIssued ?? 0)).toLocaleString()}
                   </span>
                 </p>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-300 mb-2">
                   Amount to Issue
                 </label>
                 <input
@@ -336,7 +336,7 @@ const FundDetail: React.FC = () => {
                   placeholder="Enter amount"
                   min="1"
                   max={(fund.maxSupply ?? 0) - (fund.totalIssued ?? 0)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg px-3 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition"
                   required
                 />
               </div>
@@ -347,7 +347,7 @@ const FundDetail: React.FC = () => {
                     setShowIssueModal(false);
                     setIssueAmount('');
                   }}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-gray-200 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
                 >
                   Cancel
                 </button>

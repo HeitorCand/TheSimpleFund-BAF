@@ -59,7 +59,7 @@ const InvestidorDashboard: React.FC = () => {
 
     if (user?.status !== 'APPROVED') {
         return (
-            <div className="bg-dark p-8 rounded-lg shadow-lg text-center">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] text-center">
                 <h2 className="text-2xl font-bold mb-2">Awaiting Approval</h2>
                 <p className="text-gray-300">Your account is currently {user?.status}. You'll get access once approved.</p>
             </div>
@@ -68,7 +68,7 @@ const InvestidorDashboard: React.FC = () => {
     
     return (
         <div className="space-y-8">
-            <div className="bg-dark p-6 rounded-lg shadow-lg">
+            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                 <h1 className="text-3xl font-bold text-white">Welcome, Investor!</h1>
                 <p className="mt-2 text-gray-300">Here is a summary of your investment activity.</p>
             </div>
@@ -121,30 +121,30 @@ const InvestidorDashboard: React.FC = () => {
 
                     {/* Investor Badge */}
                     {user?.id && (
-                        <div className="mt-6">
+                        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                             <InvestorBadge userId={user.id} />
                         </div>
                     )}
 
                     {/* Recommended Funds */}
                     {user?.id && (
-                        <div className="mt-6">
+                        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                             <RecommendedFunds />
                         </div>
                     )}
 
                     {pendingOrders.length > 0 && (
-                        <div className="bg-primary-900 border border-primary-700 rounded-lg p-6">
+                        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                             <div className="flex items-start space-x-3">
                                 <FiClock className="text-primary-400 text-xl mt-0.5" />
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-semibold text-primary-200 mb-2">Pending Orders</h3>
-                                    <p className="text-primary-300 text-sm mb-3">
+                                    <h3 className="text-lg font-semibold text-white mb-2">Pending Orders</h3>
+                                    <p className="text-gray-300 text-sm mb-3">
                                         You have {pendingOrders.length} order{pendingOrders.length > 1 ? 's' : ''} awaiting approval with a total value of ${totalPendingValue.toLocaleString()}.
                                     </p>
                                     <div className="space-y-2">
                                         {pendingOrders.map(order => (
-                                            <div key={order.id} className="bg-dark-200 rounded p-3 text-sm">
+                                            <div key={order.id} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
                                                 <div className="flex justify-between items-center">
                                                     <span className="font-medium text-white">
                                                         {order.fund?.name || 'Fund'}
@@ -172,7 +172,7 @@ const StatCard: React.FC<{ icon: React.ReactNode; title: string; value: number |
     };
 
     return (
-        <div className="p-6 bg-dark rounded-lg shadow-lg flex items-center space-x-4">
+        <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)] flex items-center space-x-4">
             <div className={`p-3 rounded-full text-2xl ${colorClasses[color as keyof typeof colorClasses]}`}>
                 {icon}
             </div>

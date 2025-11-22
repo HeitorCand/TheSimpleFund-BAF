@@ -106,7 +106,7 @@ const PoolList: React.FC = () => {
 
   return (
     <>
-      <div className="container mx-auto px-8 py-8 bg-dark-200 rounded-lg">
+      <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold">Yield Pools</h2>
           <button
@@ -133,7 +133,7 @@ const PoolList: React.FC = () => {
             {pools.map((pool) => (
               <div
                 key={pool.id}
-                className="bg-dark-200 border border-gray-700 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+                className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
@@ -310,26 +310,26 @@ const CreatePoolModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+      <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-md p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
         <h2 className="text-2xl font-bold mb-6">Create Yield Pool</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Pool Name</label>
+            <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">Pool Name</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-lg px-3 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Fund</label>
+            <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">Fund</label>
             <select
               value={formData.fundId}
               onChange={(e) => setFormData({ ...formData, fundId: e.target.value })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-lg px-3 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition"
               required
             >
               <option value="">Select fund...</option>
@@ -342,11 +342,11 @@ const CreatePoolModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Blend Pool</label>
+            <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">Blend Pool</label>
             <select
               value={formData.blendPoolAddress}
               onChange={(e) => handleBlendPoolSelect(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-lg px-3 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition"
               required
             >
               <option value="">Select Blend pool...</option>
@@ -357,7 +357,7 @@ const CreatePoolModal: React.FC<{
               ))}
             </select>
             {formData.blendPoolAddress && (
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-400 mt-1">
                 {availableBlendPools.find(p => p.address === formData.blendPoolAddress)?.description}
               </p>
             )}
@@ -367,7 +367,7 @@ const CreatePoolModal: React.FC<{
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              className="flex-1 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600"
             >
               Cancel
             </button>
@@ -446,26 +446,26 @@ const DepositModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-dark-200 rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+      <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-md p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
         <h2 className="text-2xl font-bold mb-4">Deposit to Pool</h2>
         <div className="mb-6">
-          <p className="text-sm text-gray-600">Pool: {pool.name}</p>
-          <p className="text-sm text-gray-600">Fund: {pool.fund.name}</p>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-300">Pool: {pool.name}</p>
+          <p className="text-sm text-gray-300">Fund: {pool.fund.name}</p>
+          <p className="text-sm text-gray-300">
             Current Balance: <FiatWithXlmValue amountUsd={pool.currentBalance} />
           </p>
         </div>
 
         <form onSubmit={handleDeposit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Amount (USD)</label>
+            <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">Amount (USD)</label>
             <input
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               min="0"
               step="0.01"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-lg px-3 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition"
               placeholder="0.00"
               required
             />
@@ -476,7 +476,7 @@ const DepositModal: React.FC<{
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+              className="flex-1 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -560,19 +560,19 @@ const WithdrawModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 m-4">
+      <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl w-full max-w-md p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
         <h2 className="text-2xl font-bold mb-4">Withdraw from Pool</h2>
         <div className="mb-6">
-          <p className="text-sm text-gray-600">Pool: {pool.name}</p>
-          <p className="text-sm text-gray-600">Fund: {pool.fund.name}</p>
-          <p className="text-sm font-semibold text-green-600">
+          <p className="text-sm text-gray-300">Pool: {pool.name}</p>
+          <p className="text-sm text-gray-300">Fund: {pool.fund.name}</p>
+          <p className="text-sm font-semibold text-green-400">
             Available: ${pool.currentBalance.toLocaleString()}
           </p>
         </div>
 
         <form onSubmit={handleWithdraw} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Amount (USD)</label>
+            <label className="block text-xs font-semibold text-white/80 mb-1 tracking-wide uppercase">Amount (USD)</label>
             <input
               type="number"
               value={amount}
@@ -580,7 +580,7 @@ const WithdrawModal: React.FC<{
               min="0"
               max={pool.currentBalance}
               step="0.01"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-lg px-3 py-2 bg-white/5 border border-white/15 text-white text-sm placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#169976] focus:border-transparent transition"
               placeholder="0.00"
               required
             />
@@ -598,7 +598,7 @@ const WithdrawModal: React.FC<{
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50"
+              className="flex-1 px-4 py-2 bg-gray-700 text-gray-200 rounded-lg hover:bg-gray-600 disabled:opacity-50"
             >
               Cancel
             </button>
