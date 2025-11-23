@@ -2,18 +2,31 @@
 
 ![TSF Logo](/docs/static/img/TSF.svg)
 
-To access the entire documentation, [Click Here](https://miguelclaret.github.io/TheSimpleFund/)
+To access the entire documentation, [Click Here](https://heitorcand.github.io/TheSimpleFund-BAF/)
 
 ## 📋 Table of Contents
-- [Overview](#overview)
-- [Problem & Solution](#problem--solution)
-- [Key Features](#key-features)
-- [Architecture](#architecture)
-- [Demo](#demo)
-- [Installation & Setup](#installation--setup)
-- [Roadmap](#roadmap)
-- [Team](#team)
-- [Impact & Value](#impact--value)
+- [The Simple Fund (TSF)](#the-simple-fund-tsf)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [Overview](#overview)
+  - [Problem \& Solution](#problem--solution)
+    - [The Problem](#the-problem)
+    - [The Solution](#the-solution)
+  - [Key Features](#key-features)
+  - [Architecture](#architecture)
+  - [Demo](#demo)
+    - [Live Demo](#live-demo)
+    - [Demo Accounts](#demo-accounts)
+  - [Installation \& Setup](#installation--setup)
+    - [Prerequisites](#prerequisites)
+    - [Backend (API)](#backend-api)
+    - [Frontend (Web)](#frontend-web)
+  - [Roadmap](#roadmap)
+    - [Q3 2025: Project Kickoff](#q3-2025-project-kickoff)
+    - [Q4 2025: Expansion](#q4-2025-expansion)
+    - [Q1 2026: Global Compliance](#q1-2026-global-compliance)
+    - [Q2-Q3 2026: Global Adoption](#q2-q3-2026-global-adoption)
+  - [Team](#team)
+  - [Impact \& Value](#impact--value)
 
 ## Overview
 
