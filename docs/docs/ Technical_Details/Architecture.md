@@ -19,7 +19,7 @@ flowchart LR
         Fw["Freighter Wallet"]
     end
 
-    subgraph Web["Web App (apps/web)"]
+    subgraph Web["Web App (apps/new_web)"]
         FE["React + TS + Vite
 Tailwind / Zustand"]
     end
@@ -78,7 +78,7 @@ XLM -> USD Price API"]
 - **Tech:** React, TypeScript, Vite, Tailwind CSS, Zustand  
 - **Wallet:** Freighter (non-custodial, browser-based signing)  
 - **Hosting Options:** Vercel   
-- **Structure:** `apps/web/`
+- **Structure:** `apps/new_web/`
 
 #### **Key Features**
 - Dashboards for Investors, Consultants, and Managers  
@@ -270,7 +270,7 @@ This setup ensures performance, fault tolerance, and scalability for production 
 - **Resilience:** isolated Blend pools, RDS backups, distributed architecture  
 
 ## Folder Structure Highlights
-- `apps/web/` — Frontend (React + Freighter)  
+- `apps/new_web/` — Frontend (React + Freighter)  
 - `apps/api/` — Backend (Fastify + Prisma + AWS services)  
   - `src/services/recommendationService.ts` — Collaborative filtering engine  
   - `src/routes/recommendation.ts` — Recommendation API endpoints  

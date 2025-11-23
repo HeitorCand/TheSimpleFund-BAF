@@ -145,7 +145,7 @@ npm run dev
 
 ### 2. Frontend
 ```bash
-cd apps/web
+cd apps/new_web
 npm install
 npm run dev
 ```

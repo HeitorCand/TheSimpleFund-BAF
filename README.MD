@@ -557,6 +557,7 @@ This is our **final submission** for Stellar Meridian Hackathon, representing a 
 #### 7. **Comprehensive Documentation**
 
 **Docusaurus Site** (Deployed on GitHub Pages)
+- **Link deploy**: https://heitorCand.github.io/TheSimpleFund-BAF/ 
 - **Project Overview** with problem/solution/impact
 - **Quick Start Guide** with local setup and demo accounts
 - **Architecture Documentation** with Mermaid diagrams (system, data flow, deployment)

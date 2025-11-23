@@ -79,7 +79,7 @@ The API will be available at `http://localhost:3001`. You can test it by accessi
 
 1. Open a new terminal window and navigate to the frontend folder from the project root:
    ```bash
-   cd apps/web
+   cd apps/new_web
    ```
 
 2. Install dependencies:
