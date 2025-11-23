@@ -5,8 +5,23 @@ slug: /
 ---
 # Project Overview — The Simple Fund
 
-<iframe width="700" height="340" src="https://drive.google.com/file/d/1f96kb6KkLN-z9O3kdbUULvy0VoJmqPLw/preview" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen ></iframe>
-The Simple Fund Project Presentation Video.
+<div
+  style={{
+    display: 'flex',
+    justifyContent: 'center',
+  }}
+>
+  <iframe
+    width="700"
+    height="340"
+    src="https://www.youtube.com/embed/UfFWbXEzCe4?si=Nyfe_Y8UuX2cchSh"
+    title="The Simple Fund - Pitch"
+    frameBorder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerPolicy="strict-origin-when-cross-origin"
+    allowFullScreen
+  ></iframe>
+</div>
 
 
 ## Introduction
