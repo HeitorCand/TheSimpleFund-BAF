@@ -68,14 +68,127 @@ The `ReceivableVault` contract manages the registration, approval, and distribut
 Our platform leverages the Stellar blockchain as the foundation for all on-chain operations:
 
 - **Tokenization:** Fund shares are represented as custom tokens on Stellar, managed by the FundToken contract.
-- **Smart Contracts:** All business logic for fund governance, whitelisting, receivable registration, and pro-rata distribution is implemented as Soroban smart contracts deployed on Stellar Testnet.
+- **Smart Contracts:** All business logic for fund governance, whitelisting, receivable registration, and pro-rata distribution is implemented as Soroban smart contracts deployed on Stellar Testnet (compatible with Mainnet).
 - **Wallets:** Each user (manager, consultant, investor) has a Stellar wallet generated during onboarding. All balances, transfers, and distributions are visible and auditable on-chain.
 - **Transactions:** Minting, transfers, and distributions are executed as Stellar transactions, with events emitted for full traceability.
 - **Compliance:** Whitelisting and role-based access are enforced at the contract level, ensuring only authorized and KYC'd users can interact with fund tokens.
-- **Integration:** The backend communicates with Stellar via Horizon API and Soroban CLI/SDK for contract deployment and invocation, while the frontend displays real-time on-chain data to users.
+- **Integration:** The backend communicates with Stellar via Horizon API and Soroban RPC for contract deployment and invocation, while the frontend displays real-time on-chain data to users.
 
-This approach ensures transparency, security, and interoperability for all fund operations, leveraging Stellar's speed and low transaction costs.
+### Blend Protocol Integration
 
----
+**What is Blend?** Blend is a DeFi lending protocol on Stellar that enables isolated lending pools with competitive yields. Unlike traditional finance where fund capital sits idle, Blend allows funds to earn passive income by lending assets on-chain while maintaining full liquidity and transparency.
 
-These contracts together provide a robust, auditable, and role-based foundation for tokenized fund management and receivable distribution on Stellar.
+**Why we use it:** Integrating Blend solves a critical problem in receivables funds—capital efficiency. Between receivable purchases, fund capital can generate additional yield through Blend pools, increasing overall returns for investors without additional risk exposure. Each fund has its own isolated pool, ensuring risk segregation.
+
+Each fund can have one or more **isolated Blend lending pools** to generate on-chain yield:
+
+**Pool Architecture:**
+- Each pool is linked to a specific fund via `fundId`
+- Pools hold deposited capital in Stellar assets (USDC, XLM, etc.)
+- Yield is earned through Blend's lending protocol
+- NAV (Net Asset Value) is calculated as: `totalDeposited + yieldEarned`
+
+**Pool Operations:**
+1. **Deposit** - Fund manager deposits capital into Blend pool
+   - Transaction recorded in `depositTxHash`
+   - `totalDeposited` and `currentBalance` updated
+   
+2. **Yield Accrual** - Background job syncs pool balance
+   - Fetches current balance from Blend
+   - Calculates `yieldEarned = currentBalance - totalDeposited`
+   - Updates `apy` based on time-weighted returns
+   
+3. **Withdraw** - Fund manager withdraws capital for redemptions
+   - Transaction recorded in `withdrawTxHash`
+   - `currentBalance` updated
+
+**NAV Impact:**
+- Fund's `navPerShare` reflects pool yield performance
+- Investors benefit from on-chain DeFi returns
+- All yield calculations are transparent and verifiable
+
+**Database Model:**
+```prisma
+model Pool {
+  id                  String
+  fundId              String
+  blendPoolAddress    String   // Blend pool contract address
+  assetAddress        String   // Underlying asset (USDC, XLM)
+  totalDeposited      Float
+  currentBalance      Float    // deposits + yield
+  yieldEarned         Float
+  apy                 Float?
+  status              String   // ACTIVE, PAUSED, CLOSED
+  depositTxHash       String?
+  withdrawTxHash      String?
+  lastYieldUpdate     DateTime?
+}
+```
+
+**API Endpoints:**
+- `POST /api/pools` - Create new pool
+- `POST /api/pools/:id/deposit` - Deposit into pool
+- `POST /api/pools/:id/withdraw` - Withdraw from pool
+- `GET /api/pools/:id` - Get pool status and metrics
+
+**Isolation Benefits:**
+- Each fund has independent risk exposure
+- Pool failures don't affect other funds
+- Transparent per-fund yield tracking
+
+### Zero-Knowledge Badge System
+
+**What are ZK Proofs?** Zero-Knowledge proofs allow investors to prove they belong to a specific investment tier (e.g., "I invested over $50k") without revealing their exact investment amount. This cryptographic technique ensures privacy while maintaining verifiable credentials.
+
+**Why we use it:** Traditional platforms expose investor wealth publicly, creating privacy and security risks. Our ZK badge system enables social proof and tier-based benefits (early access, reduced fees) while protecting sensitive financial information. Investors can showcase their commitment level without revealing exact portfolio values.
+
+Investors earn **privacy-preserving tier badges** based on total investment amount:
+
+**Badge Tiers:**
+- **NONE** - No investments yet
+- **BRONZE** - $10,000+ invested
+- **SILVER** - $50,000+ invested
+- **GOLD** - $100,000+ invested
+- **DIAMOND** - $500,000+ invested
+
+**Privacy Mechanism:**
+- Each badge tier has a **ZK proof hash** stored on-chain
+- Investors can prove their tier without revealing exact investment amount
+- Proof is generated off-chain and verified on-chain
+
+**Database Fields (User model):**
+```prisma
+model User {
+  totalInvested   Float    @default(0)
+  investorBadge   String   @default("NONE")
+  badgeProofHash  String?  // ZK proof for tier verification
+  lastBadgeUpdate DateTime?
+}
+```
+
+**Badge Update Flow:**
+1. Investor completes order → `totalInvested` increases
+2. Background job checks if tier threshold crossed
+3. If tier upgraded:
+   - Generate ZK proof hash
+   - Update `investorBadge` and `badgeProofHash`
+   - Set `lastBadgeUpdate` timestamp
+
+**Benefits:**
+- **Social Proof** - Higher tiers signal commitment and reputation
+- **Privacy** - Exact amounts remain confidential
+- **Gamification** - Encourages larger investments
+- **Exclusive Access** - Future features can be tier-gated (early access, lower fees, etc.)
+
+**API Endpoints:**
+- `POST /api/badges/update` - Recalculate and update badge
+- `GET /api/badges/:userId` - Get current badge info
+
+**Future Enhancements:**
+- On-chain verification via Soroban smart contract
+- NFT badges minted on Stellar
+- Tier-based benefits (reduced fees, priority access)
+- Public leaderboard with anonymized rankings
+
+This approach ensures transparency, security, and interoperability for all fund operations, leveraging Stellar's speed and low transaction costs, Blend's DeFi yield generation, and privacy-preserving badge verification.
+
