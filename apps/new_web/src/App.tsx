@@ -40,6 +40,9 @@ const Portfolio = lazy(() => import('./pages/investor/Portfolio'));
 const OrderList = lazy(() => import('./pages/investor/OrderList'));
 const FundDetail = lazy(() => import('./pages/investor/FundDetail'));
 
+// Landing Page - Public
+const HomePage = lazy(() => import('./pages/lp/HomePage'));
+
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -49,6 +52,11 @@ const ProtectedRoute: React.FC = () => {
 const PublicRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
   return !isAuthenticated ? <Outlet /> : <Navigate to="/dashboard" />;
+};
+
+const RootRedirect: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+  return <Navigate to={isAuthenticated ? "/dashboard" : "/home"} replace />;
 };
 
 const App: React.FC = () => {
@@ -68,7 +76,15 @@ const App: React.FC = () => {
       <WalletProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
+            {/* Landing Page - Completely public, no auth check */}
+            <Route path="/home" element={
+              <Suspense fallback={<PageLoader />}>
+                <HomePage />
+              </Suspense>
+            } />
+            
+            {/* Root redirects to dashboard if logged in, or home if not */}
+            <Route path="/" element={<RootRedirect />} />
 
             {/* Public routes */}
             <Route element={<PublicRoute />}>

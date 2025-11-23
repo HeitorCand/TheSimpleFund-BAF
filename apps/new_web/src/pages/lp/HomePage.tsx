@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FileText, Building2, Briefcase, Lock, Sliders, TrendingUp } from 'lucide-react';
 import logoTSF from './img/TSF.svg';
 import backgroundImage from './img/background-ofc.svg';
@@ -6,6 +7,7 @@ import backgroundMobile from './img/background-mobile-new.svg';
 import infrastructureImage from './img/image-pattern.png';
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const [bgImage, setBgImage] = useState<string>(backgroundImage);
 
   useEffect(() => {
@@ -52,7 +54,10 @@ const HomePage: React.FC = () => {
             Transform receivables operations with{' '}
             <span className="font-bold">automated, transparent, on-chain workflows.</span>
           </p>
-          <button className="bg-white text-black px-8 py-[14px] rounded-[24px] text-[14px] font-medium transition-all duration-300 shadow-[0_8px_20px_rgba(0,0,0,0.25)] hover:opacity-90 hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
+          <button 
+            onClick={() => navigate('/login')}
+            className="bg-white text-black px-8 py-[14px] rounded-[24px] text-[14px] font-medium transition-all duration-300 shadow-[0_8px_20px_rgba(0,0,0,0.25)] hover:opacity-90 hover:scale-105 hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)]"
+          >
             Explore the Platform
           </button>
         </div>
@@ -73,7 +78,10 @@ const HomePage: React.FC = () => {
       <p className="text-[15px] leading-[1.6] text-white opacity-85 mb-6 flex-grow">
         Access transparent on-chain fund shares with automated distributions and real-time visibility.
       </p>
-      <button className="bg-[#222222] text-white px-7 py-3 rounded-[20px] text-[13px] font-medium w-fit transition-all duration-300 hover:opacity-90 hover:scale-105">
+      <button 
+        onClick={() => navigate('/login')}
+        className="bg-[#222222] text-white px-7 py-3 rounded-[20px] text-[13px] font-medium w-fit transition-all duration-300 hover:opacity-90 hover:scale-105"
+      >
         I am an Investor
       </button>
     </div>
@@ -89,7 +97,10 @@ const HomePage: React.FC = () => {
       <p className="text-[15px] leading-[1.6] text-white opacity-85 mb-6 flex-grow">
         Receivables are automatically registered and distributed according to rules, eliminating manual reconciliation.
       </p>
-      <button className="bg-[#222222] text-white px-7 py-3 rounded-[20px] text-[13px] font-medium w-fit transition-all duration-300 hover:opacity-90 hover:scale-105">
+      <button 
+        onClick={() => navigate('/login')}
+        className="bg-[#222222] text-white px-7 py-3 rounded-[20px] text-[13px] font-medium w-fit transition-all duration-300 hover:opacity-90 hover:scale-105"
+      >
         I am a Fund Manager
       </button>
     </div>
@@ -105,7 +116,10 @@ const HomePage: React.FC = () => {
       <p className="text-[15px] leading-[1.6] text-white opacity-85 mb-6 flex-grow">
         Register assignors and debtors with full compliance, transparency, and significantly reduced onboarding friction.
       </p>
-      <button className="bg-[#222222] text-white px-7 py-3 rounded-[20px] text-[13px] font-medium w-fit transition-all duration-300 hover:opacity-90 hover:scale-105">
+      <button 
+        onClick={() => navigate('/login')}
+        className="bg-[#222222] text-white px-7 py-3 rounded-[20px] text-[13px] font-medium w-fit transition-all duration-300 hover:opacity-90 hover:scale-105"
+      >
         I am a Consultant
       </button>
     </div>

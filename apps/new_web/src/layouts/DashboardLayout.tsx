@@ -143,7 +143,7 @@ const Header: React.FC<{ userEmail: string; userRole: string; onMenuClick: () =>
                 </span>
                 <button
                   onClick={disconnect}
-                  className="px-3 py-1.5 text-xs font-medium text-red-600 bg-[#fa7f7f]-50 border border-red-200 rounded-lg hover:bg-[#fa7f7f]-100 transition-colors"
+                  className="px-3 py-1.5 text-xs font-medium text-[#FA7F7F] bg-[#fa7f7f]-50 border border-red-200 rounded-lg hover:bg-[#fa7f7f]-100 transition-colors"
                 >
                   Disconnect
                 </button>

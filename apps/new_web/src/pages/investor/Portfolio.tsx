@@ -83,110 +83,153 @@ const Portfolio: React.FC = () => {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-                <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-xl font-semibold flex items-center">
-                        <FiBriefcase className="mr-3" />
-                        My Portfolio
-                    </h2>
-                    {publicKey && (
-                        <a
-                            href={`https://stellar.expert/explorer/testnet/account/${publicKey}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center space-x-2 text-sm text-blue-600 hover:text-blue-800"
-                        >
-                            <span>View on Stellar Expert</span>
-                            <FiExternalLink />
-                        </a>
-                    )}
+  <div className="max-w-6xl mx-auto px-4 py-10 space-y-6">
+    {/* Card principal */}
+    <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div>
+          <p className="text-[10px] tracking-[0.2em] uppercase text-emerald-300">
+            Investor
+          </p>
+          <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2">
+            <FiBriefcase className="text-emerald-300" />
+            My Portfolio
+          </h2>
+        </div>
+
+        {publicKey && (
+          <a
+            href={`https://stellar.expert/explorer/testnet/account/${publicKey}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-xs md:text-sm px-3 py-2 rounded-full bg-white/5 border border-white/15 text-white/80 hover:bg-white/10 transition"
+          >
+            <span>View on Stellar Expert</span>
+            <FiExternalLink className="text-emerald-300" />
+          </a>
+        )}
+      </div>
+
+      {/* Loading / vazio / conteúdo */}
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="w-10 h-10 border-2 border-white/20 border-t-emerald-400 rounded-full animate-spin" />
+        </div>
+      ) : orders.length === 0 ? (
+        <div className="text-center text-white/60 py-12">
+          <FiBriefcase className="mx-auto text-5xl text-white/20 mb-4" />
+          <p className="text-lg text-white/80">No completed investments yet.</p>
+          <p className="text-sm mt-2">
+            Start by exploring opportunities in the{' '}
+            <span className="text-emerald-300 font-medium">Marketplace</span>.
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Resumo */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div className="bg-white/[0.03] border border-white/[0.12] rounded-2xl p-4 md:p-5">
+              <p className="text-xs font-semibold text-emerald-200 uppercase tracking-wide mb-1">
+                Total invested
+              </p>
+              <p className="text-2xl font-bold text-emerald-200">
+                <FiatWithXlmValue amountUsd={totalInvested} />
+              </p>
+            </div>
+            <div className="bg-white/[0.03] border border-white/[0.12] rounded-2xl p-4 md:p-5">
+              <p className="text-xs font-semibold text-sky-200 uppercase tracking-wide mb-1">
+                Total quotas
+              </p>
+              <p className="text-2xl font-bold text-sky-200">
+                {totalQuotas.toLocaleString()}
+              </p>
+            </div>
+            <div className="bg-white/[0.03] border border-white/[0.12] rounded-2xl p-4 md:p-5">
+              <p className="text-xs font-semibold text-indigo-200 uppercase tracking-wide mb-1">
+                Funds invested
+              </p>
+              <p className="text-2xl font-bold text-indigo-200">
+                {Object.keys(groupedOrders).length}
+              </p>
+            </div>
+          </div>
+
+          {/* Holdings */}
+          <div className="space-y-3 mb-3">
+            <h3 className="text-sm font-semibold text-emerald-300 uppercase tracking-wide">
+              Your holdings
+            </h3>
+            <p className="text-xs text-white/60">
+              Aggregated by fund, with links to on-chain transactions.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.values(groupedOrders).map((group: any) => (
+              <div
+                key={group.symbol}
+                className="bg-white/[0.03] border border-white/[0.12] rounded-2xl p-5 md:p-6 flex flex-col gap-3"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h4 className="font-semibold text-white text-base md:text-lg">
+                      {group.name}
+                    </h4>
+                    <p className="text-xs text-white/60">{group.symbol}</p>
+                  </div>
+                  <FiCheckCircle className="text-emerald-400 text-xl" />
                 </div>
 
-                {loading ? (
-                    <div className="flex items-center justify-center py-12">
-                        <div className="w-12 h-12 border-4 border-dashed rounded-full animate-spin border-primary"></div>
-                    </div>
-                ) : orders.length === 0 ? (
-                    <div className="text-center text-gray-500 py-12">
-                        <FiBriefcase className="mx-auto text-6xl text-gray-300 mb-4" />
-                        <p className="text-lg">You haven't completed any investments yet.</p>
-                        <p className="text-sm mt-2">Start investing in the Marketplace!</p>
-                    </div>
-                ) : (
-                    <>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-                                <p className="text-sm text-[#A0E4B0]">Total Invested</p>
-                                <p className="text-2xl font-bold text-[[#A0E4B0]]">
-                                    <FiatWithXlmValue amountUsd={totalInvested} />
-                                </p>
-                            </div>
-                            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-                                <p className="text-sm text-blue-700">Total Quotas</p>
-                                <p className="text-2xl font-bold text-blue-900">{totalQuotas.toLocaleString()}</p>
-                            </div>
-                            <div className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-                                <p className="text-sm text-[#836FFF]">Funds Invested</p>
-                                <p className="text-2xl font-bold text-[#836FFF]">{Object.keys(groupedOrders).length}</p>
-                            </div>
-                        </div>
+                <div className="space-y-1.5 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Total quotas</span>
+                    <span className="font-semibold text-white">
+                      {group.totalQuantity.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Total value</span>
+                    <span className="font-semibold text-white">
+                      <FiatWithXlmValue amountUsd={group.totalValue} />
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/60">Orders</span>
+                    <span className="font-semibold text-white">
+                      {group.orders.length}
+                    </span>
+                  </div>
+                </div>
 
-                        <div className="space-y-4">
-                            <h3 className="text-lg font-semibold">Your Holdings</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {Object.values(groupedOrders).map((group: any) => (
-                                    <div key={group.symbol} className="bg-white/[0.04] border border-white/[0.12] backdrop-blur-xl rounded-2xl p-6 md:p-8 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div>
-                                                <h4 className="font-bold text-lg">{group.name}</h4>
-                                                <p className="text-sm text-gray-500">{group.symbol}</p>
-                                            </div>
-                                            <FiCheckCircle className="text-green-500 text-xl" />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-gray-600">Total Quotas:</span>
-                                                <span className="font-semibold">{group.totalQuantity.toLocaleString()}</span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-gray-600">Total Value:</span>
-                                                <span className="font-semibold">
-                                                    <FiatWithXlmValue amountUsd={group.totalValue} />
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-gray-600">Orders:</span>
-                                                <span className="font-semibold">{group.orders.length}</span>
-                                            </div>
-                                        </div>
-                                        <div className="mt-3 pt-3 border-t">
-                                            {group.orders.map((order: Order) => (
-                                                <div key={order.id} className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                                                    <span>{new Date(order.createdAt).toLocaleDateString()}</span>
-                                                    {order.txHash && (
-                                                        <a
-                                                            href={`https://stellar.expert/explorer/testnet/tx/${order.txHash}`}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-blue-600 hover:text-blue-800 flex items-center space-x-1"
-                                                        >
-                                                            <span>TX</span>
-                                                            <FiExternalLink />
-                                                        </a>
-                                                    )}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </>
-                )}
-            </div>
-        </div>
-    );
+                <div className="mt-3 pt-3 border-t border-white/10 space-y-1.5">
+                  {group.orders.map((order: Order) => (
+                    <div
+                      key={order.id}
+                      className="flex items-center justify-between text-[11px] text-white/55"
+                    >
+                      <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+                      {order.txHash && (
+                        <a
+                          href={`https://stellar.expert/explorer/testnet/tx/${order.txHash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-emerald-200 hover:text-emerald-100 flex items-center gap-1"
+                        >
+                          <span>View TX</span>
+                          <FiExternalLink className="text-[12px]" />
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+);
 };
 
 export default Portfolio;
